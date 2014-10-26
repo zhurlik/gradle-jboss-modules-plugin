@@ -1,0 +1,13 @@
+buildscript {
+    repositories {
+        maven {
+            url uri('../tmp-repo')
+        }
+    }
+
+    dependencies {
+        classpath 'com.zhurlik:gradle-jboss-modules:0.1'
+    }
+}
+
+apply plugin: 'com.github.zhurlik.jbossmodules'

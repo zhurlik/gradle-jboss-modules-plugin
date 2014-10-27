@@ -6,12 +6,15 @@ import groovy.xml.MarkupBuilder
 import static com.zhurlik.descriptor.IBuilder.Ver.V_1_1
 
 /**
+ * Generates a xml descriptor for JBoss Module ver.1.1
+ * https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_1.xsd
+ *
  * @author zhurlik@gmail.com
  */
 class Xsd1_1 implements IBuilder<JBossModule> {
 
     @Override
-    String getXmlDescriptor(final JBossModule module) {
+    String getXmlDescriptor(final JBossModule jmodule) {
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
 
@@ -19,19 +22,19 @@ class Xsd1_1 implements IBuilder<JBossModule> {
         xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
 
         // <module xmlns="urn:jboss:module:1.1" name="org.jboss.msc">
-        xml.module([xmlns: 'urn:jboss:module:' + V_1_1.version, name: module.moduleName] + ((module.slot in [null, '']) ? [:] : [slot: module.slot])) {
+        xml.module([xmlns: 'urn:jboss:module:' + V_1_1.version, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
 
             // <main-class name="org.jboss.msc.Version"/>
-            if (!(module.mainClass in [null, ''])) {
-                'main-class'(name: module.mainClass)
+            if (!(jmodule.mainClass in [null, ''])) {
+                'main-class'(name: jmodule.mainClass)
             }
 
             //  <properties>
             //     <property name="my.property" value="foo"/>
             //  </properties>
-            if (!module.properties.isEmpty()) {
+            if (!jmodule.properties.isEmpty()) {
                 delegate.properties {
-                    module.properties.each() {
+                    jmodule.properties.each() {
                         property(name: it.key, value: it.value)
                     }
                 }
@@ -42,9 +45,9 @@ class Xsd1_1 implements IBuilder<JBossModule> {
             //          <filter/>
             //      <resource-root/>
             //   </resources>
-            if (!module.resources.isEmpty()) {
+            if (!jmodule.resources.isEmpty()) {
                 delegate.resources {
-                    module.resources.each() {
+                    jmodule.resources.each() {
                         if (it instanceof String) {
                             'resource-root'(path: it)
                         } else {
@@ -72,9 +75,9 @@ class Xsd1_1 implements IBuilder<JBossModule> {
             //         </imports>
             //      </module>
             //  </dependencies>
-            if (!module.dependencies.isEmpty()) {
+            if (!jmodule.dependencies.isEmpty()) {
                 delegate.dependencies {
-                    module.dependencies.each() {dep->
+                    jmodule.dependencies.each() {dep->
                         // Attribute	Type	Required?	Description
                         //name:	        string	    Yes	    The name of the module upon which this module depends.
                         //slot:	        string	    No	    The version slot of the module upon which this module depends; defaults to "main".
@@ -82,14 +85,14 @@ class Xsd1_1 implements IBuilder<JBossModule> {
                         //services;	    enum	    No      Specify whether this dependency's services* are imported and/or exported. Possible values are "none", "import", or "export"; defaults to "none".
                         //optional:	    boolean	    No	    Specify whether this dependency is optional; defaults to "false".
                         if (dep.exports == null && dep.imports == null) {
-                            module(dep)
+                            delegate.module(dep)
                         } else {
-                            module(dep.findAll() {el-> el.key in ['name', 'slot', 'export', 'optional']}) {
+                            delegate.module(dep.findAll() {el-> el.key in ['name', 'slot', 'export', 'optional']}) {
                                 // imports
                                 if (dep.imports != null) {
                                     delegate.imports() {
                                         dep.imports.each() {
-                                            'import'()
+                                            delegate.import()
                                         }
                                     }
                                 }
@@ -98,7 +101,7 @@ class Xsd1_1 implements IBuilder<JBossModule> {
                                 if (dep.exports != null) {
                                     delegate.exports() {
                                         dep.exports.each() {
-                                            'export'()
+                                            delegate.export()
                                         }
                                     }
                                 }

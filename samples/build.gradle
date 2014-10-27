@@ -24,7 +24,11 @@ modules {
         dependencies = [
                 [name: 'module1'],
                 [name: 'module2', export: 'true'],
-                [name: 'module3', export: 'false', exports: ['11', '22']]
+                [name: 'module3', export: 'false', exports: [
+                        include: ['mine'],
+                        exclude: ['*not*a', '*not*b']
+                    ]
+                ]
         ]
     }
 
@@ -39,7 +43,11 @@ modules {
         dependencies = [
                 [name: 'module1'],
                 [name: 'module2', export: 'true'],
-                [name: 'module3', export: 'false', exports: ['11', '22']]
+                [name: 'module3', export: 'false', imports: [
+                        include: 'mine',
+                        exclude: ['*not*a', '*not*b']
+                    ]
+                ]
         ]
     }
 }

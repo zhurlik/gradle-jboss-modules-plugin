@@ -52,7 +52,7 @@ class Xsd1_1 implements IBuilder<JBossModule> {
                             'resource-root'(path: it)
                         } else {
                             if (it.filter != null) {
-                                'resource-root'(it.findAll() {it.key in ['name', 'path']}) {
+                                'resource-root'(it.findAll() { it.key in ['name', 'path'] }) {
                                     delegate.filter()
                                 }
                             }
@@ -77,7 +77,7 @@ class Xsd1_1 implements IBuilder<JBossModule> {
             //  </dependencies>
             if (!jmodule.dependencies.isEmpty()) {
                 delegate.dependencies {
-                    jmodule.dependencies.each() {dep->
+                    jmodule.dependencies.each() { dep ->
                         // Attribute	Type	Required?	Description
                         //name:	        string	    Yes	    The name of the module upon which this module depends.
                         //slot:	        string	    No	    The version slot of the module upon which this module depends; defaults to "main".
@@ -87,12 +87,36 @@ class Xsd1_1 implements IBuilder<JBossModule> {
                         if (dep.exports == null && dep.imports == null) {
                             delegate.module(dep)
                         } else {
-                            delegate.module(dep.findAll() {el-> el.key in ['name', 'slot', 'export', 'optional']}) {
+                            delegate.module(dep.findAll() { el -> el.key in ['name', 'slot', 'export', 'optional'] }) {
                                 // imports
                                 if (dep.imports != null) {
                                     delegate.imports() {
-                                        dep.imports.each() {
-                                            delegate.import()
+                                        if (dep.imports.include instanceof String) {
+                                            'include'(path: dep.imports.include)
+                                        } else {
+                                            if (dep.imports.include != null && !dep.imports.include.isEmpty()) {
+                                                if (dep.imports.include.size() > 1) {
+                                                    'include-set'() {
+                                                        dep.imports.include.each() { 'path'(name: it) }
+                                                    }
+                                                } else if (dep.imports.include.size() == 1) {
+                                                    'include'(path: dep.imports.include[0])
+                                                }
+                                            }
+                                        }
+
+                                        if (dep.imports.exclude instanceof String) {
+                                            'exclude'(path: dep.imports.exclude)
+                                        } else {
+                                            if (dep.imports.exclude != null && !dep.imports.exclude.isEmpty()) {
+                                                if (dep.imports.exclude.size() > 1) {
+                                                    'exclude-set'() {
+                                                        dep.imports.exclude.each() { 'path'(name: it) }
+                                                    }
+                                                } else if (dep.imports.exclude.size() == 1) {
+                                                    'exclude'(path: dep.imports.exclude[0])
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -100,8 +124,32 @@ class Xsd1_1 implements IBuilder<JBossModule> {
                                 // exports
                                 if (dep.exports != null) {
                                     delegate.exports() {
-                                        dep.exports.each() {
-                                            delegate.export()
+                                        if (dep.exports.include instanceof String) {
+                                            'include'(path: dep.exports.include)
+                                        } else {
+                                            if (dep.exports.include != null && !dep.exports.include.isEmpty()) {
+                                                if (dep.exports.include.size() > 1) {
+                                                    'include-set'() {
+                                                        dep.exports.include.each() { 'path'(name: it) }
+                                                    }
+                                                } else if (dep.exports.include.size() == 1) {
+                                                    'include'(path: dep.exports.include[0])
+                                                }
+                                            }
+                                        }
+
+                                        if (dep.exports.exclude instanceof String) {
+                                            'exclude'(path: dep.exports.exclude)
+                                        } else {
+                                            if (dep.exports.exclude != null && !dep.exports.exclude.isEmpty()) {
+                                                if (dep.exports.exclude.size() > 1) {
+                                                    'exclude-set'() {
+                                                        dep.exports.exclude.each() { 'path'(name: it) }
+                                                    }
+                                                } else if (dep.exports.exclude.size() == 1) {
+                                                    'exclude'(path: dep.export.exclude[0])
+                                                }
+                                            }
                                         }
                                     }
                                 }

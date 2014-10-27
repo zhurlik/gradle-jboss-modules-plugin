@@ -53,5 +53,7 @@ modules {
 }
 
 modules.each() {
-    println '>>>>>>>>>>>>>>>>>>>>\n' + it.getModuleDescriptor()
+    println '>> Module Name: ' + it.name
+    println it.getModuleDescriptor()
+    println '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
 }

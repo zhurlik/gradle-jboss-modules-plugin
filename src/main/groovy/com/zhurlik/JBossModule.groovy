@@ -9,7 +9,8 @@ package com.zhurlik
 class JBossModule {
     def String name, moduleName, slot, mainClass
     def properties = [:]
-    def resources, dependencies = []
+    def resources = []
+    def dependencies = []
     def exports
 
     /**

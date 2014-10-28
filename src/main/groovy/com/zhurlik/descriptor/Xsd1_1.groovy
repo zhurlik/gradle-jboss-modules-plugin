@@ -3,7 +3,9 @@ package com.zhurlik.descriptor
 import com.zhurlik.JBossModule
 import groovy.xml.MarkupBuilder
 
-import static com.zhurlik.descriptor.IBuilder.Ver.V_1_1
+import javax.xml.transform.stream.StreamSource
+
+import static com.zhurlik.descriptor.AbstractBuilder.Ver.V_1_1
 
 /**
  * Generates a xml descriptor for JBoss Module ver.1.1
@@ -11,7 +13,7 @@ import static com.zhurlik.descriptor.IBuilder.Ver.V_1_1
  *
  * @author zhurlik@gmail.com
  */
-class Xsd1_1 implements IBuilder<JBossModule> {
+class Xsd1_1 extends AbstractBuilder<JBossModule> {
 
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {
@@ -162,5 +164,10 @@ class Xsd1_1 implements IBuilder<JBossModule> {
             }
         }
         return writer.toString()
+    }
+
+    @Override
+    StreamSource getXsd() {
+        return new StreamSource(getClass().classLoader.getResourceAsStream(V_1_1.xsd))
     }
 }

@@ -29,7 +29,7 @@ class MakeModulesTask extends DefaultTask {
         project.modules.each() { JBossModule m ->
 
             // to have full path for ${project}/${build}/modules/module/name/dir/{main|slot}
-            def String moduleDirName  = [outputDir.path,((m.slot in [null, '']) ? 'main' : m.slot), m.moduleName.replaceAll('\\.', separator)].join(separator)
+            def String moduleDirName = [outputDir.path, ((m.slot in [null, '']) ? 'main' : m.slot), m.moduleName.replaceAll('\\.', separator)].join(separator)
 
             // save a xml
             def File moduleDir = new File(moduleDirName)
@@ -40,9 +40,9 @@ class MakeModulesTask extends DefaultTask {
             println '>> Module Descriptor:' + xmlfile.path
 
             // copy jars
-            def jarNames = m.resources.findAll() {it instanceof String} + m.resources.findAll(){!(it instanceof String)}.collect(){it.path}
-           jarNames.each() {jar ->
-                project.configurations.jbossmodules.files.findAll() { it.name == jar}.each {
+            def jarNames = m.resources.findAll() { it instanceof String } + m.resources.findAll() { !(it instanceof String) }.collect() { it.path }
+            jarNames.each() { jar ->
+                project.configurations.jbossmodules.files.findAll() { it.name == jar }.each {
                     def Path source = Paths.get(it.path)
                     def Path target = Paths.get(moduleDirName, jar)
                     Files.copy(source, target)

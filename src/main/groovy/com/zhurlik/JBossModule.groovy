@@ -1,9 +1,9 @@
 package com.zhurlik
 
 import com.zhurlik.descriptor.BuilderFactory
-import com.zhurlik.descriptor.IBuilder
+import com.zhurlik.descriptor.AbstractBuilder
 
-import static com.zhurlik.descriptor.IBuilder.Ver.V_1_1
+import static com.zhurlik.descriptor.AbstractBuilder.Ver.V_1_1
 
 /**
  * To make JBoss Module.
@@ -17,7 +17,7 @@ class JBossModule {
     def resources = []
     def dependencies = []
     def exports
-    def IBuilder.Ver ver = V_1_1
+    def AbstractBuilder.Ver ver = V_1_1
 
     /**
      * The special constructor to be able to use in the gradle script
@@ -68,5 +68,10 @@ class JBossModule {
     String getModuleDescriptor() {
         def builder = BuilderFactory.getBuilder(this.ver)
         return builder.getXmlDescriptor(this)
+    }
+
+    boolean isValid(){
+        def builder = BuilderFactory.getBuilder(this.ver)
+        return builder.isValid(builder.getXmlDescriptor(this))
     }
 }

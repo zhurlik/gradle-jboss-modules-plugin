@@ -12,13 +12,21 @@ buildscript {
 
 apply plugin: 'com.github.zhurlik.jbossmodules'
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    jbossmodules 'org.springframework:spring-core:4.1.1.RELEASE'
+}
+
 modules {
     moduleA {
-        moduleName = 'com.zhurlik'
+        moduleName = 'com.zhurlik.a'
         mainClass = 'zh'
         slot = '3.3.3'
         properties = ['ver' : '1.0', 'test' : 'zhurlik']
-        resources = ['test1.jar', 'test2.jar',
+        resources = ['test1.jar', 'spring-core-4.1.1.RELEASE.jar',
                      [name: 'name', path: 'path1', filter: 'filter1']
         ]
         dependencies = [
@@ -33,7 +41,7 @@ modules {
     }
 
     moduleB {
-        moduleName = 'com.zhurlik'
+        moduleName = 'com.zhurlik.b'
         mainClass = 'zh'
         slot = '3.3.3'
         properties = ['ver' : '1.0', 'test' : 'zhurlik']

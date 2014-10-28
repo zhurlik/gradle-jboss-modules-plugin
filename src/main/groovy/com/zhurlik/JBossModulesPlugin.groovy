@@ -12,7 +12,9 @@ class JBossModulesPlugin implements Plugin<Project> {
     @Override
     void apply(final Project project) {
         println '>> Plugin: JBoss Modules'
+        project.configurations.create('jbossmodules')
         def modules = project.container(JBossModule)
         project.extensions.modules = modules
+        project.task('makeModules', type: com.zhurlik.MakeModulesTask)
     }
 }

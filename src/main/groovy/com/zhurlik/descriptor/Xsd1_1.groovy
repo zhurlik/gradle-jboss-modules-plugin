@@ -55,6 +55,8 @@ class Xsd1_1 implements IBuilder<JBossModule> {
                                 'resource-root'(it.findAll() { it.key in ['name', 'path'] }) {
                                     delegate.filter()
                                 }
+                            } else {
+                                'resource-root'(it.findAll() { it.key in ['name', 'path'] })
                             }
                         }
                     }

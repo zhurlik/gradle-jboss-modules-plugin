@@ -21,8 +21,11 @@ class JBossModuleTest {
         module.ver = AbstractBuilder.Ver.V_1_1
         module.moduleName = 'my.module'
         module.mainClass = ''
+        module.slot = '1.0'
         assertEquals 'Case1:', "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module xmlns='urn:jboss:module:1.1' name='my.module' />", module.moduleDescriptor
+                "<module xmlns='urn:jboss:module:1.1' name='my.module' slot='1.0' />", module.moduleDescriptor
+        assert module.valid
+
         // 2
         module = new JBossModule('spring-core')
         module.moduleName  = 'org.springframework.spring-core'
@@ -42,6 +45,7 @@ class JBossModuleTest {
                 "    <module name='org.jboss.vfs' />\n" +
                 "  </dependencies>\n" +
                 "</module>", module.moduleDescriptor
+        assert module.valid
 
         // 3
         module = new JBossModule('test-module-3')
@@ -51,6 +55,7 @@ class JBossModuleTest {
                 "<module xmlns='urn:jboss:module:1.1' name='test.module.3'>\n" +
                 "  <main-class name='test.MainClass' />\n" +
                 "</module>", module.moduleDescriptor
+        assert module.valid
 
         // 4
         module = new JBossModule('test-module-4')
@@ -63,6 +68,6 @@ class JBossModuleTest {
                 "    <property name='prop2' value='value2' />\n" +
                 "  </properties>\n" +
                 "</module>", module.moduleDescriptor
-
+        assert module.valid
     }
 }

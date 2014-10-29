@@ -17,6 +17,9 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
 
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {
+        assert jmodule != null, 'JBossModule is null'
+        assert jmodule.moduleName != null, 'Module name is null'
+
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
 

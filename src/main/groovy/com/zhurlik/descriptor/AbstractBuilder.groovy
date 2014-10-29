@@ -34,7 +34,7 @@ abstract class AbstractBuilder<T extends JBossModule> {
             validator.validate(new StreamSource(new StringReader(xml)))
             return true
         } catch (all) {
-            println '>> ERROR:' + all
+            println '>> ERROR: ' + all
             return false
         }
     }

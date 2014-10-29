@@ -32,10 +32,10 @@ class BuilderFactoryTest {
         def ver1_2 = BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_2)
         def ver1_3 = BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_3)
 
-        assertNotNull ver1_0
-        assertNotNull ver1_1
-        assertNotNull ver1_2
-        assertNotNull ver1_3
+        assert ver1_0 instanceof Xsd1_0
+        assert ver1_1 instanceof Xsd1_1
+        assert ver1_2 instanceof Xsd1_2
+        assert ver1_3 instanceof Xsd1_3
 
         assertNotEquals ver1_0, ver1_1
         assertNotEquals ver1_0, ver1_2

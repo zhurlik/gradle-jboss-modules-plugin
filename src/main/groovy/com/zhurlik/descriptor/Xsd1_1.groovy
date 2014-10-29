@@ -36,7 +36,7 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
             //  </properties>
             if (!jmodule.properties.isEmpty()) {
                 delegate.properties {
-                    jmodule.properties.each() {
+                    jmodule.properties.findAll() {!(it.key in [null, '']) && !(it.value in [null, ''])}.each() {
                         property(name: it.key, value: it.value)
                     }
                 }

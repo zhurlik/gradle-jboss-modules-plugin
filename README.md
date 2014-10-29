@@ -8,7 +8,7 @@ The main idea is to have an ability to make [JBoss Modules](https://docs.jboss.o
 
 
 ## How to use
-
+```groovy
 apply plugin: 'com.github.zhurlik.jbossmodules'
 
 repositories {
@@ -39,7 +39,7 @@ modules {
         ]
     }
 }
-
+```
 gradle makeModules
 or
 gradle checkModules

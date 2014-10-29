@@ -48,5 +48,14 @@ class BuilderFactoryTest {
         assertEquals ver1_1, BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_1)
         assertEquals ver1_2, BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_2)
         assertEquals ver1_3, BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_3)
+
+        assertEquals 'xsd/module-1_0.xsd', AbstractBuilder.Ver.V_1_0.xsd
+        assertEquals '1.0', AbstractBuilder.Ver.V_1_0.version
+        assertEquals 'xsd/module-1_1.xsd', AbstractBuilder.Ver.V_1_1.xsd
+        assertEquals '1.1', AbstractBuilder.Ver.V_1_1.version
+        assertEquals 'xsd/module-1_2.xsd', AbstractBuilder.Ver.V_1_2.xsd
+        assertEquals '1.2', AbstractBuilder.Ver.V_1_2.version
+        assertEquals 'xsd/module-1_3.xsd', AbstractBuilder.Ver.V_1_3.xsd
+        assertEquals '1.3', AbstractBuilder.Ver.V_1_3.version
     }
 }

@@ -10,19 +10,14 @@ The main idea is to have an ability to make [JBoss Modules](https://docs.jboss.o
 ## How to use
 
 apply plugin: 'com.github.zhurlik.jbossmodules'
-
 repositories {
     mavenCentral()
 }
-
 dependencies {
     jbossmodules 'org.springframework:spring-core:4.1.1.RELEASE'
 }
-
 modules {
-
     moduleA {
-    
         moduleName = 'com.zhurlik.a'
         mainClass = 'zh'
         slot = '3.3.3'

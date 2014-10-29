@@ -9,7 +9,7 @@ The main idea is to have an ability to make [JBoss Modules](https://docs.jboss.o
 buildscript {
     repositories {
         maven {
-            url uri('../tmp-repo')
+            url uri('http://dl.bintray.com/zhurlik/mvn')
         }
     }
 

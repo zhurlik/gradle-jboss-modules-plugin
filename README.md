@@ -5,7 +5,19 @@ This plugin for gradle allows to create modules to be able to use them under JBo
 The main idea is to have an ability to make [JBoss Modules](https://docs.jboss.org/author/display/MODULES/Defining+a+module)
 ## How to install
 
+```
+buildscript {
+    repositories {
+        maven {
+            url uri('../tmp-repo')
+        }
+    }
 
+    dependencies {
+        classpath 'com.zhurlik:gradle-jboss-modules:0.1'
+    }
+}
+```
 
 ## How to use
 ```groovy

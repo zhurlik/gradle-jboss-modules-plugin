@@ -36,7 +36,7 @@ class MakeModulesTask extends DefaultTask {
             if (!moduleDir.exists()) {
                 assert moduleDir.mkdirs(), 'Can\'t create a folder'
             }
-            def xmlfile = new File(moduleDir, m.name + '.xml') << m.moduleDescriptor
+            def xmlfile = new File(moduleDir, 'module.xml') << m.moduleDescriptor
             println '>> Module Descriptor:' + xmlfile.path
 
             // copy jars

@@ -1,6 +1,5 @@
 package com.zhurlik
 
-import com.zhurlik.descriptor.AbstractBuilder
 import org.junit.Test
 
 import static com.zhurlik.descriptor.AbstractBuilder.Ver.V_1_1

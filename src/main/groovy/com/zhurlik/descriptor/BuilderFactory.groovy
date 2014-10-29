@@ -23,11 +23,11 @@ class BuilderFactory<T extends JBossModule> {
     static final AbstractBuilder<T> NONE = new AbstractBuilder<T>() {
 
         String getXmlDescriptor(JBossModule mod) {
-            return 'Version:' + mod.ver.version + ' is not implemented yet'
+            throw new UnsupportedOperationException('Version:' + mod.ver.version + ' is not implemented yet')
         }
 
         StreamSource getXsd() {
-            return false
+            return null
         }
     }
 

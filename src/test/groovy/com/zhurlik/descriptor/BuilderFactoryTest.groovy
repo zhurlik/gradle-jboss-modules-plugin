@@ -1,0 +1,52 @@
+package com.zhurlik.descriptor
+
+import com.zhurlik.JBossModule
+import org.junit.Test
+
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNotEquals
+import static org.junit.Assert.assertNotNull
+import static org.junit.Assert.assertNull
+
+/**
+ * To check {@link BuilderFactory} class
+ *
+ * @author zhurlik@gmail.com
+ */
+class BuilderFactoryTest {
+
+    @Test
+    public void testMain() throws Exception {
+        def none = BuilderFactory.NONE
+        assertNotNull none
+        assertNull none.xsd
+        try {
+            none.getXmlDescriptor(new JBossModule('test'))
+            assert false
+        } catch (UnsupportedOperationException ex) {
+            assert true
+        }
+
+        def ver1_0 = BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_0)
+        def ver1_1 = BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_1)
+        def ver1_2 = BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_2)
+        def ver1_3 = BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_3)
+
+        assertNotNull ver1_0
+        assertNotNull ver1_1
+        assertNotNull ver1_2
+        assertNotNull ver1_3
+
+        assertNotEquals ver1_0, ver1_1
+        assertNotEquals ver1_0, ver1_2
+        assertNotEquals ver1_0, ver1_3
+        assertNotEquals ver1_1, ver1_2
+        assertNotEquals ver1_1, ver1_3
+        assertNotEquals ver1_2, ver1_3
+
+        assertEquals ver1_0, BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_0)
+        assertEquals ver1_1, BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_1)
+        assertEquals ver1_2, BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_2)
+        assertEquals ver1_3, BuilderFactory.<JBossModule>getBuilder(AbstractBuilder.Ver.V_1_3)
+    }
+}

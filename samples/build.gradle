@@ -27,7 +27,7 @@ modules {
         slot = '3.3.3'
         properties = ['ver' : '1.0', 'test' : 'zhurlik']
         resources = ['test1.jar', 'spring-core-4.1.1.RELEASE.jar',
-                     [name: 'name', path: 'path1', filter: 'filter1']
+                     [name: 'name', path: 'path1', filter: [include:'**']]
         ]
         dependencies = [
                 [name: 'module1'],
@@ -46,7 +46,7 @@ modules {
         slot = '3.3.3'
         properties = ['ver' : '1.0', 'test' : 'zhurlik']
         resources = ['test1.jar', 'test2.jar',
-                     [name: 'name', path: 'path1', filter: 'filter1']
+                     [name: 'name', path: 'path1', filter: [exclude: '**']]
         ]
         dependencies = [
                 [name: 'module1'],

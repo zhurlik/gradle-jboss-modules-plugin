@@ -47,23 +47,55 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
 
             //  <resources>
             //      <resource-root path="jboss-msc-1.0.1.GA.jar" name="bla-bla">
-            //          <filter/>
+            //          <filter>
+            //             <include path=''/>
+            //             ...
+            //             <exclude-set>
+            //               ...
+            //             <exclude-set/>
+            //          <filter>
             //      <resource-root/>
             //   </resources>
             if (!jmodule.resources.isEmpty()) {
                 delegate.resources {
-                    jmodule.resources.each() {
-                        if (it instanceof String) {
-                            'resource-root'(path: it)
+                    jmodule.resources.each() {res ->
+                        if (res instanceof String) {
+                            'resource-root'(path: res)
                             // next resource
                             return
                         }
-                        if (it.filter != null) {
-                            'resource-root'(it.findAll() { it.key in ['name', 'path'] }) {
-                                delegate.filter()
+                        if (res.filter != null) {
+                            'resource-root'(res.findAll() { it.key in ['name', 'path'] }) {
+                                delegate.filter(){
+                                    // include
+                                    if (res.filter.include != null) {
+                                        if (res.filter.include instanceof String || res.filter.include.size() == 1) {
+                                            'include'(path:res.filter.include.toString())
+                                        } else if (res.filter.include.size() > 1) {
+                                            'include-set'() {
+                                                res.filter.include.each() {
+                                                    'path'(name: it)
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    //exclude
+                                    if (res.filter.exclude != null) {
+                                        if (res.filter.exclude instanceof String || res.filter.exclude.size() == 1) {
+                                            'exclude'(path:res.filter.exclude.toString())
+                                        } else if (res.filter.exclude.size() > 1) {
+                                            'exclude-set'() {
+                                                res.filter.exclude.each() {
+                                                    'path'(name: it)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         } else {
-                            'resource-root'(it.findAll() { it.key in ['name', 'path'] })
+                            'resource-root'(res.findAll() { it.key in ['name', 'path'] })
                         }
                     }
                 }
@@ -97,40 +129,45 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
                             // next dependency
                             return
                         }
+
+                        if (dep.services != null) {
+                            assert dep.services in  ['none', 'import', 'export']
+                        }
+
+                        if (dep.export != null) {
+                            assert dep.export.toString() in ['true', 'false']
+                        }
+
+                        if (dep.optional != null) {
+                            assert dep.optional.toString() in ['true', 'false']
+                        }
+
                         if (dep.exports == null && dep.imports == null) {
                             delegate.module(dep)
                         } else {
-                            delegate.module(dep.findAll() { el -> el.key in ['name', 'slot', 'export', 'optional'] }) {
+                            delegate.module(dep.findAll() { el -> el.key in ['name', 'slot', 'export', 'optional', 'services'] }) {
                                 // imports
                                 if (dep.imports != null) {
                                     delegate.imports() {
-                                        if (dep.imports.include instanceof String) {
-                                            'include'(path: dep.imports.include)
-                                            // next dependency
-                                            return
-                                        }
-                                        if (dep.imports.include != null && !dep.imports.include.isEmpty()) {
-                                            if (dep.imports.include.size() > 1) {
+                                        // include
+                                        if (dep.imports.include != null) {
+                                            if (dep.imports.include instanceof String || dep.imports.include.size() == 1 ) {
+                                                'include'(path: dep.imports.include.toString())
+                                            } else if (dep.imports.include.size() > 1) {
                                                 'include-set'() {
                                                     dep.imports.include.each() { 'path'(name: it) }
                                                 }
-                                            } else if (dep.imports.include.size() == 1) {
-                                                'include'(path: dep.imports.include[0])
                                             }
                                         }
 
-                                        if (dep.imports.exclude instanceof String) {
-                                            'exclude'(path: dep.imports.exclude)
-                                            // next dependency
-                                            return
-                                        }
-                                        if (dep.imports.exclude != null && !dep.imports.exclude.isEmpty()) {
-                                            if (dep.imports.exclude.size() > 1) {
+                                        // exclude
+                                        if (dep.imports.exclude != null) {
+                                            if (dep.imports.exclude instanceof String || dep.imports.exclude.size() == 1 ) {
+                                                'exclude'(path: dep.imports.exclude.toString())
+                                            } else if (dep.imports.exclude.size() > 1) {
                                                 'exclude-set'() {
                                                     dep.imports.exclude.each() { 'path'(name: it) }
                                                 }
-                                            } else if (dep.imports.exclude.size() == 1) {
-                                                'exclude'(path: dep.imports.exclude[0])
                                             }
                                         }
                                     }
@@ -139,33 +176,25 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
                                 // exports
                                 if (dep.exports != null) {
                                     delegate.exports() {
-                                        if (dep.exports.include instanceof String) {
-                                            'include'(path: dep.exports.include)
-                                            // next dependency
-                                            return
-                                        }
-                                        if (dep.exports.include != null && !dep.exports.include.isEmpty()) {
-                                            if (dep.exports.include.size() > 1) {
+                                        // include
+                                        if (dep.exports.include != null) {
+                                            if (dep.exports.include instanceof String || dep.exports.include.size() == 1 ) {
+                                                'include'(path: dep.exports.include.toString())
+                                            } else if (dep.exports.include.size() > 1) {
                                                 'include-set'() {
                                                     dep.exports.include.each() { 'path'(name: it) }
                                                 }
-                                            } else if (dep.exports.include.size() == 1) {
-                                                'include'(path: dep.exports.include[0])
                                             }
                                         }
 
-                                        if (dep.exports.exclude instanceof String) {
-                                            'exclude'(path: dep.exports.exclude)
-                                            // next dependency
-                                            return
-                                        }
-                                        if (dep.exports.exclude != null && !dep.exports.exclude.isEmpty()) {
-                                            if (dep.exports.exclude.size() > 1) {
+                                        // exclude
+                                        if (dep.exports.exclude != null) {
+                                            if (dep.exports.exclude instanceof String || dep.exports.exclude.size() == 1 ) {
+                                                'exclude'(path: dep.exports.exclude.toString())
+                                            } else if (dep.exports.exclude.size() > 1) {
                                                 'exclude-set'() {
                                                     dep.exports.exclude.each() { 'path'(name: it) }
                                                 }
-                                            } else if (dep.exports.exclude.size() == 1) {
-                                                'exclude'(path: dep.export.exclude[0])
                                             }
                                         }
                                     }

@@ -52,7 +52,7 @@ modules {
     }
 }
 ```
-```$ gradle makeModules```
+```gradle makeModules```
 or
-```$ gradle checkModules```
+```gradle checkModules```
 

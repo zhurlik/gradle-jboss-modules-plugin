@@ -1,5 +1,6 @@
 apply plugin: 'idea'
 apply plugin: 'groovy'
+apply plugin: 'signing'
 
 version = '0.1'
 group = 'com.zhurlik'
@@ -41,8 +42,18 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-// add source jar tasks as artifacts
+// custom task for creating doc jar
+task groovydocJar(type: Jar, dependsOn: 'groovydoc') {
+    from groovydoc.destinationDir
+    classifier = 'javadoc'
+}
+
+signing {
+    sign configurations.archives
+}
+
+// add source/doc jar tasks as artifacts
 artifacts {
     archives jar
-    archives sourcesJar
+    archives sourcesJar, groovydocJar
 }

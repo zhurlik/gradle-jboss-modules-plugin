@@ -1,6 +1,6 @@
 package com.zhurlik.descriptor
 
-import com.zhurlik.JBossModule
+import com.zhurlik.extension.JBossModule
 
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
@@ -21,6 +21,8 @@ abstract class AbstractBuilder<T extends JBossModule> {
 
     abstract StreamSource getXsd()
 
+    abstract JBossModule makeModule(final String txt)
+
     /**
      * To validate a xml descriptors.
      *
@@ -36,18 +38,6 @@ abstract class AbstractBuilder<T extends JBossModule> {
         } catch (all) {
             println '>> ERROR: ' + all
             return false
-        }
-    }
-
-    enum Ver {
-        V_1_0('1.0', 'xsd/module-1_0.xsd'), V_1_1('1.1', 'xsd/module-1_1.xsd'), V_1_2('1.2', 'xsd/module-1_2.xsd'), V_1_3('1.3', 'xsd/module-1_3.xsd');
-
-        def String version
-        def String xsd
-
-        Ver(final String ver, final String xsd) {
-            this.version = ver
-            this.xsd = xsd
         }
     }
 }

@@ -1,11 +1,12 @@
 package com.zhurlik.descriptor
 
-import com.zhurlik.JBossModule
+import com.zhurlik.extension.JBossModule
+import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
 
 import javax.xml.transform.stream.StreamSource
 
-import static com.zhurlik.descriptor.AbstractBuilder.Ver.V_1_1
+import static com.zhurlik.Ver.V_1_1
 
 /**
  * Generates a xml descriptor for JBoss Module ver.1.1
@@ -13,6 +14,7 @@ import static com.zhurlik.descriptor.AbstractBuilder.Ver.V_1_1
  *
  * @author zhurlik@gmail.com
  */
+@Slf4j
 class Xsd1_1 extends AbstractBuilder<JBossModule> {
 
     @Override
@@ -27,7 +29,7 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
         xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
 
         // <module xmlns="urn:jboss:module:1.1" name="org.jboss.msc">
-        xml.module([xmlns: 'urn:jboss:module:' + V_1_1.version, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
+        xml.module([xmlns: 'urn:jboss:module:' + V_1_1.number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
 
             // <main-class name="org.jboss.msc.Version"/>
             if (!(jmodule.mainClass in [null, ''])) {
@@ -39,7 +41,7 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
             //  </properties>
             if (!jmodule.properties.isEmpty()) {
                 delegate.properties {
-                    jmodule.properties.findAll() {!(it.key in [null, '']) && !(it.value in [null, ''])}.each() {
+                    jmodule.properties.findAll() { !(it.key in [null, '']) && !(it.value in [null, '']) }.each() {
                         property(name: it.key, value: it.value)
                     }
                 }
@@ -58,7 +60,7 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
             //   </resources>
             if (!jmodule.resources.isEmpty()) {
                 delegate.resources {
-                    jmodule.resources.each() {res ->
+                    jmodule.resources.each() { res ->
                         if (res instanceof String) {
                             'resource-root'(path: res)
                             // next resource
@@ -66,11 +68,11 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
                         }
                         if (res.filter != null) {
                             'resource-root'(res.findAll() { it.key in ['name', 'path'] }) {
-                                delegate.filter(){
+                                delegate.filter() {
                                     // include
                                     if (res.filter.include != null) {
                                         if (res.filter.include instanceof String || res.filter.include.size() == 1) {
-                                            'include'(path:res.filter.include.toString())
+                                            'include'(path: res.filter.include.toString())
                                         } else if (res.filter.include.size() > 1) {
                                             'include-set'() {
                                                 res.filter.include.each() {
@@ -83,7 +85,7 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
                                     //exclude
                                     if (res.filter.exclude != null) {
                                         if (res.filter.exclude instanceof String || res.filter.exclude.size() == 1) {
-                                            'exclude'(path:res.filter.exclude.toString())
+                                            'exclude'(path: res.filter.exclude.toString())
                                         } else if (res.filter.exclude.size() > 1) {
                                             'exclude-set'() {
                                                 res.filter.exclude.each() {
@@ -131,7 +133,7 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
                         }
 
                         if (dep.services != null) {
-                            assert dep.services in  ['none', 'import', 'export']
+                            assert dep.services in ['none', 'import', 'export']
                         }
 
                         if (dep.export != null) {
@@ -151,7 +153,7 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
                                     delegate.imports() {
                                         // include
                                         if (dep.imports.include != null) {
-                                            if (dep.imports.include instanceof String || dep.imports.include.size() == 1 ) {
+                                            if (dep.imports.include instanceof String || dep.imports.include.size() == 1) {
                                                 'include'(path: dep.imports.include.toString())
                                             } else if (dep.imports.include.size() > 1) {
                                                 'include-set'() {
@@ -162,7 +164,7 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
 
                                         // exclude
                                         if (dep.imports.exclude != null) {
-                                            if (dep.imports.exclude instanceof String || dep.imports.exclude.size() == 1 ) {
+                                            if (dep.imports.exclude instanceof String || dep.imports.exclude.size() == 1) {
                                                 'exclude'(path: dep.imports.exclude.toString())
                                             } else if (dep.imports.exclude.size() > 1) {
                                                 'exclude-set'() {
@@ -178,7 +180,7 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
                                     delegate.exports() {
                                         // include
                                         if (dep.exports.include != null) {
-                                            if (dep.exports.include instanceof String || dep.exports.include.size() == 1 ) {
+                                            if (dep.exports.include instanceof String || dep.exports.include.size() == 1) {
                                                 'include'(path: dep.exports.include.toString())
                                             } else if (dep.exports.include.size() > 1) {
                                                 'include-set'() {
@@ -189,7 +191,7 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
 
                                         // exclude
                                         if (dep.exports.exclude != null) {
-                                            if (dep.exports.exclude instanceof String || dep.exports.exclude.size() == 1 ) {
+                                            if (dep.exports.exclude instanceof String || dep.exports.exclude.size() == 1) {
                                                 'exclude'(path: dep.exports.exclude.toString())
                                             } else if (dep.exports.exclude.size() > 1) {
                                                 'exclude-set'() {
@@ -211,5 +213,73 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
     @Override
     StreamSource getXsd() {
         return new StreamSource(getClass().classLoader.getResourceAsStream(V_1_1.xsd))
+    }
+
+    @Override
+    JBossModule makeModule(final String txt) {
+        //result
+        JBossModule jbModule = new JBossModule('empty')
+
+        def xml = new XmlSlurper().parseText(txt)
+
+        xml.attributes().each() {
+            switch (it.key) {
+                case 'slot': jbModule.slot = it.value
+                    break
+                case 'name': jbModule.moduleName = it.value
+                    jbModule.name = it.value
+                    break
+            }
+        }
+
+        jbModule.mainClass = xml.'main-class'.@name
+
+        xml.properties.each() {
+            it.property.each() {p->
+                jbModule.properties.put(p.@name.toString(), p.@value.toString())
+            }
+        }
+
+        xml.resources.each() {
+            it.'resource-root'.each() {r->
+
+                def complexEl = [:]
+
+                if (r.attributes().size() == 1) {
+                    complexEl.path = r.@path.toString()
+                } else {
+                    complexEl.name = r.@name.toString()
+                    complexEl.path =  r.@path.toString()
+                }
+
+                r.filter.each() {f->
+                    f.include.each() {
+                       complexEl.include = f.include.@path.toString()
+                    }
+                    f.exclude.each() {
+                        complexEl.exclude = f.exclude.@path.toString()
+                    }
+                    if (f.'exclude-set' != null) {
+                        complexEl.include = f.'exclude-set'.collect(){f.include.@path.toString()}
+                    }
+                    f.'include-set'.each(){
+                        complexEl.include = f.include.@path.toString()
+                    }
+                }
+
+                jbModule.resources.add(complexEl)
+            }
+        }
+
+        xml.dependencies.each() {
+            it.module.each() {r->
+                r.attributes().each() {
+                    jbModule.dependencies.add(it.value)
+                }
+            }
+        }
+
+        log.debug '>> Module: \'{}\' has been created', jbModule.name
+        return jbModule
     }
 }

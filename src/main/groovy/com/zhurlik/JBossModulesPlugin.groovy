@@ -1,5 +1,7 @@
 package com.zhurlik
 
+import com.zhurlik.extension.JBossModule
+import com.zhurlik.extension.JBossServer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -20,8 +22,12 @@ class JBossModulesPlugin implements Plugin<Project> {
         def modules = project.container(JBossModule)
         project.extensions.modules = modules
 
+        // JBoss Servers
+        def servers = project.container(JBossServer)
+        project.extensions.jbossrepos = servers
+
         // special tasks
-        project.task('makeModules', type: com.zhurlik.MakeModulesTask)
+        project.task('makeModules', type: MakeModulesTask)
         project.task('checkModules', type: CheckModulesTask)
         project.tasks.checkModules.dependsOn('makeModules')
     }

@@ -1,5 +1,6 @@
 package com.zhurlik
 
+import com.zhurlik.extension.JBossModule
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
@@ -29,7 +30,7 @@ class MakeModulesTask extends DefaultTask {
         project.modules.each() { JBossModule m ->
 
             // to have full path for ${project}/${build}/modules/module/name/dir/{main|slot}
-            def String moduleDirName = [outputDir.path, ((m.slot in [null, '']) ? 'main' : m.slot), m.moduleName.replaceAll('\\.', separator)].join(separator)
+            def String moduleDirName = [outputDir.path, m.moduleName.replaceAll('\\.', separator), ((m.slot in [null, '']) ? 'main' : m.slot)].join(separator)
 
             // save a xml
             def File moduleDir = new File(moduleDirName)

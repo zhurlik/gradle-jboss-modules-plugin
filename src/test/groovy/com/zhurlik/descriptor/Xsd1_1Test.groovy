@@ -1,9 +1,10 @@
 package com.zhurlik.descriptor
 
-import com.zhurlik.JBossModule
+import com.zhurlik.extension.JBossModule
 import org.junit.Before
 import org.junit.Test
 
+import static com.zhurlik.Ver.V_1_1
 import static org.junit.Assert.assertEquals
 
 
@@ -17,7 +18,7 @@ class Xsd1_1Test {
 
     @Before
     public void setUp() throws Exception {
-        builder = BuilderFactory.getBuilder(AbstractBuilder.Ver.V_1_1)
+        builder = BuilderFactory.getBuilder(V_1_1)
         assert builder instanceof Xsd1_1
     }
 

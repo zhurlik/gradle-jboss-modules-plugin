@@ -1,16 +1,17 @@
 package com.zhurlik.descriptor
 
-import com.zhurlik.JBossModule
+import com.zhurlik.extension.JBossModule
+import com.zhurlik.Ver
 
 import javax.xml.transform.stream.StreamSource
 
-import static com.zhurlik.descriptor.AbstractBuilder.Ver.V_1_0
-import static com.zhurlik.descriptor.AbstractBuilder.Ver.V_1_1
-import static com.zhurlik.descriptor.AbstractBuilder.Ver.V_1_2
-import static com.zhurlik.descriptor.AbstractBuilder.Ver.V_1_3
+import static com.zhurlik.Ver.V_1_0
+import static com.zhurlik.Ver.V_1_1
+import static com.zhurlik.Ver.V_1_2
+import static com.zhurlik.Ver.V_1_3
 
 /**
- * A factory to get single instance of IBuilder<T> for corresponded version.
+ * A factory to get single instance of AbstractBuilder<T> for corresponded version.
  *
  * See https://github.com/jboss-modules/jboss-modules/tree/master/src/main/resources/schema
  *
@@ -23,10 +24,15 @@ class BuilderFactory<T extends JBossModule> {
     static final AbstractBuilder<T> NONE = new AbstractBuilder<T>() {
 
         String getXmlDescriptor(JBossModule mod) {
-            throw new UnsupportedOperationException('Version:' + mod.ver.version + ' is not implemented yet')
+            throw new UnsupportedOperationException('Version:' + mod.ver.number + ' is not implemented yet')
         }
 
         StreamSource getXsd() {
+            return null
+        }
+
+        @Override
+        JBossModule makeModule(final String txt) {
             return null
         }
     }
@@ -37,7 +43,7 @@ class BuilderFactory<T extends JBossModule> {
      * @param module
      * @return builder to generate a xml descriptor
      */
-    static AbstractBuilder<T> getBuilder(final AbstractBuilder.Ver version) {
+    static AbstractBuilder<T> getBuilder(final Ver version) {
         switch (version) {
             case V_1_0: return BUILDERS.V_1_0.getBuilder()
             case V_1_1: return BUILDERS.V_1_1.getBuilder()

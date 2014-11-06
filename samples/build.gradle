@@ -1,3 +1,5 @@
+import static com.zhurlik.Ver.V_1_1
+
 buildscript {
     repositories {
         maven {
@@ -18,6 +20,18 @@ repositories {
 
 dependencies {
     jbossmodules 'org.springframework:spring-core:4.1.1.RELEASE'
+}
+
+task clean(type: Delete) {
+    println '>> Deleting ' + buildDir.path
+    delete buildDir.path
+}
+
+jbossrepos {
+    serverA {
+        home = '/home/zhurlik/programs/jboss-as-7.1.1.Final'
+        version = V_1_1
+    }
 }
 
 modules {
@@ -60,8 +74,8 @@ modules {
     }
 }
 
-modules.each() {
-    println '>> Module Name: ' + it.name
-    println it.getModuleDescriptor()
-    println '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
+jbossrepos.each() {
+    println '>> Server:' + it.home + ' modules:\n'
+
+    println it.getModule('org.apache.log4j')
 }

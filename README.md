@@ -31,6 +31,13 @@ dependencies {
     jbossmodules 'org.springframework:spring-core:4.1.1.RELEASE'
 }
 
+jbossrepos {
+    serverA {
+        home = '/home/zhurlik/programs/jboss-as-7.1.1.Final'
+        version = V_1_1
+    }
+}
+
 modules {
     moduleA {
         moduleName = 'com.zhurlik.a'
@@ -50,6 +57,19 @@ modules {
                 ]
         ]
     }
+}
+
+jbossrepos.each() {com.zhurlik.extension.JBossServer it->
+    println '>> Server:' + it.home + ' modules:\n'
+
+    it.initTree()
+    it.names.each {
+        println it
+    }
+
+    println it.getModule('org.jboss.jts.integration').moduleDescriptor
+    assert it.getModule('org.jboss.jts.integration').isValid()
+    println it.getMainXml('org.jboss.jts.integration')
 }
 ```
 ```gradle makeModules```

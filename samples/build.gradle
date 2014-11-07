@@ -1,5 +1,3 @@
-import com.zhurlik.extension.JBossServer
-
 import static com.zhurlik.Ver.V_1_1
 
 buildscript {

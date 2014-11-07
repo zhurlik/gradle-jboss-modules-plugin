@@ -79,7 +79,12 @@ modules {
 jbossrepos.each() {com.zhurlik.extension.JBossServer it->
     println '>> Server:' + it.home + ' modules:\n'
 
+    it.initTree()
     it.names.each {
         println it
     }
+
+    println it.getModule('org.jboss.jts.integration').moduleDescriptor
+    assert it.getModule('org.jboss.jts.integration').isValid()
+    println it.getMainXml('org.jboss.jts.integration')
 }

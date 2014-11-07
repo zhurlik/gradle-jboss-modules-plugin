@@ -2,6 +2,7 @@ package com.zhurlik
 
 import com.zhurlik.extension.JBossModule
 import com.zhurlik.extension.JBossServer
+import groovy.util.logging.Slf4j
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -10,10 +11,11 @@ import org.gradle.api.Project
  *
  * @author zhurlik@gmail.com
  */
+@Slf4j
 class JBossModulesPlugin implements Plugin<Project> {
     @Override
     void apply(final Project project) {
-        println '>> Plugin: JBoss Modules'
+        log.info '>> Plugin: JBoss Modules'
 
         // to be able to use maven repository
         project.configurations.create('jbossmodules')

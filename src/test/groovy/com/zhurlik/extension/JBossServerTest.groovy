@@ -29,14 +29,17 @@ class JBossServerTest {
         log.debug 'Case2:'
         server = new JBossServer('jboss-test-7.1.1')
         server.home = this.class.classLoader.getResource('./7.1.1/').toURI().path
+        server.initTree()
         assertNotNull server
-        assertEquals 1, server.availableModules.entrySet().size()
+        assertEquals 1, server.names.size()
 
-        log.debug '>> Available Modules:' + server.availableModules
+        log.debug '>> Available Modules:' + server.names
 
         assertNotNull server.getModule('')
 
         JBossModule m = server.getModule('javax.xml.bind.api')
-
+        log.debug('>> Generated:\n{}', m.moduleDescriptor)
+        log.debug('>> From file:\n{}', server.getMainXml('javax.xml.bind.api'))
+        assert m.isValid()
     }
 }

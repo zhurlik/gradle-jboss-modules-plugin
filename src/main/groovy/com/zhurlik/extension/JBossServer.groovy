@@ -2,7 +2,9 @@ package com.zhurlik.extension
 
 import com.zhurlik.Ver
 import com.zhurlik.descriptor.AbstractBuilder
+import com.zhurlik.repository.Server
 import groovy.util.logging.Slf4j
+import org.gradle.internal.typeconversion.UnsupportedNotationException
 
 import static com.zhurlik.descriptor.BuilderFactory.getBuilder
 import static java.io.File.separator
@@ -13,9 +15,9 @@ import static java.io.File.separator
  * @author zhurlik@gmail.com
  */
 @Slf4j
-class JBossServer {
+class JBossServer implements Server {
     def String name, home
-    private modules = [:]
+    private Map<String, File> modules = [:]
 
     // default value
     def Ver version = Ver.V_1_1
@@ -44,6 +46,10 @@ class JBossServer {
      */
     void setHome(final String home) {
         assert home != null
+        this.home = home
+    }
+
+    public void initTree() {
         modules.clear()
 
         // under jboss
@@ -56,15 +62,7 @@ class JBossServer {
         }
     }
 
-    /**
-     * To have a reference to all modules.
-     *
-     * @return [moduleName: descriptorFile]
-     */
-    Map getAvailableModules() {
-        modules
-    }
-
+    @Override
     JBossModule getModule(final String name) {
         //result
         JBossModule jbModule = new JBossModule(name)
@@ -79,5 +77,21 @@ class JBossServer {
 
         log.warn '>> Module:\'{}\' is not available', name
         return jbModule
+    }
+
+    @Override
+    List<String> getNames() {
+        return modules.keySet().toList()
+    }
+
+    @Override
+    void deployModule(final JBossModule module) {
+        //todo: not implemented yet
+        throw new UnsupportedOperationException("Not implemented yet")
+    }
+
+    @Override
+    String getMainXml(String name) {
+        return modules[name].text
     }
 }

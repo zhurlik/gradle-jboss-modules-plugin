@@ -7,8 +7,13 @@ import com.zhurlik.extension.JBossModule
  */
 public interface Server {
 
-    Map getAvailableModules()
+    void initTree()
 
-    void updateModule(final JBossModule module)
+    List<String> getNames()
 
+    void deployModule(final JBossModule module)
+
+    JBossModule getModule(final String name)
+
+    String getMainXml(final String name)
 }

@@ -1,3 +1,5 @@
+import com.zhurlik.extension.JBossServer
+
 import static com.zhurlik.Ver.V_1_1
 
 buildscript {
@@ -74,8 +76,10 @@ modules {
     }
 }
 
-jbossrepos.each() {
+jbossrepos.each() {com.zhurlik.extension.JBossServer it->
     println '>> Server:' + it.home + ' modules:\n'
 
-    println it.getModule('org.apache.log4j')
+    it.names.each {
+        println it
+    }
 }

@@ -26,7 +26,7 @@ class MakeModulesTask extends DefaultTask {
 
     @TaskAction
     def makeModules() {
-        println ">> Creating JBoss Modules..."
+        log.info ">> Creating JBoss Modules..."
         project.modules.each() { JBossModule m ->
 
             // to have full path for ${project}/${build}/modules/module/name/dir/{main|slot}
@@ -38,7 +38,7 @@ class MakeModulesTask extends DefaultTask {
                 assert moduleDir.mkdirs(), 'Can\'t create a folder'
             }
             def xmlfile = new File(moduleDir, 'module.xml') << m.moduleDescriptor
-            println '>> Module Descriptor:' + xmlfile.path
+            log.debug '>> Module Descriptor:' + xmlfile.path
 
             // copy jars
             def jarNames = m.resources.findAll() { it instanceof String } + m.resources.findAll() { !(it instanceof String) }.collect() { it.path }
@@ -47,7 +47,7 @@ class MakeModulesTask extends DefaultTask {
                     def Path source = Paths.get(it.path)
                     def Path target = Paths.get(moduleDirName, jar)
                     Files.copy(source, target)
-                    println '>> Resource:' + target
+                    log.debug '>> Resource:' + target
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.zhurlik.descriptor
 
 import com.zhurlik.extension.JBossModule
+import groovy.util.logging.Slf4j
 
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
@@ -12,7 +13,7 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI
  *
  * @author zhurlik@gmail.com
  */
-
+@Slf4j
 abstract class AbstractBuilder<T extends JBossModule> {
 
     static final factory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
@@ -36,7 +37,7 @@ abstract class AbstractBuilder<T extends JBossModule> {
             validator.validate(new StreamSource(new StringReader(xml)))
             return true
         } catch (all) {
-            println '>> ERROR: ' + all
+            log.error '>> ERROR: ' + all
             return false
         }
     }

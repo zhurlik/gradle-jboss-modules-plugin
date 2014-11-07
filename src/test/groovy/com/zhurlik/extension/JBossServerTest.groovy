@@ -1,6 +1,5 @@
 package com.zhurlik.extension
 
-import com.zhurlik.Ver
 import groovy.util.logging.Slf4j
 import org.junit.Test
 
@@ -29,7 +28,7 @@ class JBossServerTest {
 
         log.debug 'Case2:'
         server = new JBossServer('jboss-test-7.1.1')
-        server.home = this.class.classLoader.getResource('./7.1.1/').path
+        server.home = this.class.classLoader.getResource('./7.1.1/').toURI().path
         assertNotNull server
         assertEquals 1, server.availableModules.entrySet().size()
 

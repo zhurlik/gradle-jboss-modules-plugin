@@ -1,7 +1,6 @@
 package com.zhurlik.extension
 
 import com.zhurlik.descriptor.AbstractBuilder
-import com.zhurlik.descriptor.BuilderFactory
 import org.junit.Test
 
 import static com.zhurlik.Ver.V_1_1
@@ -103,7 +102,7 @@ class JBossModuleTest {
                 "</module>"
         assertEquals 'Case5:', xml, module.moduleDescriptor
         assert module.valid
-        //assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         // 6
         module = new JBossModule('test-module-6')
@@ -134,6 +133,23 @@ class JBossModuleTest {
                 "</module>"
         assertEquals 'Case6:', xml, module.moduleDescriptor
         assert module.valid
-        //assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+        assertEquals 'Reverse:', "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:1.1' name='test.module.6'>\n" +
+                "  <dependencies>\n" +
+                "    <module name='module1' />\n" +
+                "    <module name='module2' />\n" +
+                "    <module services='none' export='false' name='module3' optional='true' slot='1.3'>\n" +
+                "      <imports>\n" +
+                "        <exclude-set>\n" +
+                "          <path name='exclude1' />\n" +
+                "          <path name='exclude2' />\n" +
+                "        </exclude-set>\n" +
+                "      </imports>\n" +
+                "      <exports>\n" +
+                "        <include path='**' />\n" +
+                "      </exports>\n" +
+                "    </module>\n" +
+                "  </dependencies>\n" +
+                "</module>", builder.makeModule(xml).moduleDescriptor
     }
 }

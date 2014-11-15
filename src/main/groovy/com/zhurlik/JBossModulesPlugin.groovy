@@ -11,11 +11,11 @@ import org.gradle.api.Project
  *
  * @author zhurlik@gmail.com
  */
-@Slf4j
+@Slf4j('logger')
 class JBossModulesPlugin implements Plugin<Project> {
     @Override
     void apply(final Project project) {
-        log.info '>> Plugin: JBoss Modules'
+        logger.info '>> Plugin: JBoss Modules'
 
         // to be able to use maven repository
         project.configurations.create('jbossmodules')

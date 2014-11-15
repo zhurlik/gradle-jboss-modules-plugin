@@ -1,6 +1,7 @@
 package com.zhurlik
 
 import com.zhurlik.extension.JBossModule
+import groovy.util.logging.Slf4j
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
@@ -19,6 +20,7 @@ import static java.io.File.separator
  *                                              main.xml
  * @author zhurlik@gmail.com
  */
+@Slf4j('logger')
 class MakeModulesTask extends DefaultTask {
 
     @OutputDirectory
@@ -26,7 +28,7 @@ class MakeModulesTask extends DefaultTask {
 
     @TaskAction
     def makeModules() {
-        log.info ">> Creating JBoss Modules..."
+        logger.info ">> Creating JBoss Modules..."
         project.modules.each() { JBossModule m ->
 
             // to have full path for ${project}/${build}/modules/module/name/dir/{main|slot}
@@ -38,7 +40,7 @@ class MakeModulesTask extends DefaultTask {
                 assert moduleDir.mkdirs(), 'Can\'t create a folder'
             }
             def xmlfile = new File(moduleDir, 'module.xml') << m.moduleDescriptor
-            log.debug '>> Module Descriptor:' + xmlfile.path
+            logger.debug '>> Module Descriptor:' + xmlfile.path
 
             // copy jars
             def jarNames = m.resources.findAll() { it instanceof String } + m.resources.findAll() { !(it instanceof String) }.collect() { it.path }
@@ -47,7 +49,7 @@ class MakeModulesTask extends DefaultTask {
                     def Path source = Paths.get(it.path)
                     def Path target = Paths.get(moduleDirName, jar)
                     Files.copy(source, target)
-                    log.debug '>> Resource:' + target
+                    logger.debug '>> Resource:' + target
                 }
             }
         }

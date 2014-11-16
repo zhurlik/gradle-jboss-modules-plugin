@@ -1,10 +1,16 @@
 package com.zhurlik.extension
 
 import com.zhurlik.descriptor.AbstractBuilder
+import groovy.util.logging.Slf4j
+import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
 import static com.zhurlik.Ver.V_1_1
 import static com.zhurlik.descriptor.BuilderFactory.getBuilder
+import static java.io.File.separator
 import static org.junit.Assert.assertEquals
 
 /**
@@ -12,10 +18,26 @@ import static org.junit.Assert.assertEquals
  *
  * @author zhurlik@gmail.com
  */
+@Slf4j
 class JBossModuleTest {
 
     private JBossModule module
     private AbstractBuilder<JBossModule> builder = getBuilder(V_1_1)
+    private final File projectDir = new File(getClass().getClassLoader().getResource('').toURI().path + separator + 'projectTest')
+
+    @Before
+    public void setUp() throws Exception {
+        if (!projectDir.exists()) {
+            assert projectDir.mkdir()
+        }
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        if (projectDir.exists() && projectDir.isDirectory()) {
+            assert projectDir.deleteDir()
+        }
+    }
 
     @Test
     public void testName() throws Exception {
@@ -151,5 +173,45 @@ class JBossModuleTest {
                 "    </module>\n" +
                 "  </dependencies>\n" +
                 "</module>", builder.makeModule(xml).moduleDescriptor
+    }
+
+    @Test
+    /**
+     * Test for downloading a resource and saving a jboss module
+     */
+    public void testMake() throws Exception {
+        log.debug '>> Test for making a module and saving locally...'
+        // 1
+        module = new JBossModule('log4j')
+        module.moduleName  = 'org.apache.log4j'
+        module.resources = ['log4j-1.2.17.jar']
+
+        // empty project with all needed
+        final Project project = ProjectBuilder.builder()
+                .withName('test-project')
+                .withProjectDir(projectDir)
+                .build()
+        project.apply plugin: 'com.github.zhurlik.jbossmodules'
+
+        project.repositories {
+            mavenCentral()
+        }
+
+        project.dependencies {
+            jbossmodules 'log4j:log4j:1.2.17'
+
+        }
+
+        // test call
+        module.makeLocally(project)
+
+        assert new File(getClass().getClassLoader().getResource('projectTest/build/modules/org/apache/log4j/main/log4j-1.2.17.jar').toURI().path).exists()
+        assert new File(getClass().getClassLoader().getResource('projectTest/build/modules/org/apache/log4j/main/module.xml').toURI().path).exists()
+        assertEquals 'Module Descriptor:', '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
+                '<module xmlns=\'urn:jboss:module:1.1\' name=\'org.apache.log4j\'>\n' +
+                '  <resources>\n' +
+                '    <resource-root path=\'log4j-1.2.17.jar\' />\n' +
+                '  </resources>\n' +
+                '</module>', new File(getClass().getClassLoader().getResource('projectTest/build/modules/org/apache/log4j/main/module.xml').toURI().path).text
     }
 }

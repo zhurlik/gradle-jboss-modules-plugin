@@ -24,6 +24,11 @@ import static com.zhurlik.Ver.V_1_2
     }
 
     @Override
+    String getPath(JBossModule module) {
+        return null
+    }
+
+    @Override
     JBossModule makeModule(final String txt) {
         throw new UnsupportedOperationException("Not implemented yet")
     }

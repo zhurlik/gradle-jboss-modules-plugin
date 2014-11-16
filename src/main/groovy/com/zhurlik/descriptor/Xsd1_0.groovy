@@ -25,6 +25,11 @@ class Xsd1_0 extends AbstractBuilder<JBossModule> {
     }
 
     @Override
+    String getPath(JBossModule module) {
+        return null
+    }
+
+    @Override
     JBossModule makeModule(final String txt) {
         throw new UnsupportedOperationException("Not implemented yet")
     }

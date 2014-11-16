@@ -7,6 +7,8 @@ import groovy.xml.MarkupBuilder
 import javax.xml.transform.stream.StreamSource
 
 import static com.zhurlik.Ver.V_1_1
+import static java.io.File.separator
+import static java.io.File.separator
 
 /**
  * Generates a xml descriptor for JBoss Module ver.1.1
@@ -326,5 +328,10 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
 
         log.debug '>> Module: \'{}\' has been created', jbModule.name
         return jbModule
+    }
+
+    @Override
+    String getPath(final JBossModule jbModule) {
+        return [jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join(separator)
     }
 }

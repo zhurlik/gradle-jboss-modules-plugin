@@ -1,10 +1,18 @@
 package com.zhurlik.extension
 
 import com.zhurlik.Ver
+import com.zhurlik.descriptor.AbstractBuilder
 import com.zhurlik.descriptor.BuilderFactory
+import groovy.util.logging.Slf4j
+import org.gradle.api.Project
+
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
 import static com.zhurlik.Ver.V_1_1
-import static com.zhurlik.descriptor.BuilderFactory.getBuilder
+import static java.io.File.separator
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
 /**
  * To make JBoss Module.
@@ -12,6 +20,7 @@ import static com.zhurlik.descriptor.BuilderFactory.getBuilder
  *
  * @author zhurlik@gmail.com
  */
+@Slf4j
 class JBossModule {
     def String name, moduleName, slot, mainClass
     def properties = [:]
@@ -67,12 +76,56 @@ class JBossModule {
      * @return a xml as string
      */
     String getModuleDescriptor() {
-        def builder = getBuilder(this.ver)
-        return builder.getXmlDescriptor(this)
+        return getBuilder().getXmlDescriptor(this)
     }
 
     boolean isValid(){
-        def builder = getBuilder(this.ver)
-        return builder.isValid(builder.getXmlDescriptor(this))
+        return getBuilder().isValid(builder.getXmlDescriptor(this))
+    }
+
+    /**
+     * A path where a module will be stored under JBoss Server.
+     *
+     * @return string like 'module/name/dir/{main|slot}'
+     */
+    String getPath() {
+        getBuilder().getPath(this)
+    }
+
+    private AbstractBuilder<JBossModule> getBuilder() {
+        return BuilderFactory.getBuilder(this.ver)
+    }
+
+    /**
+     * To save main.xml and all resources to Project's folder.
+     */
+    public void makeLocally(final Project project) {
+        log.debug '>> Module:' + this.name
+        def File outputDir = new File(project.buildDir.path + separator + 'modules')
+
+        // to have full path for ${project}/${build}/modules/module/name/dir/{main|slot}
+        def String moduleDirName = [outputDir.path, getPath()].join(separator)
+
+        // save a xml
+        def File moduleDir = new File(moduleDirName)
+        if (!moduleDir.exists()) {
+            assert moduleDir.mkdirs(), 'Can\'t create a folder'
+        }
+
+        def xmlfile = new File(moduleDir, 'module.xml') << getModuleDescriptor()
+        log.debug '>> Module Descriptor:' + xmlfile.path
+
+        // copy jars
+        def jarNames = this.resources.findAll() { it instanceof String } + this.resources.findAll() { !(it instanceof String) }.collect() { it.path }
+        jarNames.each() { jar ->
+            project.configurations.jbossmodules.files.findAll() { it.name == jar }.each {
+                def Path source = Paths.get(it.path)
+                def Path target = Paths.get(moduleDirName, jar)
+                Files.copy(source, target, REPLACE_EXISTING)
+                log.debug '>> Resource:' + target
+            }
+        }
+
+        log.debug('>> Module is available here {}', moduleDir.path)
     }
 }

@@ -32,6 +32,11 @@ class BuilderFactory<T extends JBossModule> {
         }
 
         @Override
+        String getPath(JBossModule module) {
+            return null
+        }
+
+        @Override
         JBossModule makeModule(final String txt) {
             return null
         }

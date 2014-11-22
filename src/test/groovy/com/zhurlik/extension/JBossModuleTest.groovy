@@ -12,6 +12,8 @@ import static com.zhurlik.Ver.V_1_1
 import static com.zhurlik.descriptor.BuilderFactory.getBuilder
 import static java.io.File.separator
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNotNull
+import static org.junit.Assert.assertTrue
 
 /**
  * Unit test to check all cases to create JBoss Module.
@@ -193,10 +195,12 @@ class JBossModuleTest {
                 .build()
         project.apply plugin: 'com.github.zhurlik.jbossmodules'
 
+        // using a maven to download jar files
         project.repositories {
             mavenCentral()
         }
 
+        // to have a reference for jar file
         project.dependencies {
             jbossmodules 'log4j:log4j:1.2.17'
 
@@ -213,5 +217,82 @@ class JBossModuleTest {
                 '    <resource-root path=\'log4j-1.2.17.jar\' />\n' +
                 '  </resources>\n' +
                 '</module>', new File(getClass().getClassLoader().getResource('projectTest/build/modules/org/apache/log4j/main/module.xml').toURI().path).text
+    }
+
+    @Test
+    public void testDeploy() throws Exception {
+        log.debug '>> A test for deployment process...'
+
+        // empty project with all needed
+        final Project project = ProjectBuilder.builder()
+                .withName('test-project')
+                .withProjectDir(projectDir)
+                .build()
+        project.apply plugin: 'com.github.zhurlik.jbossmodules'
+
+        // using a maven to download jar files
+        project.repositories {
+            mavenCentral()
+        }
+
+        // to have a reference for jar file
+        project.dependencies {
+            jbossmodules 'org.slf4j:slf4j-api:1.7.7'
+        }
+
+        // describe a module via gradle
+        project.modules {
+            slf4j {
+                moduleName = 'org.slf4j'
+                resources = ['slf4j-api-1.7.7.jar']
+                dependencies = ['org.slf4j.impl']
+            }
+        }
+
+        // describe an instance of jboss server
+        project.jbossrepos {
+            testServer {
+                home = projectDir.path + separator + "testServer"
+            }
+        }
+
+        // init a server
+        final JBossServer server = project.jbossrepos['testServer']
+        final File jbModulesDir = new File([server.home, 'modules'].join(separator))
+        jbModulesDir.deleteDir()
+        jbModulesDir.mkdirs()
+
+        // there is nothing on the server
+        assertNotNull server
+        server.initTree()
+        JBossModule testM = server.getModule('org.slf4j')
+        assertEquals 'org.slf4j', testM.name
+        assertEquals null, testM.moduleName
+        assertTrue testM.dependencies.isEmpty()
+
+        // makes a module
+        final JBossModule module = project.modules['slf4j']
+        module.makeLocally(project)
+
+        // deployment
+        module.deployToJBoss(project.jbossrepos['testServer'], project)
+
+        // checking modules on the server
+        log.debug 'OK'
+        server.initTree()
+        testM = server.getModule('org.slf4j')
+        assertEquals 'org.slf4j', testM.name
+        assertEquals 'org.slf4j', testM.moduleName
+        assertEquals 'org.slf4j.impl', testM.dependencies[0].name
+        assertTrue new File([server.home, testM.path, 'slf4j-api-1.7.7.jar'].join(separator)).exists()
+        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:1.1' name='org.slf4j'>\n" +
+                "  <resources>\n" +
+                "    <resource-root path='slf4j-api-1.7.7.jar' />\n" +
+                "  </resources>\n" +
+                "  <dependencies>\n" +
+                "    <module name='org.slf4j.impl' />\n" +
+                "  </dependencies>\n" +
+                "</module>", new File([server.home, testM.path, 'module.xml'].join(separator)).text
     }
 }

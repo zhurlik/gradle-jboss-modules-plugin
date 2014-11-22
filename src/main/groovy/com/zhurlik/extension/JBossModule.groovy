@@ -96,15 +96,26 @@ class JBossModule {
         return BuilderFactory.getBuilder(this.ver)
     }
 
+    public void deployToJBoss(final JBossServer server, final Project project) {
+        log.debug '>> Deploying the module:{} to JBoss Server:{}', this.moduleName, server.name
+
+        // to have full path for ${project}/${build}/modules/module/name/dir/{main|slot}
+        def String source = [project.buildDir.path, getPath()].join(separator)
+        def String target = [server.home, getPath()].join(separator)
+
+        new AntBuilder().copy(toDir: target, overwrite: true) {
+            fileset(dir: source)
+        }
+    }
+
     /**
      * To save main.xml and all resources to Project's folder.
      */
     public void makeLocally(final Project project) {
         log.debug '>> Module:' + this.name
-        def File outputDir = new File(project.buildDir.path + separator + 'modules')
 
         // to have full path for ${project}/${build}/modules/module/name/dir/{main|slot}
-        def String moduleDirName = [outputDir.path, getPath()].join(separator)
+        def String moduleDirName = [project.buildDir.path, getPath()].join(separator)
 
         // save a xml
         def File moduleDir = new File(moduleDirName)
@@ -119,9 +130,9 @@ class JBossModule {
         def jarNames = this.resources.findAll() { it instanceof String } + this.resources.findAll() { !(it instanceof String) }.collect() { it.path }
         jarNames.each() { jar ->
             project.configurations.jbossmodules.files.findAll() { it.name == jar }.each {
-                def Path source = Paths.get(it.path)
-                def Path target = Paths.get(moduleDirName, jar)
-                Files.copy(source, target, REPLACE_EXISTING)
+                final String source = it.path
+                final String target = [moduleDirName, jar].join(separator)
+                new AntBuilder().copy(file: source, toFile: target, overwrite: true)
                 log.debug '>> Resource:' + target
             }
         }

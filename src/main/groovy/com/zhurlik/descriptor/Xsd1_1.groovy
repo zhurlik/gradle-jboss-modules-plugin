@@ -332,6 +332,6 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
 
     @Override
     String getPath(final JBossModule jbModule) {
-        return [jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join(separator)
+        return ['modules', jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join(separator)
     }
 }

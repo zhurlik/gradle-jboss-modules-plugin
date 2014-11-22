@@ -42,11 +42,4 @@ class JBossServerTest {
         log.debug('>> From file:\n{}', server.getMainXml('javax.xml.bind.api'))
         assert m.isValid()
     }
-
-    @Test
-    public void testDeploy() throws Exception {
-        log.debug '>> To test deployment process...'
-
-
-    }
 }

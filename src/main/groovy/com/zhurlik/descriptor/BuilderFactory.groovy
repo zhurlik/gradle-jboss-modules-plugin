@@ -1,7 +1,7 @@
 package com.zhurlik.descriptor
 
-import com.zhurlik.extension.JBossModule
 import com.zhurlik.Ver
+import com.zhurlik.extension.JBossModule
 
 import javax.xml.transform.stream.StreamSource
 

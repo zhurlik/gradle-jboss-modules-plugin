@@ -4,7 +4,6 @@ import com.zhurlik.Ver
 import com.zhurlik.descriptor.AbstractBuilder
 import com.zhurlik.repository.Server
 import groovy.util.logging.Slf4j
-import org.gradle.internal.typeconversion.UnsupportedNotationException
 
 import static com.zhurlik.descriptor.BuilderFactory.getBuilder
 import static java.io.File.separator
@@ -25,14 +24,10 @@ class JBossServer implements Server {
     /**
      * The special constructor to be able to use in the gradle script
      *
-     * jbossrepos {
-     *     serverA {
-     *         home = '/jboss/home/dir'
+     * jbossrepos {*     serverA {*         home = '/jboss/home/dir'
      *         version = '1.0'
      *         ...
-     *     }
-     * }
-     *
+     *}*}*
      * @param name
      */
     JBossServer(final String name) {

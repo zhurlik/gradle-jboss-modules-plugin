@@ -29,7 +29,7 @@ task clean(type: Delete) {
 
 jbossrepos {
     serverA {
-        home = '/home/zhurlik/programs/jboss-as-7.1.1.Final'
+        home = '/home/zhurlik/programs/jboss-as-7.1.1.Final_t'
         version = V_1_1
     }
 }

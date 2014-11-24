@@ -219,7 +219,7 @@
                 <documentation>
                     Specifies whether this module dependency is re-exported by default (default is "false"). Setting
                     this attribute to true sets the default action for the export filter list to "accept"; leaving it
-                    as false sets the default action to "reject".  Thus you can still export dependency resources even
+                    as false sets the default action to "reject". Thus you can still export dependency resources even
                     if this attribute is false by listing explicit paths for the export list.
                 </documentation>
             </annotation>
@@ -229,7 +229,7 @@
                 <documentation>
                     Specifies whether and how services found in this dependency are used (default is "none"). Specifying
                     a value of "import" for this attribute is equivalent to adding a filter at the end of the import
-                    filter list which includes the META-INF/services path from the dependency module.  Setting a value
+                    filter list which includes the META-INF/services path from the dependency module. Setting a value
                     of "export" for this attribute is equivalent to the same action on the export filter list.
                 </documentation>
             </annotation>
@@ -271,7 +271,7 @@
                 <documentation>
                     Specifies whether this module dependency is re-exported by default (default is "false"). Setting
                     this attribute to true sets the default action for the export filter list to "accept"; leaving it
-                    as false sets the default action to "reject".  Thus you can still export dependency resources even
+                    as false sets the default action to "reject". Thus you can still export dependency resources even
                     if this attribute is false by listing explicit paths for the export list.
                 </documentation>
             </annotation>
@@ -363,8 +363,8 @@
             <xsd:element name="native-artifact" type="artifactType">
                 <annotation xmlns="http://www.w3.org/2001/XMLSchema">
                     <documentation>
-                        A maven native artifact within this deployment.  This is a jar that contains a lib/ directory
-                        with corresponding platform directories and binaries.  This element will cause the jar to
+                        A maven native artifact within this deployment. This is a jar that contains a lib/ directory
+                        with corresponding platform directories and binaries. This element will cause the jar to
                         be unzipped within the artifact's local repository directory.
                     </documentation>
                 </annotation>

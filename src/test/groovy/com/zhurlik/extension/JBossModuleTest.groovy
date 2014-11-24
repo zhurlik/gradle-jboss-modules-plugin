@@ -13,7 +13,7 @@ import static com.zhurlik.descriptor.BuilderFactory.getBuilder
 import static java.io.File.separator
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertTrue
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test to check all cases to create JBoss Module.
@@ -25,7 +25,8 @@ class JBossModuleTest {
 
     private JBossModule module
     private AbstractBuilder<JBossModule> builder = getBuilder(V_1_1)
-    private final File projectDir = new File(getClass().getClassLoader().getResource('').toURI().path + separator + 'projectTest')
+    private
+    final File projectDir = new File(getClass().getClassLoader().getResource('').toURI().path + separator + 'projectTest')
 
     @Before
     public void setUp() throws Exception {
@@ -57,7 +58,7 @@ class JBossModuleTest {
 
         // 2
         module = new JBossModule('spring-core')
-        module.moduleName  = 'org.springframework.spring-core'
+        module.moduleName = 'org.springframework.spring-core'
         module.resources = ['spring-core-3.2.5.RELEASE.jar']
         module.dependencies = ['javax.api',
                                'org.apache.commons.logging',
@@ -92,7 +93,7 @@ class JBossModuleTest {
         // 4
         module = new JBossModule('test-module-4')
         module.moduleName = 'test.module.4'
-        module.properties = [prop1: 'value1', prop2: 'value2', '':'']
+        module.properties = [prop1: 'value1', prop2: 'value2', '': '']
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.1' name='test.module.4'>\n" +
                 "  <properties>\n" +
@@ -107,7 +108,7 @@ class JBossModuleTest {
         // 5
         module = new JBossModule('test-module-5')
         module.moduleName = 'test.module.5'
-        module.resources = ['res1', [name: 'res2', path: 'path2'],[path: 'res3', filter:[include:'incl*', exclude: ['exclude1', 'exclude2']]]]
+        module.resources = ['res1', [name: 'res2', path: 'path2'], [path: 'res3', filter: [include: 'incl*', exclude: ['exclude1', 'exclude2']]]]
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.1' name='test.module.5'>\n" +
                 "  <resources>\n" +
@@ -132,9 +133,9 @@ class JBossModuleTest {
         module = new JBossModule('test-module-6')
         module.moduleName = 'test.module.6'
         module.dependencies = ['module1', 'module2',
-                               [name: 'module3', slot: '1.3', services: 'none', optional: true, export: 'false',
-                                    imports:[exclude: ['exclude1', 'exclude2']],
-                                    exports:[include:'**']
+                               [name   : 'module3', slot: '1.3', services: 'none', optional: true, export: 'false',
+                                imports: [exclude: ['exclude1', 'exclude2']],
+                                exports: [include: '**']
                                ]
         ]
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -185,7 +186,7 @@ class JBossModuleTest {
         log.debug '>> Test for making a module and saving locally...'
         // 1
         module = new JBossModule('log4j')
-        module.moduleName  = 'org.apache.log4j'
+        module.moduleName = 'org.apache.log4j'
         module.resources = ['log4j-1.2.17.jar']
 
         // empty project with all needed

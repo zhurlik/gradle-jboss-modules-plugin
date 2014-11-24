@@ -2,6 +2,9 @@ package com.zhurlik
 
 import com.zhurlik.extension.JBossModule
 import com.zhurlik.extension.JBossServer
+import com.zhurlik.task.CheckModulesTask
+import com.zhurlik.task.DeployModulesTask
+import com.zhurlik.task.MakeModulesTask
 import groovy.util.logging.Slf4j
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -31,6 +34,8 @@ class JBossModulesPlugin implements Plugin<Project> {
         // special tasks
         project.task('makeModules', type: MakeModulesTask)
         project.task('checkModules', type: CheckModulesTask)
+        project.task('deployModules', type: DeployModulesTask)
         project.tasks.checkModules.dependsOn('makeModules')
+        project.tasks.deployModules.dependsOn('checkModules')
     }
 }

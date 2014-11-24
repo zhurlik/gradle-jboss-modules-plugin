@@ -37,7 +37,7 @@ abstract class AbstractBuilder<T extends JBossModule> {
      * @param xml xml descriptor
      * @return true if valid
      */
-    boolean isValid(final String xml){
+    boolean isValid(final String xml) {
         try {
             def schema = factory.newSchema(getXsd())
             def validator = schema.newValidator()

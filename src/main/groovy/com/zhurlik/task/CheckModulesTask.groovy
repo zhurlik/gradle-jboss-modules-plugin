@@ -1,4 +1,4 @@
-package com.zhurlik
+package com.zhurlik.task
 
 import com.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
@@ -13,7 +13,7 @@ import static java.io.File.separator
  * @author zhurlik@gmail.com
  */
 @Slf4j('logger')
-class CheckModulesTask extends DefaultTask{
+class CheckModulesTask extends DefaultTask {
     @TaskAction
     def checkModules() {
         logger.info ">> Validation process for JBoss Modules"
@@ -28,7 +28,7 @@ class CheckModulesTask extends DefaultTask{
 
         project.modules.each() { JBossModule m ->
             def boolean valid = m.isValid()
-            logger.debug '>> Module: ' +  m.moduleName
+            logger.debug '>> Module: ' + m.moduleName
             logger.debug String.format('\tDescriptor:"%s", valid=%s', m.moduleName, valid)
             if (valid) {
                 def desc = new XmlSlurper().parseText(m.moduleDescriptor)

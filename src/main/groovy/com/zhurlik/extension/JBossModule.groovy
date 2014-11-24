@@ -6,13 +6,8 @@ import com.zhurlik.descriptor.BuilderFactory
 import groovy.util.logging.Slf4j
 import org.gradle.api.Project
 
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
-
 import static com.zhurlik.Ver.V_1_1
 import static java.io.File.separator
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING
 
 /**
  * To make JBoss Module.
@@ -32,13 +27,9 @@ class JBossModule {
     /**
      * The special constructor to be able to use in the gradle script
      *
-     * modules {
-     *     moduleA {
-     *          moduleName = 'com.moduleA'
+     * modules {*     moduleA {*          moduleName = 'com.moduleA'
      *         slot = '1.0'
-     *     }
-     * }
-     *
+     *}*}*
      * @param name
      */
     JBossModule(final String name) {
@@ -79,7 +70,7 @@ class JBossModule {
         return getBuilder().getXmlDescriptor(this)
     }
 
-    boolean isValid(){
+    boolean isValid() {
         return getBuilder().isValid(builder.getXmlDescriptor(this))
     }
 
@@ -127,7 +118,9 @@ class JBossModule {
         log.debug '>> Module Descriptor:' + xmlfile.path
 
         // copy jars
-        def jarNames = this.resources.findAll() { it instanceof String } + this.resources.findAll() { !(it instanceof String) }.collect() { it.path }
+        def jarNames = this.resources.findAll() { it instanceof String } + this.resources.findAll() {
+            !(it instanceof String)
+        }.collect() { it.path }
         jarNames.each() { jar ->
             project.configurations.jbossmodules.files.findAll() { it.name == jar }.each {
                 final String source = it.path

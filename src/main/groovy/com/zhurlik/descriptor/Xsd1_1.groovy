@@ -8,7 +8,6 @@ import javax.xml.transform.stream.StreamSource
 
 import static com.zhurlik.Ver.V_1_1
 import static java.io.File.separator
-import static java.io.File.separator
 
 /**
  * Generates a xml descriptor for JBoss Module ver.1.1
@@ -237,13 +236,13 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
         jbModule.mainClass = xml.'main-class'.@name
 
         xml.properties.each() {
-            it.property.each() {p->
+            it.property.each() { p ->
                 jbModule.properties.put(p.@name.toString(), p.@value.toString())
             }
         }
 
         xml.resources.each() {
-            it.'resource-root'.each() {r->
+            it.'resource-root'.each() { r ->
 
                 def complexEl = [:]
 
@@ -251,10 +250,10 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
                     complexEl.path = r.@path.toString()
                 } else {
                     complexEl.name = r.@name.toString()
-                    complexEl.path =  r.@path.toString()
+                    complexEl.path = r.@path.toString()
                 }
 
-                r.filter.each() {f->
+                r.filter.each() { f ->
                     def filter = [:]
                     f.include.each() {
                         filter.include = f.include.@path.toString()
@@ -263,10 +262,10 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
                         filter.exclude = f.exclude.@path.toString()
                     }
                     if (f.'exclude-set'.children().size() > 0) {
-                        filter.exclude = f.'exclude-set'.path.collect(){it.@name.toString()}
+                        filter.exclude = f.'exclude-set'.path.collect() { it.@name.toString() }
                     }
-                    if (f.'include-set'.children().size() > 0){
-                        filter.include = f.'include-set'.path.collect(){it.@name.toString()}
+                    if (f.'include-set'.children().size() > 0) {
+                        filter.include = f.'include-set'.path.collect() { it.@name.toString() }
                     }
                     complexEl.filter = filter
                 }
@@ -276,7 +275,7 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
         }
 
         xml.dependencies.each() {
-            it.module.each() {d->
+            it.module.each() { d ->
                 def dep = [:]
                 if (d.attributes().size() == 1) {
                     dep.name = d.@name.toString()
@@ -296,10 +295,10 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
                         map.exclude = it.@path.toString()
                     }
                     if (it.'exclude-set'.children().size() > 0) {
-                        map.exclude =it.'exclude-set'.path.collect(){it.@name.toString()}
+                        map.exclude = it.'exclude-set'.path.collect() { it.@name.toString() }
                     }
                     if (it.'include-set'.children().size() > 0) {
-                        map.include = it.'include-set'.path.collect(){it.@name.toString()}
+                        map.include = it.'include-set'.path.collect() { it.@name.toString() }
                     }
                     dep.imports = map
                 }
@@ -314,10 +313,10 @@ class Xsd1_1 extends AbstractBuilder<JBossModule> {
                         map.exclude = it.@path.toString()
                     }
                     if (it.'exclude-set'.children().size() > 0) {
-                        map.exclude = it.'exclude-set'.path.collect(){it.@name.toString()}
+                        map.exclude = it.'exclude-set'.path.collect() { it.@name.toString() }
                     }
                     if (it.'include-set'.children().size() > 0) {
-                        map.include = it.'include-set'.path.collect(){it.@name.toString()}
+                        map.include = it.'include-set'.path.collect() { it.@name.toString() }
                     }
                     dep.exports = map
                 }

@@ -11,7 +11,8 @@ import static com.zhurlik.Ver.V_1_2
  * https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_2.xsd
  *
  * @author zhurlik@gmail.com
- */class Xsd1_2 extends AbstractBuilder<JBossModule> {
+ */
+class Xsd1_2 extends AbstractBuilder<JBossModule> {
 
     @Override
     String getXmlDescriptor(JBossModule module) {

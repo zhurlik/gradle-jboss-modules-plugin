@@ -2,7 +2,7 @@ apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'signing'
 
-version = '0.2'
+version = '0.3'
 group = 'com.zhurlik'
 
 dependencies {
@@ -59,11 +59,24 @@ uploadArchives {
             pom.project {
                 name 'Gradle Plugin for JBoss Modules'
                 description 'A gradle plugin that allows to make JBoss Modules'
+                url 'https://github.com/zhurlik/gradle-jboss-modules-plugin'
                 licenses {
                     license {
                         name 'The Apache Software License, Version 2.0'
                         url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                         distribution 'repo'
+                    }
+                }
+                scm {
+                    connection 'scm:git:git@github.com:zhurlik/gradle-jboss-modules-plugin.git'
+                    developerConnection 'scm:git:git@github.com:zhurlik/gradle-jboss-modules-plugin.git'
+                    url 'git@github.com:zhurlik/gradle-jboss-modules-plugin.git'
+                }
+                developers {
+                    developer {
+                        name 'Uladzimir Zhuraulevich'
+                        email 'zhurlik@gmail.com'
+                        organizationUrl 'https://github.com/zhurlik'
                     }
                 }
             }

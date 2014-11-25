@@ -17,6 +17,7 @@ import static java.io.File.separator
 class JBossServer implements Server {
     def String name, home
     private Map<String, File> modules = [:]
+    private File modulesDir
 
     // default value
     def Ver version = Ver.V_1_1
@@ -42,14 +43,14 @@ class JBossServer implements Server {
     void setHome(final String home) {
         assert home != null
         this.home = home
+        this.modulesDir = new File(home + separator + 'modules')
     }
 
     public void initTree() {
         modules.clear()
 
         // under jboss
-        def jboss = new File(home + separator + 'modules')
-        jboss.eachDirRecurse() {
+        this. modulesDir.eachDirRecurse() {
             it.eachFileMatch(~/module.xml/) { file ->
                 def m = new XmlSlurper().parse(file)
                 modules.put(m.@name.toString(), file)
@@ -80,9 +81,39 @@ class JBossServer implements Server {
     }
 
     @Override
-    void deployModule(final JBossModule module) {
-        //todo: not implemented yet
-        throw new UnsupportedOperationException("Not implemented yet")
+    File getModulesDir() {
+        return this.modulesDir
+    }
+
+    @Override
+    void undeployModule(m) {
+        JBossModule jbModule
+
+        if (m instanceof String) {
+            jbModule = getModule(m)
+        } else if(m instanceof JBossModule) {
+            jbModule = m
+        } else {
+            return
+        }
+
+        if (jbModule != null) {
+            log.debug '>> Undeploying module: {} from Server:{}', jbModule.moduleName, this.name
+
+            String toDel = this.home + jbModule.path
+            def delDir = {
+                new AntBuilder().delete(dir: it)
+                log.debug '>> Directory:{} has been erased', it
+            }
+
+            delDir(toDel)
+
+            File f = new File(toDel).parentFile
+            while(f.path != modulesDir.path && f.isDirectory() && (f.list() as List).empty) {
+                delDir(f)
+                f = f.parentFile
+            }
+        }
     }
 
     @Override

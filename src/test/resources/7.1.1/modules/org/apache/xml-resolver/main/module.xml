@@ -1,0 +1,13 @@
+<module xmlns="urn:jboss:module:1.1" name="org.apache.xml-resolver">
+    <properties>
+        <property name="jboss.api" value="private"/>
+    </properties>
+
+    <resources>
+        <resource-root path="xml-resolver-1.2.fake"/>
+    </resources>
+    <dependencies>
+        <module name="javax.api" />
+    </dependencies>
+</module>
+

@@ -11,7 +11,9 @@ public interface Server {
 
     List<String> getNames()
 
-    void deployModule(final JBossModule module)
+    File getModulesDir()
+
+    void undeployModule(final module)
 
     JBossModule getModule(final String name)
 

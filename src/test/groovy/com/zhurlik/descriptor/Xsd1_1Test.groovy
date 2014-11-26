@@ -42,6 +42,7 @@ class Xsd1_1Test {
         module.moduleName = 'test.module'
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.1' name='test.module' />", builder.getXmlDescriptor(module)
+        assertEquals 'modules/test/module/main', builder.getPath(module)
     }
 
     @Test

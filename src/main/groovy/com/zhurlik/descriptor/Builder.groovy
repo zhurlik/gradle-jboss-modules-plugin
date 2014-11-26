@@ -14,7 +14,7 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI
  * @author zhurlik@gmail.com
  */
 @Slf4j
-abstract class Builder<T extends JBossModule>  extends Xsd{
+abstract class Builder<T extends JBossModule>  extends Xsd {
 
     static final factory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
 

@@ -1,6 +1,6 @@
 package com.zhurlik.extension
 
-import com.zhurlik.descriptor.AbstractBuilder
+import com.zhurlik.descriptor.Builder
 import groovy.util.logging.Slf4j
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 class JBossModuleTest {
 
     private JBossModule module
-    private AbstractBuilder<JBossModule> builder = getBuilder(V_1_1)
+    private Builder<JBossModule> builder = getBuilder(V_1_1)
     private
     final File projectDir = new File(getClass().getClassLoader().getResource('').toURI().path + separator + 'projectTest')
 

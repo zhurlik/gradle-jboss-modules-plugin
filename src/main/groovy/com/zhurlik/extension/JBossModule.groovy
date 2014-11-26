@@ -1,7 +1,7 @@
 package com.zhurlik.extension
 
 import com.zhurlik.Ver
-import com.zhurlik.descriptor.AbstractBuilder
+import com.zhurlik.descriptor.Builder
 import com.zhurlik.descriptor.BuilderFactory
 import groovy.util.logging.Slf4j
 import org.gradle.api.Project
@@ -83,7 +83,7 @@ class JBossModule {
         getBuilder().getPath(this)
     }
 
-    private AbstractBuilder<JBossModule> getBuilder() {
+    private Builder<JBossModule> getBuilder() {
         return BuilderFactory.getBuilder(this.ver)
     }
 

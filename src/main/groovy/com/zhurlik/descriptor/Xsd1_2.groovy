@@ -12,7 +12,7 @@ import static com.zhurlik.Ver.V_1_2
  *
  * @author zhurlik@gmail.com
  */
-class Xsd1_2 extends AbstractBuilder<JBossModule> {
+class Xsd1_2 extends Builder<JBossModule> {
 
     @Override
     String getXmlDescriptor(JBossModule module) {

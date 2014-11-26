@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals
  */
 class Xsd1_1Test {
 
-    def AbstractBuilder<JBossModule> builder
+    def Builder<JBossModule> builder
 
     @Before
     public void setUp() throws Exception {

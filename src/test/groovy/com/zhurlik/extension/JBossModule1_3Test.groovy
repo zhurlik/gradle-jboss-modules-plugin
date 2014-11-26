@@ -1,4 +1,5 @@
 package com.zhurlik.extension
+
 import com.zhurlik.descriptor.Builder
 import groovy.util.logging.Slf4j
 import org.gradle.api.Project
@@ -13,6 +14,7 @@ import static java.io.File.separator
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertTrue
+
 /**
  * Unit test to check all cases to create JBoss Module.
  *

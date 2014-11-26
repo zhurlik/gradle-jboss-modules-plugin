@@ -50,7 +50,7 @@ class JBossServer implements Server {
         modules.clear()
 
         // under jboss
-        this. modulesDir.eachDirRecurse() {
+        this.modulesDir.eachDirRecurse() {
             it.eachFileMatch(~/module.xml/) { file ->
                 def m = new XmlSlurper().parse(file)
                 modules.put(m.@name.toString(), file)
@@ -91,7 +91,7 @@ class JBossServer implements Server {
 
         if (m instanceof String) {
             jbModule = getModule(m)
-        } else if(m instanceof JBossModule) {
+        } else if (m instanceof JBossModule) {
             jbModule = m
         } else {
             return
@@ -108,8 +108,9 @@ class JBossServer implements Server {
 
             delDir(toDel)
 
+            // deleting empty folders
             File f = new File(toDel).parentFile
-            while(f.path != modulesDir.path && f.isDirectory() && (f.list() as List).empty) {
+            while (f.path != modulesDir.path && f.isDirectory() && (f.list() as List).empty) {
                 delDir(f)
                 f = f.parentFile
             }

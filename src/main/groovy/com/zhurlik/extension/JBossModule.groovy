@@ -17,19 +17,23 @@ import static java.io.File.separator
  */
 @Slf4j
 class JBossModule {
-    def String name, moduleName, slot, mainClass
+    def String name, moduleName, slot, mainClass, targetName
     def properties = [:]
     def resources = []
     def dependencies = []
     def exports
     def Ver ver = V_1_1
+    def boolean moduleAlias = false
 
     /**
      * The special constructor to be able to use in the gradle script
      *
-     * modules {*     moduleA {*          moduleName = 'com.moduleA'
-     *         slot = '1.0'
-     *}*}*
+     * modules {
+     *    moduleA {
+     *        moduleName = 'com.moduleA'
+     *        slot = '1.0'
+     *    }
+     * }
      * @param name
      */
     JBossModule(final String name) {
@@ -46,6 +50,18 @@ class JBossModule {
         assert name ==~ /[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?(\.[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?)*/,
                 'Module Name must be: [a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?(\\.[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?)*'
         this.moduleName = name
+    }
+
+    /**
+     * A module name, which consists of one or more dot (.)-separated segments. Each segment must begin and end
+     * with an alphanumeric or underscore (_), and may otherwise contain alphanumerics, underscores, and hyphens (-).
+     *
+     * @param name
+     */
+    void setTargetName(final String name) {
+        assert name ==~ /[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?(\.[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?)*/,
+                'Target Name must be: [a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?(\\.[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?)*'
+        this.targetName = name
     }
 
     /**

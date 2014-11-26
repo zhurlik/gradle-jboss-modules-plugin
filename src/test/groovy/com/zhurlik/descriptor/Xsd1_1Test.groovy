@@ -45,7 +45,7 @@ class Xsd1_1Test {
     }
 
     @Test
-    public void testVallidate() throws Exception {
+    public void testValidate() throws Exception {
         def module = new JBossModule('test')
         module.moduleName = 'test.module'
 

@@ -29,7 +29,118 @@ abstract class Builder<T extends JBossModule>  extends Xsd {
      */
     abstract String getPath(JBossModule module)
 
-    abstract JBossModule makeModule(final String txt)
+    JBossModule makeModule(final String txt) {
+        //result
+        JBossModule jbModule = new JBossModule('empty')
+        jbModule.ver = getVersion()
+
+        def xml = new XmlSlurper().parseText(txt)
+
+        xml.attributes().each() {
+            switch (it.key) {
+                case 'slot': jbModule.slot = it.value
+                    break
+                case 'name': jbModule.moduleName = it.value
+                    jbModule.name = it.value
+                    break
+            }
+        }
+
+        jbModule.mainClass = xml.'main-class'.@name
+
+        xml.properties.each() {
+            it.property.each() { p ->
+                jbModule.properties.put(p.@name.toString(), p.@value.toString())
+            }
+        }
+
+        xml.resources.each() {
+            it.'resource-root'.each() { r ->
+
+                def complexEl = [:]
+
+                if (r.attributes().size() == 1) {
+                    complexEl.path = r.@path.toString()
+                } else {
+                    complexEl.name = r.@name.toString()
+                    complexEl.path = r.@path.toString()
+                }
+
+                r.filter.each() { f ->
+                    def filter = [:]
+                    f.include.each() {
+                        filter.include = f.include.@path.toString()
+                    }
+                    f.exclude.each() {
+                        filter.exclude = f.exclude.@path.toString()
+                    }
+                    if (f.'exclude-set'.children().size() > 0) {
+                        filter.exclude = f.'exclude-set'.path.collect() { it.@name.toString() }
+                    }
+                    if (f.'include-set'.children().size() > 0) {
+                        filter.include = f.'include-set'.path.collect() { it.@name.toString() }
+                    }
+                    complexEl.filter = filter
+                }
+
+                jbModule.resources.add(complexEl)
+            }
+        }
+
+        xml.dependencies.each() {
+            it.module.each() { d ->
+                def dep = [:]
+                if (d.attributes().size() == 1) {
+                    dep.name = d.@name.toString()
+                } else {
+                    d.attributes().each() {
+                        dep[it.key] = it.value
+                    }
+                }
+
+                // imports
+                d.imports.each() {
+                    def map = [:]
+                    it.include.each() {
+                        map.include = it.@path.toString()
+                    }
+                    it.exclude.each() {
+                        map.exclude = it.@path.toString()
+                    }
+                    if (it.'exclude-set'.children().size() > 0) {
+                        map.exclude = it.'exclude-set'.path.collect() { it.@name.toString() }
+                    }
+                    if (it.'include-set'.children().size() > 0) {
+                        map.include = it.'include-set'.path.collect() { it.@name.toString() }
+                    }
+                    dep.imports = map
+                }
+
+                // exports
+                d.exports.each() {
+                    def map = [:]
+                    it.include.each() {
+                        map.include = it.@path.toString()
+                    }
+                    it.exclude.each() {
+                        map.exclude = it.@path.toString()
+                    }
+                    if (it.'exclude-set'.children().size() > 0) {
+                        map.exclude = it.'exclude-set'.path.collect() { it.@name.toString() }
+                    }
+                    if (it.'include-set'.children().size() > 0) {
+                        map.include = it.'include-set'.path.collect() { it.@name.toString() }
+                    }
+                    dep.exports = map
+                }
+
+                jbModule.dependencies.add(dep)
+            }
+        }
+
+        log.debug '>> Module: \'{}\' has been created', jbModule.name
+        return jbModule
+    }
 
     /**
      * To validate a xml descriptors.

@@ -37,7 +37,7 @@ class BuilderFactory<T extends JBossModule> {
         }
 
         @Override
-        JBossModule makeModule(final String txt) {
+        protected Ver getVersion() {
             return null
         }
     }

@@ -1,5 +1,6 @@
 package com.zhurlik.descriptor
 
+import com.zhurlik.Ver
 import com.zhurlik.extension.JBossModule
 import groovy.xml.MarkupBuilder
 
@@ -9,6 +10,9 @@ import groovy.xml.MarkupBuilder
  * @author zhurlik@gmail.com
  */
 abstract class Xsd {
+
+    abstract protected Ver getVersion()
+
     /**
      * Writes <?xml version="1.0" encoding="UTF-8"?>
      *

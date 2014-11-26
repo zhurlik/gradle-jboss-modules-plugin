@@ -1,5 +1,6 @@
 package com.zhurlik.descriptor
 
+import com.zhurlik.Ver
 import com.zhurlik.extension.JBossModule
 
 import javax.xml.transform.stream.StreamSource
@@ -21,7 +22,7 @@ class Xsd1_2 extends Builder<JBossModule> {
 
     @Override
     StreamSource getXsd() {
-        return new StreamSource(getClass().classLoader.getResourceAsStream(V_1_2.xsd))
+        return new StreamSource(getClass().classLoader.getResourceAsStream(getVersion().xsd))
     }
 
     @Override
@@ -32,5 +33,10 @@ class Xsd1_2 extends Builder<JBossModule> {
     @Override
     JBossModule makeModule(final String txt) {
         throw new UnsupportedOperationException("Not implemented yet")
+    }
+
+    @Override
+    protected Ver getVersion() {
+        return V_1_2
     }
 }

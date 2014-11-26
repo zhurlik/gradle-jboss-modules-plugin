@@ -1,5 +1,6 @@
 package com.zhurlik.descriptor
 
+import com.zhurlik.Ver
 import com.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
@@ -29,7 +30,7 @@ class Xsd1_1 extends Builder<JBossModule> {
         writeXmlDeclaration(xml)
 
         // <module xmlns="urn:jboss:module:1.1" name="org.jboss.msc">
-        xml.module([xmlns: 'urn:jboss:module:' + V_1_1.number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
+        xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
 
             writeMainClass(jmodule, xml)
             writeProperties(jmodule, xml)
@@ -42,13 +43,14 @@ class Xsd1_1 extends Builder<JBossModule> {
 
     @Override
     StreamSource getXsd() {
-        return new StreamSource(getClass().classLoader.getResourceAsStream(V_1_1.xsd))
+        return new StreamSource(getClass().classLoader.getResourceAsStream(getVersion().xsd))
     }
 
     @Override
     JBossModule makeModule(final String txt) {
         //result
         JBossModule jbModule = new JBossModule('empty')
+        jbModule.ver = getVersion()
 
         def xml = new XmlSlurper().parseText(txt)
 
@@ -161,5 +163,10 @@ class Xsd1_1 extends Builder<JBossModule> {
     @Override
     String getPath(final JBossModule jbModule) {
         return ['modules', jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join(separator)
+    }
+
+    @Override
+    protected Ver getVersion() {
+        return V_1_1
     }
 }

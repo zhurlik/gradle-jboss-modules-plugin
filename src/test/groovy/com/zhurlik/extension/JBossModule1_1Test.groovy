@@ -56,6 +56,27 @@ class JBossModule1_1Test {
         assert module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
+        // 1.1
+        module = new JBossModule('testModule')
+        module.ver = V_1_1
+        module.moduleName = 'my.module'
+        module.mainClass = ''
+        module.exports = [exclude: ['exclude1', 'exclude2'], include: '**/impl/*']
+        module.slot = '1.0'
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:1.1' name='my.module' slot='1.0'>\n" +
+                "  <exports>\n" +
+                "    <include path='**/impl/*' />\n" +
+                "    <exclude-set>\n" +
+                "      <path name='exclude1' />\n" +
+                "      <path name='exclude2' />\n" +
+                "    </exclude-set>\n" +
+                "  </exports>\n" +
+                "</module>"
+        assertEquals 'Case1.1:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
         // 2
         module = new JBossModule('spring-core')
         module.moduleName = 'org.springframework.spring-core'

@@ -87,6 +87,24 @@ abstract class Builder<T extends JBossModule>  extends Xsd {
             }
         }
 
+        // exports
+        xml.exports.each() {
+            def map = [:]
+            it.include.each() {
+                map.include = it.@path.toString()
+            }
+            it.exclude.each() {
+                map.exclude = it.@path.toString()
+            }
+            if (it.'exclude-set'.children().size() > 0) {
+                map.exclude = it.'exclude-set'.path.collect() { it.@name.toString() }
+            }
+            if (it.'include-set'.children().size() > 0) {
+                map.include = it.'include-set'.path.collect() { it.@name.toString() }
+            }
+            jbModule.exports = map
+        }
+
         xml.dependencies.each() {
             it.module.each() { d ->
                 def dep = [:]

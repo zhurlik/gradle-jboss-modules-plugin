@@ -35,6 +35,49 @@ abstract class Xsd {
     }
 
     /**
+     * Writes
+     *  <exports>
+     *      <exclude path="..."/>
+     *  </exports>
+     *
+     *   Lists filter expressions to apply to the export filter of the local resources of this module
+     *   (optional). By default, everything is exported. If filter expressions are provided, the default
+     *   action is to accept all paths if no filters match.
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference for xml
+     */
+    protected void writeExports(final JBossModule jmodule, final MarkupBuilder xml) {
+        // exports
+        if (!jmodule.exports.empty) {
+            xml.'exports'() {
+
+                // include
+                if (jmodule.exports.include != null) {
+                    if (jmodule.exports.include instanceof String || jmodule.exports.include.size() == 1) {
+                        xml.'include'(path: jmodule.exports.include.toString())
+                    } else if (jmodule.exports.include.size() > 1) {
+                        xml.'include-set'() {
+                            jmodule.exports.include.each() { xml.'path'(name: it) }
+                        }
+                    }
+                }
+
+                // exclude
+                if (jmodule.exports.exclude != null) {
+                    if (jmodule.exports.exclude instanceof String || jmodule.exports.exclude.size() == 1) {
+                        xml.'exclude'(path: jmodule.exports.exclude.toString())
+                    } else if (jmodule.exports.exclude.size() > 1) {
+                        xml.'exclude-set'() {
+                            jmodule.exports.exclude.each() { xml.'path'(name: it) }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Writes the following tags into a xml
      *  <properties>
      *     <property name="my.property" value="foo"/>

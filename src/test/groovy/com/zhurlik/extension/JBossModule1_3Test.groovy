@@ -1,5 +1,4 @@
 package com.zhurlik.extension
-
 import com.zhurlik.descriptor.Builder
 import groovy.util.logging.Slf4j
 import org.gradle.api.Project
@@ -14,7 +13,6 @@ import static java.io.File.separator
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertTrue
-
 /**
  * Unit test to check all cases to create JBoss Module.
  *
@@ -55,6 +53,28 @@ class JBossModule1_3Test {
         assertEquals 'Case1:', xml, module.moduleDescriptor
         assert module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        // 1.1
+        module = new JBossModule('testModule')
+        module.ver = V_1_3
+        module.moduleName = 'my.module'
+        module.mainClass = ''
+        module.exports = [exclude: ['exclude1', 'exclude2'], include: '**/impl/*']
+        module.slot = '1.0'
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:1.3' name='my.module' slot='1.0'>\n" +
+                "  <exports>\n" +
+                "    <include path='**/impl/*' />\n" +
+                "    <exclude-set>\n" +
+                "      <path name='exclude1' />\n" +
+                "      <path name='exclude2' />\n" +
+                "    </exclude-set>\n" +
+                "  </exports>\n" +
+                "</module>"
+        assertEquals 'Case1.1:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
 
         // 2
         module = new JBossModule('spring-core')

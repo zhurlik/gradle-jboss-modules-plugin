@@ -34,6 +34,7 @@ class Xsd1_3 extends Builder<JBossModule> {
             // <module xmlns="urn:jboss:module:1.3" name="org.jboss.msc">
             final attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])
             xml.module(attrs) {
+                writeExports(jmodule, xml)
                 writeMainClass(jmodule, xml)
                 writeProperties(jmodule, xml)
                 writeResources(jmodule, xml)

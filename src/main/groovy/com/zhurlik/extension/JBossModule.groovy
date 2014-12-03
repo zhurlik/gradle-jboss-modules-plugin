@@ -21,7 +21,7 @@ class JBossModule {
     def properties = [:]
     def resources = []
     def dependencies = []
-    def exports
+    def exports = []
     def Ver ver = V_1_1
     def boolean moduleAlias = false
 

@@ -30,6 +30,8 @@ class Xsd1_3 extends Builder<JBossModule> {
 
         if (jmodule.isModuleAlias()) {
             writeModuleAlias(jmodule, xml)
+        } else if (jmodule.isModuleAbsent()) {
+            writeModuleAbsent(jmodule, xml)
         } else {
             // <module xmlns="urn:jboss:module:1.3" name="org.jboss.msc">
             final attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])
@@ -68,6 +70,21 @@ class Xsd1_3 extends Builder<JBossModule> {
         attrs += (jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot]
         attrs.put('target-name', jmodule.targetName)
         xml.'module-alias'(attrs)
+    }
+
+    /**
+     * Writes a root element for an absent module.
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference for xml
+     */
+    protected void writeModuleAbsent(final JBossModule jmodule, final MarkupBuilder xml) {
+        assert jmodule.moduleName != null, 'Module Name is null'
+
+        def attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName]
+        attrs += (jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot]
+
+        xml.'module-absent'(attrs)
     }
 
     @Override

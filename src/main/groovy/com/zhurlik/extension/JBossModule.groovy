@@ -24,6 +24,7 @@ class JBossModule {
     def exports = []
     def Ver ver = V_1_1
     def boolean moduleAlias = false
+    def boolean moduleAbsent = false
 
     /**
      * The special constructor to be able to use in the gradle script

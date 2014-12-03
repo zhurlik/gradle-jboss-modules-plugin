@@ -51,6 +51,15 @@ class Xsd1_3Test {
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-alias xmlns='urn:jboss:module:1.3' name='test.module' target-name='target.name' />", builder.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', builder.getPath(module)
+
+        module = new JBossModule('test')
+        module.ver = V_1_3
+        module.moduleName = 'test.module'
+        module.moduleAbsent = true
+        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module-absent xmlns='urn:jboss:module:1.3' name='test.module' />", builder.getXmlDescriptor(module)
+        assertEquals 'modules/system/layers/base/test/module/main', builder.getPath(module)
+
     }
 
     @Test

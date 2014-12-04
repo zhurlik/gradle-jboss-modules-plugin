@@ -43,7 +43,73 @@ class JBossModule1_0Test {
     }
 
     @Test
-    public void testName() throws Exception {
+    public void testConfigurationTag() throws Exception {
+        // 1
+        try {
+            module = new JBossModule('testModule')
+            module.ver = V_1_0
+            module.moduleName = 'my.module'
+            module.moduleConfiguration = true
+            assert false
+        } catch (AssertionError ex) {
+            assertTrue 'Case1:', true
+        }
+
+        //2
+        module = new JBossModule('testModule')
+        module.ver = V_1_0
+        module.moduleName = 'my.module'
+        module.moduleConfiguration = true
+        module.defaultLoader = 'test-default1'
+        String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<configuration xmlns='urn:jboss:module:1.0' default-loader='test-default1'>\n" +
+                "  <loader name='test-default1' />\n" +
+                "</configuration>"
+        assertEquals 'Case2:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        //3
+        module = new JBossModule('testModule')
+        module.ver = V_1_0
+        module.moduleName = 'my.module'
+        module.moduleConfiguration = true
+        module.defaultLoader = '_test-default1'
+        module.loaders = ['_test-default1', [name: 'loader2']]
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<configuration xmlns='urn:jboss:module:1.0' default-loader='_test-default1'>\n" +
+                "  <loader name='_test-default1' />\n" +
+                "  <loader name='loader2' />\n" +
+                "</configuration>"
+        assertEquals 'Case3:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        //4
+        module = new JBossModule('testModule')
+        module.ver = V_1_0
+        module.moduleName = 'my.module'
+        module.moduleConfiguration = true
+        module.defaultLoader = '_test-default1'
+        module.loaders = ['_test-default1', [name: 'loader2'], [name: 'loader3', import: 'test-import'], [name: 'loader4', 'module-path': 'test-path']]
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<configuration xmlns='urn:jboss:module:1.0' default-loader='_test-default1'>\n" +
+                "  <loader name='_test-default1' />\n" +
+                "  <loader name='loader2' />\n" +
+                "  <loader name='loader3'>\n" +
+                "    <import>test-import</import>\n" +
+                "  </loader>\n" +
+                "  <loader name='loader4'>\n" +
+                "    <module-path name='test-path' />\n" +
+                "  </loader>\n" +
+                "</configuration>"
+        assertEquals 'Case4:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+    }
+
+    @Test
+    public void testModuleTag() throws Exception {
         // 1
         module = new JBossModule('testModule')
         module.ver = V_1_0

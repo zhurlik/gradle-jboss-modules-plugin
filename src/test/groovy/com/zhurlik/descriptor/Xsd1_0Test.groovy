@@ -6,6 +6,7 @@ import org.junit.Before
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 
 /**
  *
@@ -43,6 +44,18 @@ class Xsd1_0Test {
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.0' name='test.module' />", builder.getXmlDescriptor(module)
         assertEquals 'modules/test/module/main', builder.getPath(module)
+
+        module = new JBossModule('test')
+        module.moduleName = 'test.module'
+        module.moduleConfiguration = true
+        module.defaultLoader = 'test_loader1'
+        module.ver = V_1_0
+        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<configuration xmlns='urn:jboss:module:1.0' default-loader='test_loader1'>\n" +
+                "  <loader name='test_loader1' />\n" +
+                "</configuration>", builder.getXmlDescriptor(module)
+        assertEquals 'modules/test/module/main', builder.getPath(module)
+        assertTrue 'Valid:', builder.isValid(module.moduleDescriptor)
     }
 
     @Test

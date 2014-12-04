@@ -26,6 +26,12 @@ class JBossModule {
     def boolean moduleAlias = false
     def boolean moduleAbsent = false
 
+    // only for 1.0
+    def String defaultLoader
+    def boolean moduleConfiguration = false
+    // A defined loader. More than one loader may be defined.
+    def loaders = []
+
     /**
      * The special constructor to be able to use in the gradle script
      *
@@ -40,6 +46,18 @@ class JBossModule {
     JBossModule(final String name) {
         this.name = name
     }
+
+    /**
+     * The loader to use. The name matches the value of the "name" attribute of one of the defined loaders.
+     *
+     * @param name
+     */
+    void setDefaultLoader(final String name) {
+        assert name ==~ /[-0-9a-zA-Z_]+/,
+                'Default-Loader must be: [-0-9a-zA-Z_]+'
+        this.defaultLoader = name
+    }
+
 
     /**
      * A module name, which consists of one or more dot (.)-separated segments. Each segment must begin and end

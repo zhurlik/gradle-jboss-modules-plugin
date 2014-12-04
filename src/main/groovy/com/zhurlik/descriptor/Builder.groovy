@@ -36,6 +36,31 @@ abstract class Builder<T extends JBossModule>  extends Xsd {
 
         def xml = new XmlSlurper().parseText(txt)
 
+        // root element <configuration> only for xsd-1.0
+        if ('configuration' == xml.name()) {
+            jbModule.moduleConfiguration = true
+            jbModule.defaultLoader = xml.@'default-loader'.toString()
+
+            xml.loader.each {l->
+                def el = [:]
+                el.name = l.@name.toString()
+
+                l.import.each {
+                    el.import = it.text()
+                }
+
+                l.'module-path'.each {
+                    el['module-path'] = it.@name.toString()
+                }
+
+                jbModule.loaders.add(el)
+            }
+
+            if (jbModule.loaders.empty) {
+                jbModule.loaders.add(xml.@'default-loader'.toString())
+            }
+        }
+
         xml.attributes().each() {
             switch (it.key) {
                 case 'slot': jbModule.slot = it.value

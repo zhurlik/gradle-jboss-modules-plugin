@@ -41,7 +41,7 @@ class JBossModule1_3Test {
     }
 
     @Test
-    public void testName() throws Exception {
+    public void testModuleTag() throws Exception {
         // 1
         module = new JBossModule('testModule')
         module.ver = V_1_3

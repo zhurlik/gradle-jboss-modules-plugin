@@ -18,23 +18,55 @@ class Xsd1_0 extends Builder<JBossModule> {
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {
         assert jmodule != null, 'JBossModule is null'
-        assert jmodule.moduleName != null, 'Module name is null'
+        assert (jmodule.moduleName != null || jmodule.moduleConfiguration) , 'Module name is null'
 
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
 
         writeXmlDeclaration(xml)
 
-        // <module xmlns="urn:jboss:module:1.1" name="org.jboss.msc">
-        xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
+        if (jmodule.isModuleConfiguration()) {
+            assert jmodule.defaultLoader != null, 'Default-Loader is null'
+            // todo:  <xsd:element name="configuration" type="configurationType">
+            xml.configuration([xmlns: 'urn:jboss:module:' + getVersion().number, 'default-loader': jmodule.defaultLoader]) {
+                if (jmodule.loaders.empty) {
+                    loader([name: jmodule.defaultLoader])
+                }
 
-            writeExports(jmodule, xml)
-            writeMainClass(jmodule, xml)
-            writeResources(jmodule, xml)
-            writeDependencies(jmodule, xml)
+                jmodule.loaders.each { l ->
+                    if (l instanceof String) {
+                        loader([name: l])
+                    } else {
+                        loader([name: l.name]) {
+                            if (l['import'] != null) {
+                                'import'(l['import'])
+                            }
+
+                            if (l['module-path'] != null) {
+                                'module-path'([name: l['module-path']])
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            // <module xmlns="urn:jboss:module:1.0" name="org.jboss.msc">
+            xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
+
+                writeExports(jmodule, xml)
+                writeMainClass(jmodule, xml)
+                writeResources(jmodule, xml)
+                writeDependencies(jmodule, xml)
+            }
         }
 
         return writer.toString()
+    }
+
+    @Override
+    JBossModule makeModule(String txt) {
+
+        return super.makeModule(txt)
     }
 
     @Override

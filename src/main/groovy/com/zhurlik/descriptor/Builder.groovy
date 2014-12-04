@@ -2,6 +2,7 @@ package com.zhurlik.descriptor
 
 import com.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
+import groovy.util.slurpersupport.GPathResult
 
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
@@ -14,7 +15,7 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI
  * @author zhurlik@gmail.com
  */
 @Slf4j
-abstract class Builder<T extends JBossModule>  extends Xsd {
+abstract class Builder<T extends JBossModule> extends Xsd {
 
     static final factory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
 
@@ -36,29 +37,18 @@ abstract class Builder<T extends JBossModule>  extends Xsd {
 
         def xml = new XmlSlurper().parseText(txt)
 
-        // root element <configuration> only for xsd-1.0
         if ('configuration' == xml.name()) {
-            jbModule.moduleConfiguration = true
-            jbModule.defaultLoader = xml.@'default-loader'.toString()
+            parseConfigurationTag(xml, jbModule)
 
-            xml.loader.each {l->
-                def el = [:]
-                el.name = l.@name.toString()
+            log.debug '>> Module: \'{}\' has been created', jbModule.name
+            return jbModule
+        }
 
-                l.import.each {
-                    el.import = it.text()
-                }
+        if ('module-alias' == xml.name()) {
+            parseModuleAliasTag(jbModule, xml)
 
-                l.'module-path'.each {
-                    el['module-path'] = it.@name.toString()
-                }
-
-                jbModule.loaders.add(el)
-            }
-
-            if (jbModule.loaders.empty) {
-                jbModule.loaders.add(xml.@'default-loader'.toString())
-            }
+            log.debug '>> Module: \'{}\' has been created', jbModule.name
+            return jbModule
         }
 
         xml.attributes().each() {
@@ -183,6 +173,57 @@ abstract class Builder<T extends JBossModule>  extends Xsd {
 
         log.debug '>> Module: \'{}\' has been created', jbModule.name
         return jbModule
+    }
+
+    /**
+     * To parse a root element for a module alias declaration.
+     * @param jbModule
+     * @param xml
+     */
+    private void parseModuleAliasTag(JBossModule jbModule, GPathResult xml) {
+        jbModule.moduleAlias = true
+        xml.attributes().each() {
+            switch (it.key) {
+                case 'slot': jbModule.slot = it.value
+                    break
+                case 'name': jbModule.moduleName = it.value
+                    jbModule.name = it.value
+                    break
+                case 'target-name': jbModule.targetName = it.value
+                    break
+            }
+        }
+    }
+
+    /**
+     * To parse a root element <configuration> only for xsd-1.0
+     *
+     * @param xml
+     * @param jbModule
+     */
+    private void parseConfigurationTag(GPathResult xml, JBossModule jbModule) {
+
+        jbModule.moduleConfiguration = true
+        jbModule.defaultLoader = xml.@'default-loader'.toString()
+
+        xml.loader.each { l ->
+            def el = [:]
+            el.name = l.@name.toString()
+
+            l.import.each {
+                el.import = it.text()
+            }
+
+            l.'module-path'.each {
+                el['module-path'] = it.@name.toString()
+            }
+
+            jbModule.loaders.add(el)
+        }
+
+        if (jbModule.loaders.empty) {
+            jbModule.loaders.add(xml.@'default-loader'.toString())
+        }
     }
 
     /**

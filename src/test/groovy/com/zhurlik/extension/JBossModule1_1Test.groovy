@@ -43,6 +43,22 @@ class JBossModule1_1Test {
     }
 
     @Test
+    public void testModuleAliasTag() throws Exception {
+        // 1
+        module = new JBossModule('testModule')
+        module.ver = V_1_1
+        module.moduleName = 'my.module'
+        module.slot = '1.0'
+        module.targetName = 'testTarget'
+        module.setModuleAlias(true)
+        String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module-alias xmlns='urn:jboss:module:1.1' name='my.module' slot='1.0' target-name='testTarget' />"
+        assertEquals 'Case1:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+    }
+
+    @Test
     public void testModuleTag() throws Exception {
         // 1
         module = new JBossModule('testModule')

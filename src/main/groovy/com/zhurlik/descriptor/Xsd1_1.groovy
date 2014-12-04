@@ -29,16 +29,21 @@ class Xsd1_1 extends Builder<JBossModule> {
 
         writeXmlDeclaration(xml)
 
-        // <module xmlns="urn:jboss:module:1.1" name="org.jboss.msc">
-        xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
+        if (jmodule.isModuleAlias()) {
+            writeModuleAlias(jmodule, xml)
+        } else {
+            // <module xmlns="urn:jboss:module:1.1" name="org.jboss.msc">
+            xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
 
-            writeExports(jmodule, xml)
-            writeMainClass(jmodule, xml)
-            writeProperties(jmodule, xml)
-            writeResources(jmodule, xml)
-            writeDependencies(jmodule, xml)
-
+                writeExports(jmodule, xml)
+                writeMainClass(jmodule, xml)
+                writeProperties(jmodule, xml)
+                writeResources(jmodule, xml)
+                writeDependencies(jmodule, xml)
+                // todo: <xsd:element name="system" type="systemDependencyType">
+            }
         }
+
         return writer.toString()
     }
 

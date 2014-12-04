@@ -23,6 +23,22 @@ abstract class Xsd {
     }
 
     /**
+     * Writes <module-alias xmlns="urn:jboss:module:1.{1|3}" name="javax.json.api" target-name="org.glassfish.javax.json"/>
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference for xml
+     */
+    protected void writeModuleAlias(final JBossModule jmodule, final MarkupBuilder xml) {
+        assert jmodule.targetName != null, 'Target Name is null'
+
+        def attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName]
+        attrs += (jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot]
+        attrs.put('target-name', jmodule.targetName)
+        xml.'module-alias'(attrs)
+    }
+
+
+    /**
      * Writes <main-class name="org.jboss.msc.Version"/>
      *
      * @param jmodule current module

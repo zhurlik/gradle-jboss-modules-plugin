@@ -27,7 +27,7 @@ class Xsd1_0 extends Builder<JBossModule> {
 
         if (jmodule.isModuleConfiguration()) {
             assert jmodule.defaultLoader != null, 'Default-Loader is null'
-            // todo:  <xsd:element name="configuration" type="configurationType">
+
             xml.configuration([xmlns: 'urn:jboss:module:' + getVersion().number, 'default-loader': jmodule.defaultLoader]) {
                 if (jmodule.loaders.empty) {
                     loader([name: jmodule.defaultLoader])

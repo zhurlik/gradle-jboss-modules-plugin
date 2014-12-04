@@ -1,10 +1,13 @@
 package com.zhurlik.descriptor
+
 import com.zhurlik.extension.JBossModule
 import org.junit.Before
 import org.junit.Test
 
 import static com.zhurlik.Ver.V_1_1
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
+
 /**
  *
  * @author zhurlik@gmail.com
@@ -49,6 +52,19 @@ class Xsd1_1Test {
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-alias xmlns='urn:jboss:module:1.1' name='test.module' target-name='target.name' />", builder.getXmlDescriptor(module)
         assertEquals 'modules/test/module/main', builder.getPath(module)
+
+        module = new JBossModule('test')
+        module.moduleName = 'test.module'
+        module.moduleConfiguration = true
+        module.defaultLoader = 'test_loader1'
+        module.ver = V_1_1
+        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<configuration xmlns='urn:jboss:module:1.1' default-loader='test_loader1'>\n" +
+                "  <loader name='test_loader1' />\n" +
+                "</configuration>", builder.getXmlDescriptor(module)
+        assertEquals 'modules/test/module/main', builder.getPath(module)
+        assertTrue 'Valid:', builder.isValid(module.moduleDescriptor)
+
     }
 
     @Test

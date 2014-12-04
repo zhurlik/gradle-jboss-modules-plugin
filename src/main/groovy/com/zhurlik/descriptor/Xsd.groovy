@@ -94,6 +94,41 @@ abstract class Xsd {
     }
 
     /**
+     * Writes a root element for a filesystem module loader configuration.
+     *  <configuration/>
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference for xml
+     */
+    protected void writeConfiguration(final JBossModule jmodule, final MarkupBuilder xml) {
+        if (jmodule.isModuleConfiguration()) {
+            assert jmodule.defaultLoader != null, 'Default-Loader is null'
+
+            xml.configuration([xmlns: 'urn:jboss:module:' + getVersion().number, 'default-loader': jmodule.defaultLoader]) {
+                if (jmodule.loaders.empty) {
+                    loader([name: jmodule.defaultLoader])
+                }
+
+                jmodule.loaders.each { l ->
+                    if (l instanceof String) {
+                        loader([name: l])
+                    } else {
+                        loader([name: l.name]) {
+                            if (l['import'] != null) {
+                                'import'(l['import'])
+                            }
+
+                            if (l['module-path'] != null) {
+                                'module-path'([name: l['module-path']])
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Writes the following tags into a xml
      *  <properties>
      *     <property name="my.property" value="foo"/>

@@ -196,7 +196,7 @@ abstract class Builder<T extends JBossModule> extends Xsd {
     }
 
     /**
-     * To parse a root element <configuration> only for xsd-1.0
+     * To parse a root element <configuration>.
      *
      * @param xml
      * @param jbModule

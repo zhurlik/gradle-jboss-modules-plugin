@@ -25,8 +25,6 @@ class JBossModule {
     def Ver ver = V_1_1
     def boolean moduleAlias = false
     def boolean moduleAbsent = false
-
-    // only for 1.0
     def String defaultLoader
     def boolean moduleConfiguration = false
     // A defined loader. More than one loader may be defined.

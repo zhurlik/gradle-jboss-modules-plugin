@@ -22,7 +22,7 @@ class Xsd1_1 extends Builder<JBossModule> {
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {
         assert jmodule != null, 'JBossModule is null'
-        assert jmodule.moduleName != null, 'Module name is null'
+        assert (jmodule.moduleName != null || jmodule.moduleConfiguration) , 'Module name is null'
 
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
@@ -31,6 +31,8 @@ class Xsd1_1 extends Builder<JBossModule> {
 
         if (jmodule.isModuleAlias()) {
             writeModuleAlias(jmodule, xml)
+        } else if (jmodule.isModuleConfiguration()) {
+            writeConfiguration(jmodule, xml)
         } else {
             // <module xmlns="urn:jboss:module:1.1" name="org.jboss.msc">
             xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {

@@ -1,5 +1,4 @@
 package com.zhurlik.extension
-
 import com.zhurlik.descriptor.Builder
 import groovy.util.logging.Slf4j
 import org.gradle.api.Project
@@ -13,8 +12,7 @@ import static com.zhurlik.descriptor.BuilderFactory.getBuilder
 import static java.io.File.separator
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assert.assertTrue
 /**
  * Unit test to check all cases to create JBoss Module.
  *
@@ -40,6 +38,72 @@ class JBossModule1_1Test {
         if (projectDir.exists() && projectDir.isDirectory()) {
             assert projectDir.deleteDir()
         }
+    }
+
+    @Test
+    public void testConfigurationTag() throws Exception {
+        // 1
+        try {
+            module = new JBossModule('testModule')
+            module.ver = V_1_1
+            module.moduleName = 'my.module'
+            module.moduleConfiguration = true
+            assert false
+        } catch (AssertionError ex) {
+            assertTrue 'Case1:', true
+        }
+
+        //2
+        module = new JBossModule('testModule')
+        module.ver = V_1_1
+        module.moduleName = 'my.module'
+        module.moduleConfiguration = true
+        module.defaultLoader = 'test-default1'
+        String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<configuration xmlns='urn:jboss:module:1.1' default-loader='test-default1'>\n" +
+                "  <loader name='test-default1' />\n" +
+                "</configuration>"
+        assertEquals 'Case2:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        //3
+        module = new JBossModule('testModule')
+        module.ver = V_1_1
+        module.moduleName = 'my.module'
+        module.moduleConfiguration = true
+        module.defaultLoader = '_test-default1'
+        module.loaders = ['_test-default1', [name: 'loader2']]
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<configuration xmlns='urn:jboss:module:1.1' default-loader='_test-default1'>\n" +
+                "  <loader name='_test-default1' />\n" +
+                "  <loader name='loader2' />\n" +
+                "</configuration>"
+        assertEquals 'Case3:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        //4
+        module = new JBossModule('testModule')
+        module.ver = V_1_1
+        module.moduleName = 'my.module'
+        module.moduleConfiguration = true
+        module.defaultLoader = '_test-default1'
+        module.loaders = ['_test-default1', [name: 'loader2'], [name: 'loader3', import: 'test-import'], [name: 'loader4', 'module-path': 'test-path']]
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<configuration xmlns='urn:jboss:module:1.1' default-loader='_test-default1'>\n" +
+                "  <loader name='_test-default1' />\n" +
+                "  <loader name='loader2' />\n" +
+                "  <loader name='loader3'>\n" +
+                "    <import>test-import</import>\n" +
+                "  </loader>\n" +
+                "  <loader name='loader4'>\n" +
+                "    <module-path name='test-path' />\n" +
+                "  </loader>\n" +
+                "</configuration>"
+        assertEquals 'Case4:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
 
     @Test

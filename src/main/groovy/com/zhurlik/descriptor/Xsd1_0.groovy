@@ -26,29 +26,7 @@ class Xsd1_0 extends Builder<JBossModule> {
         writeXmlDeclaration(xml)
 
         if (jmodule.isModuleConfiguration()) {
-            assert jmodule.defaultLoader != null, 'Default-Loader is null'
-
-            xml.configuration([xmlns: 'urn:jboss:module:' + getVersion().number, 'default-loader': jmodule.defaultLoader]) {
-                if (jmodule.loaders.empty) {
-                    loader([name: jmodule.defaultLoader])
-                }
-
-                jmodule.loaders.each { l ->
-                    if (l instanceof String) {
-                        loader([name: l])
-                    } else {
-                        loader([name: l.name]) {
-                            if (l['import'] != null) {
-                                'import'(l['import'])
-                            }
-
-                            if (l['module-path'] != null) {
-                                'module-path'([name: l['module-path']])
-                            }
-                        }
-                    }
-                }
-            }
+            writeConfiguration(jmodule, xml)
         } else {
             // <module xmlns="urn:jboss:module:1.0" name="org.jboss.msc">
             xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {

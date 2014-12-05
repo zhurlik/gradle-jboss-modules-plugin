@@ -42,7 +42,6 @@ class Xsd1_1 extends Builder<JBossModule> {
                 writeProperties(jmodule, xml)
                 writeResources(jmodule, xml)
                 writeDependencies(jmodule, xml)
-                // todo: <xsd:element name="system" type="systemDependencyType">
             }
         }
 

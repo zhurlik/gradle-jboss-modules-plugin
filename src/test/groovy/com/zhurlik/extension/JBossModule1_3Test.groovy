@@ -41,6 +41,23 @@ class JBossModule1_3Test {
     }
 
     @Test
+    public void testModuleAliasTag() throws Exception {
+        // 1
+        module = new JBossModule('testModule')
+        module.ver = V_1_3
+        module.moduleName = 'my.module'
+        module.slot = '1.0'
+        module.targetName = 'testTarget'
+        module.setModuleAlias(true)
+        String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module-alias xmlns='urn:jboss:module:1.3' name='my.module' slot='1.0' target-name='testTarget' />"
+        assertEquals 'Case1:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+    }
+
+
+    @Test
     public void testModuleTag() throws Exception {
         // 1
         module = new JBossModule('testModule')
@@ -168,7 +185,7 @@ class JBossModule1_3Test {
                 "  <dependencies>\n" +
                 "    <module name='module1' />\n" +
                 "    <module name='module2' />\n" +
-                "    <module name='module3' slot='1.3' services='none' optional='true' export='false'>\n" +
+                "    <module export='false' name='module3' optional='true' services='none' slot='1.3'>\n" +
                 "      <imports>\n" +
                 "        <exclude-set>\n" +
                 "          <path name='exclude1' />\n" +
@@ -188,7 +205,7 @@ class JBossModule1_3Test {
                 "  <dependencies>\n" +
                 "    <module name='module1' />\n" +
                 "    <module name='module2' />\n" +
-                "    <module services='none' export='false' name='module3' optional='true' slot='1.3'>\n" +
+                "    <module export='false' name='module3' optional='true' services='none' slot='1.3'>\n" +
                 "      <imports>\n" +
                 "        <exclude-set>\n" +
                 "          <path name='exclude1' />\n" +
@@ -202,6 +219,85 @@ class JBossModule1_3Test {
                 "  </dependencies>\n" +
                 "</module>", builder.makeModule(xml).moduleDescriptor
     }
+
+    @Test
+    public void testDependencies() throws Exception {
+        //1
+        module = new JBossModule('testModule')
+        module.ver = V_1_3
+        module.moduleName = 'my.module'
+        module.dependencies = [[type: 'system']]
+        String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:1.3' name='my.module'>\n" +
+                "  <dependencies>\n" +
+                "    <system />\n" +
+                "  </dependencies>\n" +
+                "</module>"
+        assertEquals 'Case1:', xml, module.moduleDescriptor
+        assert !module.valid
+
+        // 2
+        module = new JBossModule('testModule')
+        module.ver = V_1_3
+        module.moduleName = 'my.module'
+        module.dependencies = ['module1', 'module2',
+                               [name   : 'module3', slot: '1.3', services: 'none', optional: true, export: 'false',
+                                imports: [exclude: ['exclude1', 'exclude2']],
+                                exports: [include: '**']
+                               ],
+                               [type: 'system', paths: 'test-path'],
+                               [type: 'system', export: true, paths: ['path1', 'path2'], exports: [exclude: ['exclude1', 'exclude2']]],
+                               [type: 'system', export: false, paths: 'test-path', exports: [include: '**']]
+        ]
+        module.slot = '1.0'
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:1.3' name='my.module' slot='1.0'>\n" +
+                "  <dependencies>\n" +
+                "    <module name='module1' />\n" +
+                "    <module name='module2' />\n" +
+                "    <module export='false' name='module3' optional='true' services='none' slot='1.3'>\n" +
+                "      <imports>\n" +
+                "        <exclude-set>\n" +
+                "          <path name='exclude1' />\n" +
+                "          <path name='exclude2' />\n" +
+                "        </exclude-set>\n" +
+                "      </imports>\n" +
+                "      <exports>\n" +
+                "        <include path='**' />\n" +
+                "      </exports>\n" +
+                "    </module>\n" +
+                "    <system>\n" +
+                "      <paths>\n" +
+                "        <path name='test-path' />\n" +
+                "      </paths>\n" +
+                "    </system>\n" +
+                "    <system export='true'>\n" +
+                "      <paths>\n" +
+                "        <path name='path1' />\n" +
+                "        <path name='path2' />\n" +
+                "      </paths>\n" +
+                "      <exports>\n" +
+                "        <exclude-set>\n" +
+                "          <path name='exclude1' />\n" +
+                "          <path name='exclude2' />\n" +
+                "        </exclude-set>\n" +
+                "      </exports>\n" +
+                "    </system>\n" +
+                "    <system>\n" +
+                "      <paths>\n" +
+                "        <path name='test-path' />\n" +
+                "      </paths>\n" +
+                "      <exports>\n" +
+                "        <include path='**' />\n" +
+                "      </exports>\n" +
+                "    </system>\n" +
+                "  </dependencies>\n" +
+                "</module>"
+        assertEquals 'Case2:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+    }
+
 
     @Test
     /**

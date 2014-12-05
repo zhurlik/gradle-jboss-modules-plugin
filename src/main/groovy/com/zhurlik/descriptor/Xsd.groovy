@@ -37,7 +37,6 @@ abstract class Xsd {
         xml.'module-alias'(attrs)
     }
 
-
     /**
      * Writes <main-class name="org.jboss.msc.Version"/>
      *
@@ -227,6 +226,9 @@ abstract class Xsd {
      *            </exclude-set>
      *         </imports>
      *      </module>
+     *      <system>
+     *          ...
+     *      </system>
      *  </dependencies>
      *
      * @param jmodule current module
@@ -235,86 +237,170 @@ abstract class Xsd {
     protected void writeDependencies(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!jmodule.dependencies.isEmpty()) {
             xml.dependencies {
-                jmodule.dependencies.each() { dep ->
-                    // Attribute	Type	Required?	Description
-                    //name:	        string	    Yes	    The name of the module upon which this module depends.
-                    //slot:	        string	    No	    The version slot of the module upon which this module depends; defaults to "main".
-                    //export:	    boolean	    No	    Specify whether this dependency is re-exported by default; if not specified, defaults to "false".
-                    //services;	    enum	    No      Specify whether this dependency's services* are imported and/or exported. Possible values are "none", "import", or "export"; defaults to "none".
-                    //optional:	    boolean	    No	    Specify whether this dependency is optional; defaults to "false".
-                    if (dep instanceof String) {
-                        xml.module(name: dep)
-                        // next dependency
-                        return
-                    }
+                // modules
+                writeModulesUnderDeps(jmodule, xml)
 
-                    if (dep.services != null) {
-                        assert dep.services in ['none', 'import', 'export']
-                    }
+                // systems
+                writeSystemsUnderDeps(jmodule, xml)
+            }
+        }
+    }
 
-                    if (dep.export != null) {
-                        assert dep.export.toString() in ['true', 'false']
-                    }
+    /**
+     * To generate a tag for
+     *      <xsd:element name="module" type="moduleDependencyType">
+     *           <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+     *               <documentation>
+     *                   A specified module dependency.
+     *               </documentation>
+     *           </annotation>
+     *       </xsd:element>
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference for xml
+     */
+    def void writeModulesUnderDeps(final JBossModule jmodule, final MarkupBuilder xml) {
+        // by default everything is module
+        jmodule.dependencies.findAll({ !(it instanceof Map && it.type == 'system') }).each { dep ->
+            // Attribute	Type	Required?	Description
+            //name:	        string	    Yes	    The name of the module upon which this module depends.
+            //slot:	        string	    No	    The version slot of the module upon which this module depends; defaults to "main".
+            //export:	    boolean	    No	    Specify whether this dependency is re-exported by default; if not specified, defaults to "false".
+            //services;	    enum	    No      Specify whether this dependency's services* are imported and/or exported. Possible values are "none", "import", or "export"; defaults to "none".
+            //optional:	    boolean	    No	    Specify whether this dependency is optional; defaults to "false".
+            if (dep instanceof String) {
+                xml.module(name: dep)
+                // next dependency
+                return
+            }
 
-                    if (dep.optional != null) {
-                        assert dep.optional.toString() in ['true', 'false']
-                    }
+            if (dep.services != null) {
+                assert dep.services in ['none', 'import', 'export']
+            }
 
-                    if (dep.exports == null && dep.imports == null) {
-                        xml.module(dep)
-                    } else {
-                        xml.module(dep.findAll() { el -> el.key in ['name', 'slot', 'export', 'optional', 'services'] }) {
-                            // imports
-                            if (dep.imports != null) {
-                                xml.imports() {
-                                    // include
-                                    if (dep.imports.include != null) {
-                                        if (dep.imports.include instanceof String || dep.imports.include.size() == 1) {
-                                            xml.'include'(path: dep.imports.include.toString())
-                                        } else if (dep.imports.include.size() > 1) {
-                                            xml.'include-set'() {
-                                                dep.imports.include.each() { xml.'path'(name: it) }
-                                            }
-                                        }
-                                    }
+            if (dep.export != null) {
+                assert dep.export.toString() in ['true', 'false']
+            }
 
-                                    // exclude
-                                    if (dep.imports.exclude != null) {
-                                        if (dep.imports.exclude instanceof String || dep.imports.exclude.size() == 1) {
-                                            xml.'exclude'(path: dep.imports.exclude.toString())
-                                        } else if (dep.imports.exclude.size() > 1) {
-                                            xml.'exclude-set'() {
-                                                dep.imports.exclude.each() { xml.'path'(name: it) }
-                                            }
-                                        }
+            if (dep.optional != null) {
+                assert dep.optional.toString() in ['true', 'false']
+            }
+
+            if (dep.exports == null && dep.imports == null) {
+                xml.module(dep.sort())
+            } else {
+                xml.module(dep.findAll() { el -> el.key in ['name', 'slot', 'export', 'optional', 'services'] }.sort()) {
+                    // imports
+                    if (dep.imports != null) {
+                        xml.imports() {
+                            // include
+                            if (dep.imports.include != null) {
+                                if (dep.imports.include instanceof String || dep.imports.include.size() == 1) {
+                                    xml.'include'(path: dep.imports.include.toString())
+                                } else if (dep.imports.include.size() > 1) {
+                                    xml.'include-set'() {
+                                        dep.imports.include.each() { xml.'path'(name: it) }
                                     }
                                 }
                             }
 
-                            // exports
-                            if (dep.exports != null) {
-                                xml.exports() {
-                                    // include
-                                    if (dep.exports.include != null) {
-                                        if (dep.exports.include instanceof String || dep.exports.include.size() == 1) {
-                                            xml.'include'(path: dep.exports.include.toString())
-                                        } else if (dep.exports.include.size() > 1) {
-                                            xml.'include-set'() {
-                                                dep.exports.include.each() { xml.'path'(name: it) }
-                                            }
-                                        }
+                            // exclude
+                            if (dep.imports.exclude != null) {
+                                if (dep.imports.exclude instanceof String || dep.imports.exclude.size() == 1) {
+                                    xml.'exclude'(path: dep.imports.exclude.toString())
+                                } else if (dep.imports.exclude.size() > 1) {
+                                    xml.'exclude-set'() {
+                                        dep.imports.exclude.each() { xml.'path'(name: it) }
                                     }
+                                }
+                            }
+                        }
+                    }
 
-                                    // exclude
-                                    if (dep.exports.exclude != null) {
-                                        if (dep.exports.exclude instanceof String || dep.exports.exclude.size() == 1) {
-                                            xml.'exclude'(path: dep.exports.exclude.toString())
-                                        } else if (dep.exports.exclude.size() > 1) {
-                                            xml.'exclude-set'() {
-                                                dep.exports.exclude.each() { xml.'path'(name: it) }
-                                            }
-                                        }
+                    // exports
+                    if (dep.exports != null) {
+                        xml.exports() {
+                            // include
+                            if (dep.exports.include != null) {
+                                if (dep.exports.include instanceof String || dep.exports.include.size() == 1) {
+                                    xml.'include'(path: dep.exports.include.toString())
+                                } else if (dep.exports.include.size() > 1) {
+                                    xml.'include-set'() {
+                                        dep.exports.include.each() { xml.'path'(name: it) }
                                     }
+                                }
+                            }
+
+                            // exclude
+                            if (dep.exports.exclude != null) {
+                                if (dep.exports.exclude instanceof String || dep.exports.exclude.size() == 1) {
+                                    xml.'exclude'(path: dep.exports.exclude.toString())
+                                } else if (dep.exports.exclude.size() > 1) {
+                                    xml.'exclude-set'() {
+                                        dep.exports.exclude.each() { xml.'path'(name: it) }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     *  To generate a tag for
+     *      <xsd:element name="system" type="systemDependencyType">
+     *            <annotation xmlns="http://www.w3.org/2001/XMLSchema">
+     *               <documentation>
+     *                   A dependency on the system (or embedding) class loader.
+     *               </documentation>
+     *           </annotation>
+     *       </xsd:element>
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference for xml
+     */
+    def void writeSystemsUnderDeps(final JBossModule jmodule, final MarkupBuilder xml) {
+        jmodule.dependencies.findAll({ it instanceof Map && it.type == 'system' }).each {dep ->
+
+            // Specifies whether this module dependency is re-exported by default (default is "false")
+            xml.system((dep.export in [null, ''] || !dep.export) ? null : [export: dep.export]){
+
+                // paths: the list of paths which are applicable for this system dependency.
+                if (dep.paths instanceof String) {
+                    xml.paths {
+                        xml.path([name: dep.paths])
+                    }
+                } else if (dep.paths instanceof List) {
+                    xml.paths {
+                        dep.paths.each {
+                            xml.path([name: it])
+                        }
+                    }
+                }
+
+                // exports: a filter used to restrict what packages or directories from this dependency are re-exported by this module
+                if (!(dep.exports in ['', null])) {
+                    xml.exports() {
+                        // include
+                        if (dep.exports.include != null) {
+                            if (dep.exports.include instanceof String || dep.exports.include.size() == 1) {
+                                xml.'include'(path: dep.exports.include.toString())
+                            } else if (dep.exports.include.size() > 1) {
+                                xml.'include-set'() {
+                                    dep.exports.include.each() { xml.'path'(name: it) }
+                                }
+                            }
+                        }
+
+                        // exclude
+                        if (dep.exports.exclude != null) {
+                            if (dep.exports.exclude instanceof String || dep.exports.exclude.size() == 1) {
+                                xml.'exclude'(path: dep.exports.exclude.toString())
+                            } else if (dep.exports.exclude.size() > 1) {
+                                xml.'exclude-set'() {
+                                    dep.exports.exclude.each() { xml.'path'(name: it) }
                                 }
                             }
                         }

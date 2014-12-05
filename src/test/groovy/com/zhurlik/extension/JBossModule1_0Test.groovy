@@ -230,7 +230,7 @@ class JBossModule1_0Test {
                 "  <dependencies>\n" +
                 "    <module name='module1' />\n" +
                 "    <module name='module2' />\n" +
-                "    <module name='module3' slot='1.3' services='none' optional='true' export='false'>\n" +
+                "    <module export='false' name='module3' optional='true' services='none' slot='1.3'>\n" +
                 "      <imports>\n" +
                 "        <exclude-set>\n" +
                 "          <path name='exclude1' />\n" +
@@ -250,7 +250,7 @@ class JBossModule1_0Test {
                 "  <dependencies>\n" +
                 "    <module name='module1' />\n" +
                 "    <module name='module2' />\n" +
-                "    <module services='none' export='false' name='module3' optional='true' slot='1.3'>\n" +
+                "    <module export='false' name='module3' optional='true' services='none' slot='1.3'>\n" +
                 "      <imports>\n" +
                 "        <exclude-set>\n" +
                 "          <path name='exclude1' />\n" +

@@ -75,25 +75,25 @@ abstract class Builder<T extends JBossModule> extends Xsd {
                 def complexEl = [:]
 
                 if (r.attributes().size() == 1) {
-                    complexEl.path = r.@path.toString()
+                    complexEl.path = r.@path.text()
                 } else {
-                    complexEl.name = r.@name.toString()
-                    complexEl.path = r.@path.toString()
+                    complexEl.name = r.@name.text()
+                    complexEl.path = r.@path.text()
                 }
 
                 r.filter.each() { f ->
                     def filter = [:]
                     f.include.each() {
-                        filter.include = f.include.@path.toString()
+                        filter.include = f.include.@path.text()
                     }
                     f.exclude.each() {
-                        filter.exclude = f.exclude.@path.toString()
+                        filter.exclude = f.exclude.@path.text()
                     }
                     if (f.'exclude-set'.children().size() > 0) {
-                        filter.exclude = f.'exclude-set'.path.collect() { it.@name.toString() }
+                        filter.exclude = f.'exclude-set'.path.collect() { it.@name.text() }
                     }
                     if (f.'include-set'.children().size() > 0) {
-                        filter.include = f.'include-set'.path.collect() { it.@name.toString() }
+                        filter.include = f.'include-set'.path.collect() { it.@name.text() }
                     }
                     complexEl.filter = filter
                 }
@@ -106,69 +106,26 @@ abstract class Builder<T extends JBossModule> extends Xsd {
         xml.exports.each() {
             def map = [:]
             it.include.each() {
-                map.include = it.@path.toString()
+                map.include = it.@path.text()
             }
             it.exclude.each() {
-                map.exclude = it.@path.toString()
+                map.exclude = it.@path.text()
             }
             if (it.'exclude-set'.children().size() > 0) {
-                map.exclude = it.'exclude-set'.path.collect() { it.@name.toString() }
+                map.exclude = it.'exclude-set'.path.collect() { it.@name.text() }
             }
             if (it.'include-set'.children().size() > 0) {
-                map.include = it.'include-set'.path.collect() { it.@name.toString() }
+                map.include = it.'include-set'.path.collect() { it.@name.text() }
             }
             jbModule.exports = map
         }
 
         xml.dependencies.each() {
-            it.module.each() { d ->
-                def dep = [:]
-                if (d.attributes().size() == 1) {
-                    dep.name = d.@name.toString()
-                } else {
-                    d.attributes().each() {
-                        dep[it.key] = it.value
-                    }
-                }
+            // modules
+            parseModules(it, jbModule)
 
-                // imports
-                d.imports.each() {
-                    def map = [:]
-                    it.include.each() {
-                        map.include = it.@path.toString()
-                    }
-                    it.exclude.each() {
-                        map.exclude = it.@path.toString()
-                    }
-                    if (it.'exclude-set'.children().size() > 0) {
-                        map.exclude = it.'exclude-set'.path.collect() { it.@name.toString() }
-                    }
-                    if (it.'include-set'.children().size() > 0) {
-                        map.include = it.'include-set'.path.collect() { it.@name.toString() }
-                    }
-                    dep.imports = map
-                }
-
-                // exports
-                d.exports.each() {
-                    def map = [:]
-                    it.include.each() {
-                        map.include = it.@path.toString()
-                    }
-                    it.exclude.each() {
-                        map.exclude = it.@path.toString()
-                    }
-                    if (it.'exclude-set'.children().size() > 0) {
-                        map.exclude = it.'exclude-set'.path.collect() { it.@name.toString() }
-                    }
-                    if (it.'include-set'.children().size() > 0) {
-                        map.include = it.'include-set'.path.collect() { it.@name.toString() }
-                    }
-                    dep.exports = map
-                }
-
-                jbModule.dependencies.add(dep)
-            }
+            // systems
+            parseSystems(it, jbModule)
         }
 
         log.debug '>> Module: \'{}\' has been created', jbModule.name
@@ -176,7 +133,115 @@ abstract class Builder<T extends JBossModule> extends Xsd {
     }
 
     /**
+     * To parse <xsd:complexType name="systemDependencyType">
+     *
+     * @param it a little bit of xml
+     * @param jbModule
+     * @return
+     */
+    def parseSystems(def it, final JBossModule jbModule) {
+        it.system.each() { s ->
+            def system = [:]
+
+            if(s.@export.toBoolean() == true) {
+                system.export = true
+            }
+
+            // paths
+            def paths = []
+            system.type = 'system'
+
+            s.paths.each {
+                paths += it.path.collect({it.@name.text()})
+            }
+
+            if (!paths.empty) {
+                system.paths = paths
+            }
+
+            // exports
+            s.exports.each() {
+                def map = [:]
+                it.include.each() {
+                    map.include = it.@path.text()
+                }
+                it.exclude.each() {
+                    map.exclude = it.@path.text()
+                }
+                if (it.'exclude-set'.children().size() > 0) {
+                    map.exclude = it.'exclude-set'.path.collect() { it.@name.text() }
+                }
+                if (it.'include-set'.children().size() > 0) {
+                    map.include = it.'include-set'.path.collect() { it.@name.text() }
+                }
+                system.exports = map
+            }
+
+            jbModule.dependencies.add(system)
+        }
+    }
+
+    /**
+     * To parse <xsd:complexType name="moduleDependencyType">
+     *
+     * @param it a little bit of xml
+     * @param jbModule
+     * @return
+     */
+    def parseModules(def it, final JBossModule jbModule) {
+        it.module.each() { d ->
+            def dep = [:]
+            if (d.attributes().size() == 1) {
+                dep.name = d.@name.toString()
+            } else {
+                d.attributes().each() {
+                    dep[it.key] = it.value
+                }
+            }
+
+            // imports
+            d.imports.each() {
+                def map = [:]
+                it.include.each() {
+                    map.include = it.@path.text()
+                }
+                it.exclude.each() {
+                    map.exclude = it.@path.text()
+                }
+                if (it.'exclude-set'.children().size() > 0) {
+                    map.exclude = it.'exclude-set'.path.collect() { it.@name.text() }
+                }
+                if (it.'include-set'.children().size() > 0) {
+                    map.include = it.'include-set'.path.collect() { it.@name.text() }
+                }
+                dep.imports = map
+            }
+
+            // exports
+            d.exports.each() {
+                def map = [:]
+                it.include.each() {
+                    map.include = it.@path.text()
+                }
+                it.exclude.each() {
+                    map.exclude = it.@path.text()
+                }
+                if (it.'exclude-set'.children().size() > 0) {
+                    map.exclude = it.'exclude-set'.path.collect() { it.@name.text() }
+                }
+                if (it.'include-set'.children().size() > 0) {
+                    map.include = it.'include-set'.path.collect() { it.@name.text() }
+                }
+                dep.exports = map
+            }
+
+            jbModule.dependencies.add(dep)
+        }
+    }
+
+    /**
      * To parse a root element for a module alias declaration.
+     *
      * @param jbModule
      * @param xml
      */
@@ -204,25 +269,25 @@ abstract class Builder<T extends JBossModule> extends Xsd {
     private void parseConfigurationTag(GPathResult xml, JBossModule jbModule) {
 
         jbModule.moduleConfiguration = true
-        jbModule.defaultLoader = xml.@'default-loader'.toString()
+        jbModule.defaultLoader = xml.@'default-loader'.text()
 
         xml.loader.each { l ->
             def el = [:]
-            el.name = l.@name.toString()
+            el.name = l.@name.text()
 
             l.import.each {
                 el.import = it.text()
             }
 
             l.'module-path'.each {
-                el['module-path'] = it.@name.toString()
+                el['module-path'] = it.@name.text()
             }
 
             jbModule.loaders.add(el)
         }
 
         if (jbModule.loaders.empty) {
-            jbModule.loaders.add(xml.@'default-loader'.toString())
+            jbModule.loaders.add(xml.@'default-loader'.text())
         }
     }
 

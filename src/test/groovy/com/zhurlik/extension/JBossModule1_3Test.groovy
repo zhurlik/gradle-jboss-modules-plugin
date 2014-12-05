@@ -306,6 +306,7 @@ class JBossModule1_3Test {
         module.moduleName = 'my.module'
         module.slot = '1.0'
         module.permissions = [
+                'permission0',
                 [permission: 'permission1'],
                 [permission: 'permission2', name: 'test-name', actions: 'test-actions']
         ]
@@ -313,6 +314,7 @@ class JBossModule1_3Test {
         String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.3' name='my.module' slot='1.0'>\n" +
                 "  <permissions>\n" +
+                "    <grant permission='permission0' />\n" +
                 "    <grant permission='permission1' />\n" +
                 "    <grant actions='test-actions' name='test-name' permission='permission2' />\n" +
                 "  </permissions>\n" +

@@ -176,7 +176,11 @@ abstract class Xsd {
         if (!jmodule.permissions.isEmpty()) {
             xml.permissions {
                 jmodule.permissions.each {
-                    grant(it.sort())
+                    if (it instanceof String) {
+                        grant([permission: it])
+                    } else {
+                        grant(it.sort())
+                    }
                 }
             }
         }

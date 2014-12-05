@@ -78,7 +78,9 @@ abstract class Xsd {
     }
 
     /**
-     * Writes <main-class name="org.jboss.msc.Version"/>
+     *  Specifies the main class of this module; used to run the module from the command-line (optional).
+     *  <br/>
+     *  See <xsd:element name="main-class" type="classNameType" minOccurs="0">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
@@ -94,10 +96,12 @@ abstract class Xsd {
      *  <exports>
      *      <exclude path="..."/>
      *  </exports>
-     *
+     * <p>
      *   Lists filter expressions to apply to the export filter of the local resources of this module
      *   (optional). By default, everything is exported. If filter expressions are provided, the default
      *   action is to accept all paths if no filters match.
+     * </p>
+     * See <xsd:element name="exports" type="filterType" minOccurs="0">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
@@ -169,10 +173,13 @@ abstract class Xsd {
     }
 
     /**
-     * Writes the following tags into a xml
+     * Writes lists the user-defined properties to be associated with this module (optional).
      *  <properties>
      *     <property name="my.property" value="foo"/>
      *  </properties>
+     *
+     *  <br/>
+     *  See <xsd:element name="properties" type="propertyListType" minOccurs="0">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
@@ -188,17 +195,18 @@ abstract class Xsd {
     }
 
     /**
-     * Writes the following tags into a xml
+     * Writes a list of permissions that this module requires.
      *  <permissions>
      *    <grant .../>
      *  </permissions>
+     * <p>Lists the requested permission set for this module. If the requested permissions cannot be assigned, the module cannot be loaded.</p>
      *
-     *  <xsd:element name="permissions" type="permissionsType" minOccurs="0">
+     * See <xsd:element name="permissions" type="permissionsType" minOccurs="0">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
      */
-    protected void writePermissions(final JBossModule jmodule, final MarkupBuilder xml) {
+    protected void writePermissionsType(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!jmodule.permissions.isEmpty()) {
             xml.permissions {
                 jmodule.permissions.each {
@@ -213,12 +221,16 @@ abstract class Xsd {
     }
 
     /**
-     *  To generate <xsd:element name="resource-root" type="resourceType">
+     *  Writes a resource root within a deployment.
+     *
+     *  <p>A resource root within this deployment.</p>
+     *
+     *  See <xsd:element name="resource-root" type="resourceType">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
      */
-    protected void writeResourceRoots(final JBossModule jmodule, final MarkupBuilder xml) {
+    protected void writeResourceType(final JBossModule jmodule, final MarkupBuilder xml) {
         jmodule.resources.findAll({
             !((it instanceof Map) && (it.type in ['artifact', 'native-artifact']))
         }).each() { res ->
@@ -264,7 +276,13 @@ abstract class Xsd {
     }
 
     /**
-     *  To generate either <xsd:element name="artifact" type="artifactType"> or <xsd:element name="native-artifact" type="artifactType">
+     *  Writes a maven artifact within this deployment.
+     *
+     *  <p>A maven native artifact within this deployment. This is a jar that contains a lib/ directory
+     *  with corresponding platform directories and binaries. This element will cause the jar to
+     *  be unzipped within the artifact's local repository directory.</p>
+     *
+     *  See either <xsd:element name="artifact" type="artifactType"> or <xsd:element name="native-artifact" type="artifactType">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
@@ -281,7 +299,7 @@ abstract class Xsd {
     }
 
     /**
-     * Writes the following tags into a xml
+     * Writes a list of zero or more resource roots for this deployment.
      *  <resources>
      *      <resource-root path="jboss-msc-1.0.1.GA.jar" name="bla-bla">
      *          <filter>
@@ -295,15 +313,18 @@ abstract class Xsd {
      *      <artifact .../>
      *      <native-artifact .../>
      *  </resources>
+     *  <p>Lists the resource roots of this module (optional).</p>
+     *
+     *  See <xsd:element name="resources" type="resourcesType" minOccurs="0">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
      */
-    protected void writeResources(final JBossModule jmodule, final MarkupBuilder xml) {
+    protected void writeResourcesType(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!jmodule.resources.isEmpty()) {
             xml.resources {
                 // <resource-root>
-                writeResourceRoots(jmodule, xml)
+                writeResourceType(jmodule, xml)
 
                 // either <artifact> or <native-artifact>
                 writeArtifacts(jmodule, xml)
@@ -312,7 +333,7 @@ abstract class Xsd {
     }
 
     /**
-     * Writes the following tags into a xml
+     * Writes a list of zero or more module dependencies.
      *
      *  <dependencies>
      *      <module name="javax.api"/>
@@ -331,24 +352,26 @@ abstract class Xsd {
      *          ...
      *      </system>
      *  </dependencies>
+     *  <p>Lists the dependencies of this module (optional).</p>
+     *  See <xsd:element name="dependencies" type="dependenciesType" minOccurs="0">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
      */
-    protected void writeDependencies(final JBossModule jmodule, final MarkupBuilder xml) {
+    protected void writeDependenciesType(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!jmodule.dependencies.isEmpty()) {
             xml.dependencies {
                 // modules
-                writeModulesUnderDeps(jmodule, xml)
+                writeModuleDependencyType(jmodule, xml)
 
                 // systems
-                writeSystemsUnderDeps(jmodule, xml)
+                writeSystemDependencyType(jmodule, xml)
             }
         }
     }
 
     /**
-     * To generate a tag for
+     * Writes a specified module dependency.
      *      <xsd:element name="module" type="moduleDependencyType">
      *           <annotation xmlns="http://www.w3.org/2001/XMLSchema">
      *               <documentation>
@@ -356,11 +379,13 @@ abstract class Xsd {
      *               </documentation>
      *           </annotation>
      *       </xsd:element>
+     * <p>A single module dependency expression.</p>
+     * See <xsd:complexType name="moduleDependencyType">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
      */
-    def void writeModulesUnderDeps(final JBossModule jmodule, final MarkupBuilder xml) {
+    def void writeModuleDependencyType(final JBossModule jmodule, final MarkupBuilder xml) {
         // by default everything is module
         jmodule.dependencies.findAll({ !(it instanceof Map && it.type == 'system') }).each { dep ->
             // Attribute	Type	Required?	Description
@@ -450,7 +475,7 @@ abstract class Xsd {
     }
 
     /**
-     *  To generate a tag for
+     *  Writes the list of paths which are applicable for this system dependency.
      *      <xsd:element name="system" type="systemDependencyType">
      *            <annotation xmlns="http://www.w3.org/2001/XMLSchema">
      *               <documentation>
@@ -458,11 +483,14 @@ abstract class Xsd {
      *               </documentation>
      *           </annotation>
      *       </xsd:element>
+     * <p>A dependency on the system (or embedding) class loader.</p>
+     *
+     * See <xsd:element name="system" type="systemDependencyType">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
      */
-    def void writeSystemsUnderDeps(final JBossModule jmodule, final MarkupBuilder xml) {
+    def void writeSystemDependencyType(final JBossModule jmodule, final MarkupBuilder xml) {
         jmodule.dependencies.findAll({ it instanceof Map && it.type == 'system' }).each { dep ->
 
             // Specifies whether this module dependency is re-exported by default (default is "false")

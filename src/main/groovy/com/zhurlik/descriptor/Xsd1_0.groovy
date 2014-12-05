@@ -63,8 +63,8 @@ class Xsd1_0 extends Builder<JBossModule> {
         xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
             writeExports(jmodule, xml)
             writeMainClass(jmodule, xml)
-            writeResources(jmodule, xml)
-            writeDependencies(jmodule, xml)
+            writeResourcesType(jmodule, xml)
+            writeDependenciesType(jmodule, xml)
         }
     }
 }

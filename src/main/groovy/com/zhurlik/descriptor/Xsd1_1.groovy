@@ -62,8 +62,8 @@ class Xsd1_1 extends Builder<JBossModule> {
             writeExports(jmodule, xml)
             writeMainClass(jmodule, xml)
             writeProperties(jmodule, xml)
-            writeResources(jmodule, xml)
-            writeDependencies(jmodule, xml)
+            writeResourcesType(jmodule, xml)
+            writeDependenciesType(jmodule, xml)
         }
     }
 }

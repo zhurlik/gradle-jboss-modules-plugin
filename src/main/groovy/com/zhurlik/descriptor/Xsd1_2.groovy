@@ -1,12 +1,12 @@
 package com.zhurlik.descriptor
-
 import com.zhurlik.Ver
 import com.zhurlik.extension.JBossModule
+import groovy.xml.MarkupBuilder
 
 import javax.xml.transform.stream.StreamSource
 
 import static com.zhurlik.Ver.V_1_2
-
+import static java.io.File.separator
 /**
  * Generates a xml descriptor for JBoss Module ver.1.2
  * https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_2.xsd
@@ -16,8 +16,33 @@ import static com.zhurlik.Ver.V_1_2
 class Xsd1_2 extends Builder<JBossModule> {
 
     @Override
-    String getXmlDescriptor(JBossModule module) {
-        throw new RuntimeException("Not supported yet")
+    String getXmlDescriptor(JBossModule jmodule) {
+        assert jmodule != null, 'JBossModule is null'
+        assert jmodule.moduleName != null, 'Module name is null'
+
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(writer)
+
+        writeXmlDeclaration(xml)
+
+        if (jmodule.isModuleAlias()) {
+            writeModuleAlias(jmodule, xml)
+        } else if (jmodule.isModuleAbsent()) {
+            writeModuleAbsent(jmodule, xml)
+        } else {
+            // <module xmlns="urn:jboss:module:1.3" name="org.jboss.msc">
+            final attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])
+            xml.module(attrs) {
+                writeExports(jmodule, xml)
+                writeMainClass(jmodule, xml)
+                writeProperties(jmodule, xml)
+                writeResources(jmodule, xml)
+                writeDependencies(jmodule, xml)
+                // todo: <xsd:element name="permissions" type="permissionsType" minOccurs="0">
+            }
+        }
+
+        return writer.toString()
     }
 
     @Override
@@ -26,13 +51,8 @@ class Xsd1_2 extends Builder<JBossModule> {
     }
 
     @Override
-    String getPath(JBossModule module) {
-        return null
-    }
-
-    @Override
-    JBossModule makeModule(final String txt) {
-        throw new UnsupportedOperationException("Not implemented yet")
+    String getPath(JBossModule jbModule) {
+        return ['modules', 'system', 'layers', 'base', jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join(separator)
     }
 
     @Override

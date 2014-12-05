@@ -38,6 +38,21 @@ abstract class Xsd {
     }
 
     /**
+     * Writes a root element for an absent module.
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference for xml
+     */
+    protected void writeModuleAbsent(final JBossModule jmodule, final MarkupBuilder xml) {
+        assert jmodule.moduleName != null, 'Module Name is null'
+
+        def attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName]
+        attrs += (jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot]
+
+        xml.'module-absent'(attrs)
+    }
+
+    /**
      * Writes <main-class name="org.jboss.msc.Version"/>
      *
      * @param jmodule current module

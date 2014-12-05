@@ -41,6 +41,8 @@ class Xsd1_3 extends Builder<JBossModule> {
                 writeProperties(jmodule, xml)
                 writeResources(jmodule, xml)
                 writeDependencies(jmodule, xml)
+                // todo: <xsd:element name="permissions" type="permissionsType" minOccurs="0">
+                // todo: <xsd:element name="artifact" type="artifactType">
             }
         }
 
@@ -55,21 +57,6 @@ class Xsd1_3 extends Builder<JBossModule> {
     @Override
     String getPath(JBossModule jbModule) {
         return ['modules', 'system', 'layers', 'base', jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join(separator)
-    }
-
-    /**
-     * Writes a root element for an absent module.
-     *
-     * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
-     */
-    protected void writeModuleAbsent(final JBossModule jmodule, final MarkupBuilder xml) {
-        assert jmodule.moduleName != null, 'Module Name is null'
-
-        def attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName]
-        attrs += (jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot]
-
-        xml.'module-absent'(attrs)
     }
 
     @Override

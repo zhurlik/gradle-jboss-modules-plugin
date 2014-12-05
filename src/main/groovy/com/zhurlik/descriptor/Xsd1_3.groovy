@@ -42,7 +42,6 @@ class Xsd1_3 extends Builder<JBossModule> {
                 writeResources(jmodule, xml)
                 writeDependencies(jmodule, xml)
                 writePermissions(jmodule, xml)
-                // todo: <xsd:element name="artifact" type="artifactType">
             }
         }
 

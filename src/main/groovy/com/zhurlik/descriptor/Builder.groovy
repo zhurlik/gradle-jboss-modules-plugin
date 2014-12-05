@@ -100,6 +100,24 @@ abstract class Builder<T extends JBossModule> extends Xsd {
 
                 jbModule.resources.add(complexEl)
             }
+
+            it.artifact.each {
+                def el = [:]
+                el.type = 'artifact'
+                it.attributes().each {
+                    el.put(it.key, it.value)
+                }
+                jbModule.resources.add(el)
+            }
+
+            it.'native-artifact'.each {
+                def el = [:]
+                el.type = 'native-artifact'
+                it.attributes().each {
+                    el.put(it.key, it.value)
+                }
+                jbModule.resources.add(el)
+            }
         }
 
         // exports

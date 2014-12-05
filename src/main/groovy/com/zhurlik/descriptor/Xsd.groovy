@@ -187,6 +187,72 @@ abstract class Xsd {
     }
 
     /**
+     *  To generate <xsd:element name="resource-root" type="resourceType">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference for xml
+     */
+    protected void writeResourceRoots(final JBossModule jmodule, final MarkupBuilder xml) {
+        jmodule.resources.findAll({ !((it instanceof Map) && (it.type in ['artifact', 'native-artifact'])) }).each() { res ->
+            if (res instanceof String) {
+                xml.'resource-root'(path: res)
+                // next resource
+                return
+            }
+            if (res.filter != null) {
+                xml.'resource-root'(res.findAll() { it.key in ['name', 'path'] }) {
+                    xml.filter() {
+                        // include
+                        if (res.filter.include != null) {
+                            if (res.filter.include instanceof String || res.filter.include.size() == 1) {
+                                xml.'include'(path: res.filter.include.toString())
+                            } else if (res.filter.include.size() > 1) {
+                                xml.'include-set'() {
+                                    res.filter.include.each() {
+                                        xml.'path'(name: it)
+                                    }
+                                }
+                            }
+                        }
+
+                        //exclude
+                        if (res.filter.exclude != null) {
+                            if (res.filter.exclude instanceof String || res.filter.exclude.size() == 1) {
+                                xml.'exclude'(path: res.filter.exclude.toString())
+                            } else if (res.filter.exclude.size() > 1) {
+                                xml.'exclude-set'() {
+                                    res.filter.exclude.each() {
+                                        xml.'path'(name: it)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                xml.'resource-root'(res.findAll() { it.key in ['name', 'path'] })
+            }
+        }
+    }
+
+    /**
+     *  To generate either <xsd:element name="artifact" type="artifactType"> or <xsd:element name="native-artifact" type="artifactType">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference for xml
+     */
+    protected void writeArtifacts(final JBossModule jmodule, final MarkupBuilder xml) {
+        jmodule.resources.findAll({ ((it instanceof Map) && (it.type in ['artifact', 'native-artifact'])) }).each() {
+            // URI that points to the maven artifact "group:artifact:version[:classifier]"
+            if ('artifact' == it.type) {
+                xml.artifact(name: it.name)
+            } else if ('native-artifact' == it.type) {
+                xml.'native-artifact'(name: it.name)
+            }
+        }
+    }
+
+    /**
      * Writes the following tags into a xml
      *  <resources>
      *      <resource-root path="jboss-msc-1.0.1.GA.jar" name="bla-bla">
@@ -198,6 +264,8 @@ abstract class Xsd {
      *              <exclude-set/>
      *          <filter>
      *      <resource-root/>
+     *      <artifact .../>
+     *      <native-artifact .../>
      *  </resources>
      *
      * @param jmodule current module
@@ -206,46 +274,11 @@ abstract class Xsd {
     protected void writeResources(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!jmodule.resources.isEmpty()) {
             xml.resources {
-                jmodule.resources.each() { res ->
-                    if (res instanceof String) {
-                        xml.'resource-root'(path: res)
-                        // next resource
-                        return
-                    }
-                    if (res.filter != null) {
-                        xml.'resource-root'(res.findAll() { it.key in ['name', 'path'] }) {
-                            xml.filter() {
-                                // include
-                                if (res.filter.include != null) {
-                                    if (res.filter.include instanceof String || res.filter.include.size() == 1) {
-                                        xml.'include'(path: res.filter.include.toString())
-                                    } else if (res.filter.include.size() > 1) {
-                                        xml.'include-set'() {
-                                            res.filter.include.each() {
-                                                xml.'path'(name: it)
-                                            }
-                                        }
-                                    }
-                                }
+                // <resource-root>
+                writeResourceRoots(jmodule, xml)
 
-                                //exclude
-                                if (res.filter.exclude != null) {
-                                    if (res.filter.exclude instanceof String || res.filter.exclude.size() == 1) {
-                                        xml.'exclude'(path: res.filter.exclude.toString())
-                                    } else if (res.filter.exclude.size() > 1) {
-                                        xml.'exclude-set'() {
-                                            res.filter.exclude.each() {
-                                                xml.'path'(name: it)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        xml.'resource-root'(res.findAll() { it.key in ['name', 'path'] })
-                    }
-                }
+                // either <artifact> or <native-artifact>
+                writeArtifacts(jmodule, xml)
             }
         }
     }
@@ -402,10 +435,10 @@ abstract class Xsd {
      * @param xml MarkupBuilder to have a reference for xml
      */
     def void writeSystemsUnderDeps(final JBossModule jmodule, final MarkupBuilder xml) {
-        jmodule.dependencies.findAll({ it instanceof Map && it.type == 'system' }).each {dep ->
+        jmodule.dependencies.findAll({ it instanceof Map && it.type == 'system' }).each { dep ->
 
             // Specifies whether this module dependency is re-exported by default (default is "false")
-            xml.system((dep.export in [null, ''] || !dep.export) ? null : [export: dep.export]){
+            xml.system((dep.export in [null, ''] || !dep.export) ? null : [export: dep.export]) {
 
                 // paths: the list of paths which are applicable for this system dependency.
                 if (dep.paths instanceof String) {

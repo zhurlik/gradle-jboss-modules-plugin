@@ -221,6 +221,29 @@ class JBossModule1_3Test {
     }
 
     @Test
+    public void testResources() throws Exception {
+        //1
+        module = new JBossModule('testModule')
+        module.ver = V_1_3
+        module.moduleName = 'my.module'
+        module.resources = ['res1',
+                            [type: 'artifact', name: 'group:module:1.0'],
+                            [type: 'native-artifact', name: 'group:module:1.1']
+        ]
+        String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:1.3' name='my.module'>\n" +
+                "  <resources>\n" +
+                "    <resource-root path='res1' />\n" +
+                "    <artifact name='group:module:1.0' />\n" +
+                "    <native-artifact name='group:module:1.1' />\n" +
+                "  </resources>\n" +
+                "</module>"
+        assertEquals 'Case1:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+    }
+
+    @Test
     public void testDependencies() throws Exception {
         //1
         module = new JBossModule('testModule')
@@ -323,8 +346,6 @@ class JBossModule1_3Test {
         assert module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
-
-
 
     @Test
     /**

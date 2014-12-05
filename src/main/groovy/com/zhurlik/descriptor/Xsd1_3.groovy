@@ -9,6 +9,7 @@ import javax.xml.transform.stream.StreamSource
 
 import static com.zhurlik.Ver.V_1_3
 import static java.io.File.separator
+
 /**
  * Generates a xml descriptor for JBoss Module ver.1.3
  * https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_3.xsd
@@ -29,20 +30,11 @@ class Xsd1_3 extends Builder<JBossModule> {
         writeXmlDeclaration(xml)
 
         if (jmodule.isModuleAlias()) {
-            writeModuleAlias(jmodule, xml)
+            writeModuleAliasType(jmodule, xml)
         } else if (jmodule.isModuleAbsent()) {
-            writeModuleAbsent(jmodule, xml)
+            writeModuleAbsentType(jmodule, xml)
         } else {
-            // <module xmlns="urn:jboss:module:1.3" name="org.jboss.msc">
-            final attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])
-            xml.module(attrs) {
-                writeExports(jmodule, xml)
-                writeMainClass(jmodule, xml)
-                writeProperties(jmodule, xml)
-                writeResources(jmodule, xml)
-                writeDependencies(jmodule, xml)
-                writePermissions(jmodule, xml)
-            }
+            writeModuleType(jmodule, xml)
         }
 
         return writer.toString()
@@ -61,5 +53,19 @@ class Xsd1_3 extends Builder<JBossModule> {
     @Override
     protected Ver getVersion() {
         return V_1_3
+    }
+
+    @Override
+    protected void writeModuleType(JBossModule jmodule, MarkupBuilder xml) {
+        // <module xmlns="urn:jboss:module:1.3" name="org.jboss.msc">
+        final attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])
+        xml.module(attrs) {
+            writeExports(jmodule, xml)
+            writeMainClass(jmodule, xml)
+            writeProperties(jmodule, xml)
+            writeResources(jmodule, xml)
+            writeDependencies(jmodule, xml)
+            writePermissions(jmodule, xml)
+        }
     }
 }

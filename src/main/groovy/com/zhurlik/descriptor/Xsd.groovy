@@ -5,7 +5,15 @@ import com.zhurlik.extension.JBossModule
 import groovy.xml.MarkupBuilder
 
 /**
- * To extract common things to write tags to main.xml based on different xsd files.
+ * This class contains main methods to generate and to write tags of a xml descriptor using different xsd files.
+ * <p> See
+ *     <ul>
+ *     <li><a href="https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_0.xsd">module-1_0.xsd</a></li>
+ *     <li><a href="https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_1.xsd">module-1_1.xsd</a></li>
+ *     <li><a href="https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_2.xsd">module-1_2.xsd</a></li>
+ *     <li><a href="https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_3.xsd">module-1_3.xsd</a></li>
+ *     </ul>
+ * </p>
  *
  * @author zhurlik@gmail.com
  */
@@ -14,21 +22,36 @@ abstract class Xsd {
     abstract protected Ver getVersion()
 
     /**
+     * Writes the module declaration type; contains dependencies, resources, and the main class specification.
+     * <p>
+     * Root element for a module declaration.
+     * </p>
+     * See <xsd:element name="module" type="moduleType">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
+     */
+    abstract protected void writeModuleType(final JBossModule jmodule, final MarkupBuilder xml)
+
+    /**
      * Writes <?xml version="1.0" encoding="UTF-8"?>
      *
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writeXmlDeclaration(final MarkupBuilder xml) {
         xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
     }
 
     /**
-     * Writes <module-alias xmlns="urn:jboss:module:1.{1|3}" name="javax.json.api" target-name="org.glassfish.javax.json"/>
+     * Writes a module alias type, which defines the target for a module alias.
+     * <p>Root element for a module alias declaration.</p>
+     * See <xsd:element name="module-alias" type="moduleAliasType">
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
-    protected void writeModuleAlias(final JBossModule jmodule, final MarkupBuilder xml) {
+    protected void writeModuleAliasType(final JBossModule jmodule, final MarkupBuilder xml) {
+        // <module-alias xmlns="urn:jboss:module:1.{1|3}" name="javax.json.api" target-name="org.glassfish.javax.json"/>
         assert jmodule.targetName != null, 'Target Name is null'
 
         def attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName]
@@ -38,12 +61,14 @@ abstract class Xsd {
     }
 
     /**
-     * Writes a root element for an absent module.
+     * Writes an explicitly absent module.
+     * <p>Root element for an absent module.</p>
+     * See <xsd:element name="module-absent" type="moduleAbsentType">
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
-    protected void writeModuleAbsent(final JBossModule jmodule, final MarkupBuilder xml) {
+    protected void writeModuleAbsentType(final JBossModule jmodule, final MarkupBuilder xml) {
         assert jmodule.moduleName != null, 'Module Name is null'
 
         def attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName]
@@ -56,7 +81,7 @@ abstract class Xsd {
      * Writes <main-class name="org.jboss.msc.Version"/>
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writeMainClass(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!(jmodule.mainClass in [null, ''])) {
@@ -75,7 +100,7 @@ abstract class Xsd {
      *   action is to accept all paths if no filters match.
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writeExports(final JBossModule jmodule, final MarkupBuilder xml) {
         // exports
@@ -108,13 +133,14 @@ abstract class Xsd {
     }
 
     /**
-     * Writes a root element for a filesystem module loader configuration.
-     *  <configuration/>
+     * Writes a configuration for the default module loader.
+     * <p>Root element for a filesystem module loader configuration.</p>
+     * See <xsd:element name="configuration" type="configurationType">
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
-    protected void writeConfiguration(final JBossModule jmodule, final MarkupBuilder xml) {
+    protected void writeConfigurationType(final JBossModule jmodule, final MarkupBuilder xml) {
         if (jmodule.isModuleConfiguration()) {
             assert jmodule.defaultLoader != null, 'Default-Loader is null'
 
@@ -149,7 +175,7 @@ abstract class Xsd {
      *  </properties>
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writeProperties(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!jmodule.properties.isEmpty()) {
@@ -170,7 +196,7 @@ abstract class Xsd {
      *  <xsd:element name="permissions" type="permissionsType" minOccurs="0">
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writePermissions(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!jmodule.permissions.isEmpty()) {
@@ -190,10 +216,12 @@ abstract class Xsd {
      *  To generate <xsd:element name="resource-root" type="resourceType">
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writeResourceRoots(final JBossModule jmodule, final MarkupBuilder xml) {
-        jmodule.resources.findAll({ !((it instanceof Map) && (it.type in ['artifact', 'native-artifact'])) }).each() { res ->
+        jmodule.resources.findAll({
+            !((it instanceof Map) && (it.type in ['artifact', 'native-artifact']))
+        }).each() { res ->
             if (res instanceof String) {
                 xml.'resource-root'(path: res)
                 // next resource
@@ -239,7 +267,7 @@ abstract class Xsd {
      *  To generate either <xsd:element name="artifact" type="artifactType"> or <xsd:element name="native-artifact" type="artifactType">
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writeArtifacts(final JBossModule jmodule, final MarkupBuilder xml) {
         jmodule.resources.findAll({ ((it instanceof Map) && (it.type in ['artifact', 'native-artifact'])) }).each() {
@@ -269,7 +297,7 @@ abstract class Xsd {
      *  </resources>
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writeResources(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!jmodule.resources.isEmpty()) {
@@ -305,7 +333,7 @@ abstract class Xsd {
      *  </dependencies>
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writeDependencies(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!jmodule.dependencies.isEmpty()) {
@@ -330,7 +358,7 @@ abstract class Xsd {
      *       </xsd:element>
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
     def void writeModulesUnderDeps(final JBossModule jmodule, final MarkupBuilder xml) {
         // by default everything is module
@@ -432,7 +460,7 @@ abstract class Xsd {
      *       </xsd:element>
      *
      * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference for xml
+     * @param xml MarkupBuilder to have a reference to xml
      */
     def void writeSystemsUnderDeps(final JBossModule jmodule, final MarkupBuilder xml) {
         jmodule.dependencies.findAll({ it instanceof Map && it.type == 'system' }).each { dep ->

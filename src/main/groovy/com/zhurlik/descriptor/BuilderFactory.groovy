@@ -2,13 +2,11 @@ package com.zhurlik.descriptor
 
 import com.zhurlik.Ver
 import com.zhurlik.extension.JBossModule
+import groovy.xml.MarkupBuilder
 
 import javax.xml.transform.stream.StreamSource
 
-import static com.zhurlik.Ver.V_1_0
-import static com.zhurlik.Ver.V_1_1
-import static com.zhurlik.Ver.V_1_2
-import static com.zhurlik.Ver.V_1_3
+import static com.zhurlik.Ver.*
 
 /**
  * A factory to get single instance of AbstractBuilder<T> for corresponded version.
@@ -39,6 +37,11 @@ class BuilderFactory<T extends JBossModule> {
         @Override
         protected Ver getVersion() {
             return null
+        }
+
+        @Override
+        protected void writeModuleType(JBossModule jmodule, MarkupBuilder xml) {
+            //do nothing
         }
     }
 

@@ -1,4 +1,5 @@
 package com.zhurlik.descriptor
+
 import com.zhurlik.Ver
 import com.zhurlik.extension.JBossModule
 import groovy.xml.MarkupBuilder
@@ -7,6 +8,7 @@ import javax.xml.transform.stream.StreamSource
 
 import static com.zhurlik.Ver.V_1_0
 import static java.io.File.separator
+
 /**
  * Generates a xml descriptor for JBoss Module ver.1.0
  * https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_0.xsd
@@ -18,7 +20,7 @@ class Xsd1_0 extends Builder<JBossModule> {
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {
         assert jmodule != null, 'JBossModule is null'
-        assert (jmodule.moduleName != null || jmodule.moduleConfiguration) , 'Module name is null'
+        assert (jmodule.moduleName != null || jmodule.moduleConfiguration), 'Module name is null'
 
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
@@ -26,16 +28,9 @@ class Xsd1_0 extends Builder<JBossModule> {
         writeXmlDeclaration(xml)
 
         if (jmodule.isModuleConfiguration()) {
-            writeConfiguration(jmodule, xml)
+            writeConfigurationType(jmodule, xml)
         } else {
-            // <module xmlns="urn:jboss:module:1.0" name="org.jboss.msc">
-            xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
-
-                writeExports(jmodule, xml)
-                writeMainClass(jmodule, xml)
-                writeResources(jmodule, xml)
-                writeDependencies(jmodule, xml)
-            }
+            writeModuleType(jmodule, xml)
         }
 
         return writer.toString()
@@ -60,5 +55,16 @@ class Xsd1_0 extends Builder<JBossModule> {
     @Override
     protected Ver getVersion() {
         return V_1_0
+    }
+
+    @Override
+    protected void writeModuleType(JBossModule jmodule, MarkupBuilder xml) {
+        // <module xmlns="urn:jboss:module:1.0" name="org.jboss.msc">
+        xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
+            writeExports(jmodule, xml)
+            writeMainClass(jmodule, xml)
+            writeResources(jmodule, xml)
+            writeDependencies(jmodule, xml)
+        }
     }
 }

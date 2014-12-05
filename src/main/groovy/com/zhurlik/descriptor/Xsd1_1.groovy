@@ -22,7 +22,7 @@ class Xsd1_1 extends Builder<JBossModule> {
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {
         assert jmodule != null, 'JBossModule is null'
-        assert (jmodule.moduleName != null || jmodule.moduleConfiguration) , 'Module name is null'
+        assert (jmodule.moduleName != null || jmodule.moduleConfiguration), 'Module name is null'
 
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
@@ -30,19 +30,11 @@ class Xsd1_1 extends Builder<JBossModule> {
         writeXmlDeclaration(xml)
 
         if (jmodule.isModuleAlias()) {
-            writeModuleAlias(jmodule, xml)
+            writeModuleAliasType(jmodule, xml)
         } else if (jmodule.isModuleConfiguration()) {
-            writeConfiguration(jmodule, xml)
+            writeConfigurationType(jmodule, xml)
         } else {
-            // <module xmlns="urn:jboss:module:1.1" name="org.jboss.msc">
-            xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
-
-                writeExports(jmodule, xml)
-                writeMainClass(jmodule, xml)
-                writeProperties(jmodule, xml)
-                writeResources(jmodule, xml)
-                writeDependencies(jmodule, xml)
-            }
+            writeModuleType(jmodule, xml)
         }
 
         return writer.toString()
@@ -61,5 +53,17 @@ class Xsd1_1 extends Builder<JBossModule> {
     @Override
     protected Ver getVersion() {
         return V_1_1
+    }
+
+    @Override
+    protected void writeModuleType(JBossModule jmodule, MarkupBuilder xml) {
+        // <module xmlns="urn:jboss:module:1.1" name="org.jboss.msc">
+        xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
+            writeExports(jmodule, xml)
+            writeMainClass(jmodule, xml)
+            writeProperties(jmodule, xml)
+            writeResources(jmodule, xml)
+            writeDependencies(jmodule, xml)
+        }
     }
 }

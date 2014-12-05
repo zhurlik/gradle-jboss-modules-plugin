@@ -38,7 +38,7 @@ class Xsd1_2 extends Builder<JBossModule> {
                 writeProperties(jmodule, xml)
                 writeResources(jmodule, xml)
                 writeDependencies(jmodule, xml)
-                // todo: <xsd:element name="permissions" type="permissionsType" minOccurs="0">
+                writePermissions(jmodule, xml)
             }
         }
 

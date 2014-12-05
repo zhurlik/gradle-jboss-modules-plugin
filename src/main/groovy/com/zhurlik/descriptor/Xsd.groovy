@@ -163,6 +163,27 @@ abstract class Xsd {
 
     /**
      * Writes the following tags into a xml
+     *  <permissions>
+     *    <grant .../>
+     *  </permissions>
+     *
+     *  <xsd:element name="permissions" type="permissionsType" minOccurs="0">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference for xml
+     */
+    protected void writePermissions(final JBossModule jmodule, final MarkupBuilder xml) {
+        if (!jmodule.permissions.isEmpty()) {
+            xml.permissions {
+                jmodule.permissions.each {
+                    grant(it.sort())
+                }
+            }
+        }
+    }
+
+    /**
+     * Writes the following tags into a xml
      *  <resources>
      *      <resource-root path="jboss-msc-1.0.1.GA.jar" name="bla-bla">
      *          <filter>

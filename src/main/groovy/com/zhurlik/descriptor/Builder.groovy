@@ -120,6 +120,15 @@ abstract class Builder<T extends JBossModule> extends Xsd {
             jbModule.exports = map
         }
 
+        // permissions
+        xml.permissions.each { p ->
+            p.grant.each {
+                def g = [:]
+                it.attributes().each({ g.putAt(it.key, it.value) })
+                jbModule.permissions.add(g)
+            }
+        }
+
         xml.dependencies.each() {
             // modules
             parseModules(it, jbModule)
@@ -143,7 +152,7 @@ abstract class Builder<T extends JBossModule> extends Xsd {
         it.system.each() { s ->
             def system = [:]
 
-            if(s.@export.toBoolean() == true) {
+            if (s.@export.toBoolean() == true) {
                 system.export = true
             }
 
@@ -152,7 +161,7 @@ abstract class Builder<T extends JBossModule> extends Xsd {
             system.type = 'system'
 
             s.paths.each {
-                paths += it.path.collect({it.@name.text()})
+                paths += it.path.collect({ it.@name.text() })
             }
 
             if (!paths.empty) {

@@ -298,6 +298,31 @@ class JBossModule1_3Test {
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
 
+    @Test
+    public void testPermissionsTag() throws Exception {
+        // 1
+        module = new JBossModule('testModule')
+        module.ver = V_1_3
+        module.moduleName = 'my.module'
+        module.slot = '1.0'
+        module.permissions = [
+                [permission: 'permission1'],
+                [permission: 'permission2', name: 'test-name', actions: 'test-actions']
+        ]
+
+        String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:1.3' name='my.module' slot='1.0'>\n" +
+                "  <permissions>\n" +
+                "    <grant permission='permission1' />\n" +
+                "    <grant actions='test-actions' name='test-name' permission='permission2' />\n" +
+                "  </permissions>\n" +
+                "</module>"
+        assertEquals 'Case1:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+    }
+
+
 
     @Test
     /**

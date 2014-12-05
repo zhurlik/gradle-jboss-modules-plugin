@@ -29,6 +29,7 @@ class JBossModule {
     def boolean moduleConfiguration = false
     // A defined loader. More than one loader may be defined.
     def loaders = []
+    def permissions = []
 
     /**
      * The special constructor to be able to use in the gradle script
@@ -55,7 +56,6 @@ class JBossModule {
                 'Default-Loader must be: [-0-9a-zA-Z_]+'
         this.defaultLoader = name
     }
-
 
     /**
      * A module name, which consists of one or more dot (.)-separated segments. Each segment must begin and end

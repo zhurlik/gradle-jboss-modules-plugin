@@ -6,7 +6,10 @@ import groovy.xml.MarkupBuilder
 
 import javax.xml.transform.stream.StreamSource
 
-import static com.zhurlik.Ver.*
+import static com.zhurlik.Ver.V_1_0
+import static com.zhurlik.Ver.V_1_1
+import static com.zhurlik.Ver.V_1_2
+import static com.zhurlik.Ver.V_1_3
 
 /**
  * A factory to get single instance of AbstractBuilder<T> for corresponded version.

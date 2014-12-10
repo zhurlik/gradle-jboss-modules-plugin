@@ -1,4 +1,5 @@
 # gradle-jboss-modules-plugin
+![Build Status](https://travis-ci.org/zhurlik/gradle-jboss-modules-plugin.svg)
 ***
 This plugin for gradle allows to create modules to be able to use them under JBoss 7.x/8.x
 ***

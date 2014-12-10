@@ -1,6 +1,29 @@
 apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'signing'
+apply plugin: 'cobertura'
+apply plugin: 'com.github.kt3k.coveralls'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "net.saliman:gradle-cobertura-plugin:2.2.5" // cobertura plugin
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+cobertura {
+    coverageIgnoreTrivial = true
+    coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
+    coverageSourceDirs = sourceSets.main.groovy.srcDirs
+}
 
 version = '0.4'
 group = 'com.zhurlik'

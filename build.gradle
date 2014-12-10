@@ -23,7 +23,7 @@ uploadArchives {
 
 test {
     // show standard out and standard error of the test JVM(s) on the console
-    testLogging.showStandardStreams = true
+    testLogging.showStandardStreams = false
 
     // listen to events in the test execution lifecycle
     beforeTest { descriptor ->

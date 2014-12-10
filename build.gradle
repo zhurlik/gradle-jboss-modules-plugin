@@ -21,9 +21,14 @@ uploadArchives {
     }
 }
 
+tasks.test.doFirst{
+    logging.captureStandardOutput LogLevel.INFO
+    logging.level = LogLevel.WARN
+}
+
 test {
     // show standard out and standard error of the test JVM(s) on the console
-    testLogging.showStandardStreams = false
+    testLogging.showStandardStreams = true
 
     // listen to events in the test execution lifecycle
     beforeTest { descriptor ->

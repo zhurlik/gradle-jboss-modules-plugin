@@ -49,6 +49,8 @@ task groovydocJar(type: Jar, dependsOn: 'groovydoc') {
 }
 
 signing {
+    // we only want to require signing if we are building a release version and we are going to publish it
+    required { gradle.taskGraph.hasTask("uploadArchives") }
     sign configurations.archives
 }
 

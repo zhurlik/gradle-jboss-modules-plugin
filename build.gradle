@@ -24,6 +24,7 @@ cobertura {
     coverageIgnoreTrivial = true
     coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
     coverageSourceDirs = sourceSets.main.groovy.srcDirs
+    coverageExcludes = ['.*com.zhurlik.repository.Server']
 }
 
 jacocoTestReport {

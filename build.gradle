@@ -24,7 +24,7 @@ cobertura {
     coverageIgnoreTrivial = true
     coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
     coverageSourceDirs = sourceSets.main.groovy.srcDirs
-    coverageExcludes = ['.*com.zhurlik.repository.Server', '.*com.zhurlik.descriptor.Xsd.*write.*']
+    coverageExcludes = ['.*com.github.zhurlik.repository.Server', '.*com.github.zhurlik.descriptor.Xsd.*write.*']
 }
 
 jacocoTestReport {
@@ -34,8 +34,8 @@ jacocoTestReport {
     }
 }
 
-version = '0.4'
-group = 'com.zhurlik'
+version = '0.5'
+group = 'com.github.zhurlik'
 
 dependencies {
     compile gradleApi()
@@ -54,6 +54,7 @@ uploadArchives {
 }
 
 tasks.test.doFirst{
+    // for travis-ci.org
     logging.captureStandardOutput LogLevel.INFO
     logging.level = LogLevel.WARN
 }

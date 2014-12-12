@@ -16,7 +16,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.zhurlik:gradle-jboss-modules:0.4'
+        classpath 'com.github.zhurlik:gradle-jboss-modules:0.5'
     }
 }
 ```
@@ -42,7 +42,7 @@ jbossrepos {
 
 modules {
     moduleA {
-        moduleName = 'com.zhurlik.a'
+        moduleName = 'com.github.zhurlik.a'
         mainClass = 'zh'
         slot = '3.3.3'
         properties = ['ver' : '1.0', 'test' : 'zhurlik']
@@ -61,7 +61,7 @@ modules {
     }
 }
 
-jbossrepos.each() {com.zhurlik.extension.JBossServer it->
+jbossrepos.each() {com.github.zhurlik.extension.JBossServer it->
     println '>> Server:' + it.home + ' modules:\n'
 
     it.initTree()

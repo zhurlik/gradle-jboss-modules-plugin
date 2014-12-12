@@ -2,6 +2,7 @@ apply plugin: 'idea'
 apply plugin: 'groovy'
 apply plugin: 'signing'
 apply plugin: 'cobertura'
+apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 
 buildscript {
@@ -23,6 +24,13 @@ cobertura {
     coverageIgnoreTrivial = true
     coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
     coverageSourceDirs = sourceSets.main.groovy.srcDirs
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
 }
 
 version = '0.4'

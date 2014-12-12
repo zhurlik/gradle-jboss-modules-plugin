@@ -6,6 +6,7 @@ import org.junit.Test
 
 import static com.github.zhurlik.Ver.V_1_2
 import static org.junit.Assert.assertEquals
+
 /**
  *
  * @author zhurlik@gmail.com
@@ -16,7 +17,7 @@ class Xsd1_2Test {
 
     @Before
     public void setUp() throws Exception {
-        builder = BuilderFactory.getBuilder(V_1_2)
+        builder = V_1_2.builder
         assert builder instanceof Xsd1_2
     }
 

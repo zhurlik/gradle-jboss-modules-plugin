@@ -1,8 +1,6 @@
 package com.github.zhurlik.extension
 
 import com.github.zhurlik.Ver
-import com.github.zhurlik.descriptor.Builder
-import com.github.zhurlik.descriptor.BuilderFactory
 import groovy.util.logging.Slf4j
 import org.gradle.api.Project
 
@@ -100,11 +98,11 @@ class JBossModule {
      * @return a xml as string
      */
     String getModuleDescriptor() {
-        return getBuilder().getXmlDescriptor(this)
+        return this.ver.builder.getXmlDescriptor(this)
     }
 
     boolean isValid() {
-        return getBuilder().isValid(builder.getXmlDescriptor(this))
+        return this.ver.builder.isValid(this.ver.builder.getXmlDescriptor(this))
     }
 
     /**
@@ -113,11 +111,7 @@ class JBossModule {
      * @return string like 'module/name/dir/{main|slot}'
      */
     String getPath() {
-        getBuilder().getPath(this)
-    }
-
-    private Builder<JBossModule> getBuilder() {
-        return BuilderFactory.getBuilder(this.ver)
+        this.ver.builder.getPath(this)
     }
 
     public void deployToJBoss(final JBossServer server, final Project project) {

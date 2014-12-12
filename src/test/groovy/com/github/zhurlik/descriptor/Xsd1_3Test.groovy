@@ -16,7 +16,7 @@ class Xsd1_3Test {
 
     @Before
     public void setUp() throws Exception {
-        builder = BuilderFactory.getBuilder(V_1_3)
+        builder = V_1_3.builder
         assert builder instanceof Xsd1_3
     }
 

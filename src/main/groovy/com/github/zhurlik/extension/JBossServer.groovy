@@ -6,7 +6,6 @@ import com.github.zhurlik.repository.Server
 import groovy.util.logging.Slf4j
 
 import static com.github.zhurlik.Ver.V_1_1
-import static com.github.zhurlik.descriptor.BuilderFactory.getBuilder
 import static java.io.File.separator
 
 /**
@@ -66,7 +65,7 @@ class JBossServer implements Server {
         JBossModule jbModule = new JBossModule(name)
 
         if (modules.containsKey(name) && modules[name].exists()) {
-            final Builder<JBossModule> builder = getBuilder(version)
+            final Builder<JBossModule> builder = version.builder
             jbModule = builder.makeModule(modules[name].getText('UTF-8'))
 
             log.debug '>> Module: \'{}\' has been loaded', name

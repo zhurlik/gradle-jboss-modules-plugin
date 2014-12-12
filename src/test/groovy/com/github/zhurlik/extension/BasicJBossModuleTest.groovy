@@ -9,7 +9,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-import static com.github.zhurlik.descriptor.BuilderFactory.getBuilder
 import static java.io.File.separator
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
@@ -23,7 +22,7 @@ import static org.junit.Assert.assertTrue
 @Slf4j
 abstract class BasicJBossModuleTest {
     protected JBossModule module
-    protected Builder<JBossModule> builder = getBuilder(getVersion())
+    protected Builder<JBossModule> builder = getVersion().builder
     protected
     final File projectDir = new File(getClass().getClassLoader().getResource('').toURI().path + separator + 'projectTest')
     protected String prefix = ""

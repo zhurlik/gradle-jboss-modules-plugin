@@ -385,7 +385,7 @@ abstract class Xsd {
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
      */
-    def void writeModuleDependencyType(final JBossModule jmodule, final MarkupBuilder xml) {
+    protected void writeModuleDependencyType(final JBossModule jmodule, final MarkupBuilder xml) {
         // by default everything is module
         jmodule.dependencies.findAll({ !(it instanceof Map && it.type == 'system') }).each { dep ->
             // Attribute	Type	Required?	Description
@@ -490,7 +490,7 @@ abstract class Xsd {
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
      */
-    def void writeSystemDependencyType(final JBossModule jmodule, final MarkupBuilder xml) {
+    protected void writeSystemDependencyType(final JBossModule jmodule, final MarkupBuilder xml) {
         jmodule.dependencies.findAll({ it instanceof Map && it.type == 'system' }).each { dep ->
 
             // Specifies whether this module dependency is re-exported by default (default is "false")

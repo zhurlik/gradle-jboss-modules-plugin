@@ -7,10 +7,13 @@ import static com.zhurlik.Ver.V_1_0
 import static com.zhurlik.Ver.V_1_1
 import static com.zhurlik.Ver.V_1_2
 import static com.zhurlik.Ver.V_1_3
+import static com.zhurlik.descriptor.BuilderFactory.NONE
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertNotEquals
 import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertNull
+import static org.junit.Assert.assertTrue
 
 /**
  * To check {@link BuilderFactory} class
@@ -21,28 +24,29 @@ class BuilderFactoryTest {
 
     @Test
     public void testMain() throws Exception {
-        def none = BuilderFactory.getBuilder(null)
+        final Builder<JBossModule> none = BuilderFactory.getBuilder(null)
         assertNotNull none
+        assertEquals NONE, none
         assertNull none.xsd
         assertNull none.getPath(null)
         assertNull none.getVersion()
 
         try {
             none.getXmlDescriptor(new JBossModule('test'))
-            assert false
+            assertFalse false
         } catch (UnsupportedOperationException ex) {
-            assert true
+            assertTrue true
         }
 
-        def ver1_0 = BuilderFactory.getBuilder(V_1_0)
-        def ver1_1 = BuilderFactory.getBuilder(V_1_1)
-        def ver1_2 = BuilderFactory.getBuilder(V_1_2)
-        def ver1_3 = BuilderFactory.getBuilder(V_1_3)
+        final Builder<JBossModule> ver1_0 = BuilderFactory.getBuilder(V_1_0)
+        final Builder<JBossModule> ver1_1 = BuilderFactory.getBuilder(V_1_1)
+        final Builder<JBossModule> ver1_2 = BuilderFactory.getBuilder(V_1_2)
+        final Builder<JBossModule> ver1_3 = BuilderFactory.getBuilder(V_1_3)
 
-        assert ver1_0 instanceof Xsd1_0
-        assert ver1_1 instanceof Xsd1_1
-        assert ver1_2 instanceof Xsd1_2
-        assert ver1_3 instanceof Xsd1_3
+        assertTrue ver1_0 instanceof Xsd1_0
+        assertTrue ver1_1 instanceof Xsd1_1
+        assertTrue ver1_2 instanceof Xsd1_2
+        assertTrue ver1_3 instanceof Xsd1_3
 
         assertNotEquals ver1_0, ver1_1
         assertNotEquals ver1_0, ver1_2

@@ -6,6 +6,8 @@ import org.junit.Before
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
+import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertTrue
 
 /**
@@ -19,23 +21,25 @@ class Xsd1_0Test {
     @Before
     public void setUp() throws Exception {
         builder = BuilderFactory.getBuilder(V_1_0)
-        assert builder instanceof Xsd1_0
+        assertTrue builder instanceof Xsd1_0
     }
 
     @Test
     public void testGenerate() throws Exception {
+        assertNotNull builder.getXsd()
+
         try {
             builder.getXmlDescriptor(null)
-            assert false
+            assertFalse false
         } catch (AssertionError ex) {
-            assert true
+            assertTrue true
         }
 
         try {
             builder.getXmlDescriptor(new JBossModule('test'))
-            assert false
+            assertFalse false
         } catch (AssertionError ex) {
-            assert true
+            assertTrue true
         }
 
         def module = new JBossModule('test')

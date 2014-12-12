@@ -12,6 +12,7 @@ import org.junit.Test
 import static com.zhurlik.descriptor.BuilderFactory.getBuilder
 import static java.io.File.separator
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
 /**
@@ -38,6 +39,41 @@ abstract class BasicJBossModuleTest {
     public void tearDown() throws Exception {
         if (projectDir.exists() && projectDir.isDirectory()) {
             assert projectDir.deleteDir()
+        }
+    }
+
+    @Test
+    public void testValidation() throws Exception {
+        try {
+            module  = new JBossModule("wrong")
+            module.slot = '~#?!'
+            assertFalse true
+        } catch (AssertionError error) {
+            assertTrue true
+        }
+
+        try {
+            module  = new JBossModule("wrong")
+            module.moduleName = '~#?!'
+            assertFalse true
+        } catch (AssertionError error) {
+            assertTrue true
+        }
+
+        try {
+            module  = new JBossModule("wrong")
+            module.defaultLoader = '~#?!'
+            assertFalse true
+        } catch (AssertionError error) {
+            assertTrue true
+        }
+
+        try {
+            module  = new JBossModule("wrong")
+            module.targetName = '~#?!'
+            assertFalse true
+        } catch (AssertionError error) {
+            assertTrue true
         }
     }
 

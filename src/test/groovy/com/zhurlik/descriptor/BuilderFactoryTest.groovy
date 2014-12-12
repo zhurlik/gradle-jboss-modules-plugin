@@ -1,5 +1,4 @@
 package com.zhurlik.descriptor
-
 import com.zhurlik.extension.JBossModule
 import org.junit.Test
 
@@ -7,7 +6,6 @@ import static com.zhurlik.Ver.V_1_0
 import static com.zhurlik.Ver.V_1_1
 import static com.zhurlik.Ver.V_1_2
 import static com.zhurlik.Ver.V_1_3
-import static com.zhurlik.descriptor.BuilderFactory.NONE
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertNotEquals
@@ -26,7 +24,6 @@ class BuilderFactoryTest {
     public void testMain() throws Exception {
         final Builder<JBossModule> none = BuilderFactory.getBuilder(null)
         assertNotNull none
-        assertEquals NONE, none
         assertNull none.xsd
         assertNull none.getPath(null)
         assertNull none.getVersion()

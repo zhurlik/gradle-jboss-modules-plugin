@@ -19,10 +19,15 @@ import static com.zhurlik.Ver.V_1_3
  * @author zhurlik@gmail.com
  */
 class BuilderFactory<T extends JBossModule> {
+    private final static BUILDER_1_0 = new Xsd1_0();
+    private final static BUILDER_1_1 = new Xsd1_1();
+    private final static BUILDER_1_2 = new Xsd1_2();
+    private final static BUILDER_1_3 = new Xsd1_3();
+
     /**
      * Do-nothing builder.
      */
-    static final Builder<T> NONE = new Builder<T>() {
+    private static final Builder<T> NONE = new Builder<T>() {
 
         String getXmlDescriptor(JBossModule mod) {
             throw new UnsupportedOperationException('Version:' + mod.ver.number + ' is not implemented yet')
@@ -54,42 +59,13 @@ class BuilderFactory<T extends JBossModule> {
      * @param module
      * @return builder to generate a xml descriptor
      */
-    static Builder<T> getBuilder(final Ver version) {
+    public static Builder<T> getBuilder(final Ver version) {
         switch (version) {
-            case V_1_0: return BUILDERS.V_1_0.getBuilder()
-            case V_1_1: return BUILDERS.V_1_1.getBuilder()
-            case V_1_2: return BUILDERS.V_1_2.getBuilder()
-            case V_1_3: return BUILDERS.V_1_3.getBuilder()
+            case V_1_0: return BUILDER_1_0
+            case V_1_1: return BUILDER_1_1
+            case V_1_2: return BUILDER_1_2
+            case V_1_3: return BUILDER_1_3
             default: return NONE
-        }
-    }
-
-    /**
-     * A set of supported builders for different versions.
-     */
-    private static enum BUILDERS {
-
-        V_1_0(Xsd1_0), V_1_1(Xsd1_1), V_1_2(Xsd1_2), V_1_3(Xsd1_3);
-
-        // an instance to generate a xml descriptor
-        private Builder builder;
-
-        /**
-         * Makes a builder by its Class.
-         *
-         * @param clazz class to know which instance must be created
-         */
-        BUILDERS(Class<Builder> clazz) {
-            this.builder = clazz.newInstance()
-        }
-
-        /**
-         * Returns an instance of IBuilder
-         *
-         * @return builder for xml descriptor
-         */
-        public Builder getBuilder() {
-            this.builder
         }
     }
 }

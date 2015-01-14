@@ -82,6 +82,13 @@ class TasksTest {
             it.execute(project.tasks.checkModules)
         }
 
+        // to call afterEvaluate()
+        project.evaluate()
+        log.debug '>> Task: testServerDistTar'
+        project.tasks.testServerDistTar.actions.each {
+            it.execute(project.tasks.testServerDistTar)
+        }
+
         log.debug '>> Task: deployModules'
         project.tasks.deployModules.actions.each {
             it.execute(project.tasks.deployModules)

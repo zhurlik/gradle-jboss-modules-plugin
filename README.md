@@ -3,6 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/zhurlik/gradle-jboss-modules-plugin/badge.png)](https://coveralls.io/r/zhurlik/gradle-jboss-modules-plugin)
 ***
 This plugin for gradle allows to create modules to be able to use them under JBoss 7.x/8.x
+The standard plugin 'distribution' generates archives for every servers that were defined.
 ***
 The main idea is to have an ability to make [JBoss Modules](https://docs.jboss.org/author/display/MODULES/Defining+a+module)
 ## How to install
@@ -42,6 +43,8 @@ jbossrepos {
 
 modules {
     moduleA {
+        // to define on which servers this module will be available, by default - all
+        servers = ['serverA']
         moduleName = 'com.github.zhurlik.a'
         mainClass = 'zh'
         slot = '3.3.3'
@@ -75,6 +78,5 @@ jbossrepos.each() {com.github.zhurlik.extension.JBossServer it->
 }
 ```
 ```gradle makeModules```
-or
 ```gradle checkModules```
-
+```gradle serverADistTar```

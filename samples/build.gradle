@@ -22,11 +22,6 @@ dependencies {
     jbossmodules 'org.springframework:spring-core:4.1.1.RELEASE'
 }
 
-task clean(type: Delete) {
-    println '>> Deleting ' + buildDir.path
-    delete buildDir.path
-}
-
 jbossrepos {
     serverA {
         home = '/home/zhurlik/programs/jboss-as-7.1.1.Final_t'

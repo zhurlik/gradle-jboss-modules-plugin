@@ -199,17 +199,24 @@ abstract class BasicJBossModuleTest {
 
         }
 
+        // describe an instance of jboss server
+        project.jbossrepos {
+            testServer {
+                home = projectDir.path + separator + "testServer"
+            }
+        }
+
         // test call
         module.makeLocally(project)
 
-        assert new File(getClass().getClassLoader().getResource('projectTest/build/modules/' + prefix + 'org/apache/log4j/main/log4j-1.2.17.jar').toURI().path).exists()
-        assert new File(getClass().getClassLoader().getResource('projectTest/build/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).exists()
+        assert new File(getClass().getClassLoader().getResource('projectTest/build/testServer/modules/' + prefix + 'org/apache/log4j/main/log4j-1.2.17.jar').toURI().path).exists()
+        assert new File(getClass().getClassLoader().getResource('projectTest/build/testServer/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).exists()
         assertEquals 'Module Descriptor:', "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='org.apache.log4j'>\n" +
                 "  <resources>\n" +
                 "    <resource-root path='log4j-1.2.17.jar' />\n" +
                 "  </resources>\n" +
-                "</module>", new File(getClass().getClassLoader().getResource('projectTest/build/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).text
+                "</module>", new File(getClass().getClassLoader().getResource('projectTest/build/testServer/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).text
     }
 
     @Test

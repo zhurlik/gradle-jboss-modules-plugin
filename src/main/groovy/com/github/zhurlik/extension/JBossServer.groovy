@@ -25,10 +25,14 @@ class JBossServer implements Server {
     /**
      * The special constructor to be able to use in the gradle script
      *
-     * jbossrepos {*     serverA {*         home = '/jboss/home/dir'
-     *         version = '1.0'
+     * jbossrepos {
+     *         serverA {
+     *             home = '/jboss/home/dir'
+     *             version = '1.0'
      *         ...
-     *}*}*
+     *         }
+     * }
+     *
      * @param name
      */
 

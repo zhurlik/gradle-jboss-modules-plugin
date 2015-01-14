@@ -117,8 +117,8 @@ class JBossModule {
     public void deployToJBoss(final JBossServer server, final Project project) {
         log.debug '>> Deploying the module:{} to JBoss Server:{}', this.moduleName, server.name
 
-        // to have full path for ${project}/${build}/modules/module/name/dir/{main|slot}
-        def String source = [project.buildDir.path, getPath()].join(separator)
+        // to have full path for ${project}/${build}/{server}/modules/module/name/dir/{main|slot}
+        def String source = [project.buildDir.path, server.name, getPath()].join(separator)
         def String target = [server.home, getPath()].join(separator)
 
         new AntBuilder().copy(toDir: target, overwrite: true) {
@@ -132,31 +132,33 @@ class JBossModule {
     public void makeLocally(final Project project) {
         log.debug '>> Module:' + this.name
 
-        // to have full path for ${project}/${build}/modules/module/name/dir/{main|slot}
-        def String moduleDirName = [project.buildDir.path, getPath()].join(separator)
+        project.jbossrepos.each {JBossServer server ->
+            // to have full path for ${project}/${build}/{serverName}/modules/module/name/dir/{main|slot}
+            def String moduleDirName = [project.buildDir.path, server.name, getPath()].join(separator)
 
-        // save a xml
-        def File moduleDir = new File(moduleDirName)
-        if (!moduleDir.exists()) {
-            assert moduleDir.mkdirs(), 'Can\'t create a folder'
-        }
-
-        def xmlfile = new File(moduleDir, 'module.xml') << getModuleDescriptor()
-        log.debug '>> Module Descriptor:' + xmlfile.path
-
-        // copy jars
-        def jarNames = this.resources.findAll() { it instanceof String } + this.resources.findAll() {
-            !(it instanceof String)
-        }.collect() { it.path }
-        jarNames.each() { jar ->
-            project.configurations.jbossmodules.files.findAll() { it.name == jar }.each {
-                final String source = it.path
-                final String target = [moduleDirName, jar].join(separator)
-                new AntBuilder().copy(file: source, toFile: target, overwrite: true)
-                log.debug '>> Resource:' + target
+            // save a xml
+            def File moduleDir = new File(moduleDirName)
+            if (!moduleDir.exists()) {
+                assert moduleDir.mkdirs(), 'Can\'t create a folder'
             }
-        }
 
-        log.debug('>> Module is available here {}', moduleDir.path)
+            def xmlfile = new File(moduleDir, 'module.xml') << getModuleDescriptor()
+            log.debug '>> Module Descriptor:' + xmlfile.path
+
+            // copy jars
+            def jarNames = this.resources.findAll() { it instanceof String } + this.resources.findAll() {
+                !(it instanceof String)
+            }.collect() { it.path }
+            jarNames.each() { jar ->
+                project.configurations.jbossmodules.files.findAll() { it.name == jar }.each {
+                    final String source = it.path
+                    final String target = [moduleDirName, jar].join(separator)
+                    new AntBuilder().copy(file: source, toFile: target, overwrite: true)
+                    log.debug '>> Resource:' + target
+                }
+            }
+
+            log.debug('>> Module is available here {}', moduleDir.path)
+        }
     }
 }

@@ -1,5 +1,4 @@
 package com.github.zhurlik
-
 import com.github.zhurlik.extension.JBossModule
 import com.github.zhurlik.extension.JBossServer
 import com.github.zhurlik.task.CheckModulesTask
@@ -8,7 +7,10 @@ import com.github.zhurlik.task.MakeModulesTask
 import groovy.util.logging.Slf4j
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.bundling.Compression
+import org.gradle.api.tasks.bundling.Tar
 
+import static java.io.File.separator
 /**
  * Gradle plugin to make JBoss Modules.
  *
@@ -20,6 +22,9 @@ class JBossModulesPlugin implements Plugin<Project> {
     void apply(final Project project) {
         logger.info '>> Plugin: JBoss Modules'
 
+        // distribution plugin to make tar/zip
+        project.getPlugins().apply('distribution')
+
         // to be able to use maven repository
         project.configurations.create('jbossmodules')
 
@@ -30,6 +35,26 @@ class JBossModulesPlugin implements Plugin<Project> {
         // JBoss Servers
         def servers = project.container(JBossServer)
         project.extensions.jbossrepos = servers
+
+        // to have a list of JBoss Servers
+        project.afterEvaluate {
+            // make for each Server a Distribution object
+            project.jbossrepos.each { JBossServer server ->
+                project.distributions.create(server.name)
+                project.distributions[server.name].baseName = server.name
+                project.distributions[server.name].contents.from([project.buildDir.path, server.name, 'modules'].join(separator))
+
+                // {server.name}Dist* tasks depend on checkModules to be able to create modules
+                project.tasks.findAll {it.name.startsWith(server.name + 'Dist') || it.name.equalsIgnoreCase('install' + it.name + 'dist')}.each {t->
+                    t.dependsOn 'checkModules'
+                }
+            }
+
+            // compress all tar files
+            project.tasks.withType(Tar) {
+                compression = Compression.GZIP
+            }
+        }
 
         // special tasks
         project.task('makeModules', type: MakeModulesTask)

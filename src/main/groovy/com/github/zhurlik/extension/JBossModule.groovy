@@ -29,6 +29,9 @@ class JBossModule {
     def loaders = []
     def permissions = []
 
+    // a list of server names for which this module will be available, empty - for all
+    def servers = []
+
     /**
      * The special constructor to be able to use in the gradle script
      *
@@ -133,6 +136,12 @@ class JBossModule {
         log.debug '>> Module:' + this.name
 
         project.jbossrepos.each {JBossServer server ->
+
+            // for servers that were specified, by default for all
+            if (!servers.isEmpty() && !(server.name in servers)) {
+                return //continue
+            }
+
             // to have full path for ${project}/${build}/{serverName}/modules/module/name/dir/{main|slot}
             def String moduleDirName = [project.buildDir.path, server.name, getPath()].join(separator)
 

@@ -12,6 +12,7 @@ import org.junit.Test
 import static java.io.File.separator
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
+import static org.junit.Assert.assertNull
 import static org.junit.Assert.assertTrue
 
 /**
@@ -178,6 +179,8 @@ abstract class BasicJBossModuleTest {
         // 1
         module = new JBossModule('log4j')
         module.ver = getVersion()
+        // only for testServer
+        module.servers = ['testServer']
         module.moduleName = 'org.apache.log4j'
         module.resources = ['log4j-1.2.17.jar']
 
@@ -204,13 +207,20 @@ abstract class BasicJBossModuleTest {
             testServer {
                 home = projectDir.path + separator + "testServer"
             }
+            testServer1 {
+                home = projectDir.path + separator + "testServer1"
+            }
         }
 
         // test call
         module.makeLocally(project)
 
-        assert new File(getClass().getClassLoader().getResource('projectTest/build/testServer/modules/' + prefix + 'org/apache/log4j/main/log4j-1.2.17.jar').toURI().path).exists()
-        assert new File(getClass().getClassLoader().getResource('projectTest/build/testServer/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).exists()
+        // nothing for testServer1
+        assertNull getClass().getClassLoader().getResource('projectTest/build/testServer1/modules/' + prefix + 'org/apache/log4j/main/log4j-1.2.17.jar')
+        assertNull getClass().getClassLoader().getResource('projectTest/build/testServer1/modules/' + prefix + 'org/apache/log4j/main/module.xml')
+
+        assertTrue new File(getClass().getClassLoader().getResource('projectTest/build/testServer/modules/' + prefix + 'org/apache/log4j/main/log4j-1.2.17.jar').toURI().path).exists()
+        assertTrue new File(getClass().getClassLoader().getResource('projectTest/build/testServer/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).exists()
         assertEquals 'Module Descriptor:', "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='org.apache.log4j'>\n" +
                 "  <resources>\n" +

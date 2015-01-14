@@ -77,6 +77,6 @@ jbossrepos.each() {com.github.zhurlik.extension.JBossServer it->
     println it.getMainXml('org.jboss.jts.integration')
 }
 ```
-```gradle makeModules```
-```gradle checkModules```
-```gradle serverADistTar```
+```gradle makeModules```   
+```gradle checkModules```   
+```gradle serverADistTar```   

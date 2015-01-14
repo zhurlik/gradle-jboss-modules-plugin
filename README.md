@@ -17,7 +17,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.zhurlik:gradle-jboss-modules:0.5'
+        classpath 'com.github.zhurlik:gradle-jboss-modules:0.6'
     }
 }
 ```

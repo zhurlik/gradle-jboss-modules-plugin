@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.zhurlik:gradle-jboss-modules:0.5'
+        classpath 'com.github.zhurlik:gradle-jboss-modules:0.6'
     }
 }
 
@@ -31,6 +31,8 @@ jbossrepos {
 
 modules {
     moduleA {
+        // to define on which servers this module will be available, by default - all
+        servers = ['serverA']
         moduleName = 'com.github.zhurlik.a'
         mainClass = 'zh'
         slot = '3.3.3'

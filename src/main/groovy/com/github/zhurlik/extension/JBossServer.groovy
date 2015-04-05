@@ -55,10 +55,12 @@ class JBossServer implements Server {
         modules.clear()
 
         // under jboss
-        this.modulesDir.eachDirRecurse() {
-            it.eachFileMatch(~/module.xml/) { file ->
-                def m = new XmlSlurper().parse(file)
-                modules.put(m.@name.toString(), file)
+        if (this.modulesDir != null && this.modulesDir.exists()) {
+            this.modulesDir.eachDirRecurse() {
+                it.eachFileMatch(~/module.xml/) { file ->
+                    def m = new XmlSlurper().parse(file)
+                    modules.put(m.@name.toString(), file)
+                }
             }
         }
     }

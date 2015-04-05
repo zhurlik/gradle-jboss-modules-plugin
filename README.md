@@ -8,20 +8,7 @@ The standard plugin 'distribution' generates archives for every servers which we
 ***
 The main idea is to have an ability to make [JBoss Modules](https://docs.jboss.org/author/display/MODULES/Defining+a+module)
 ## How to install
-
-```
-buildscript {
-    repositories {
-        maven {
-            url uri('http://dl.bintray.com/zhurlik/mvn')
-        }
-    }
-
-    dependencies {
-        classpath 'com.github.zhurlik:gradle-jboss-modules:0.7'
-    }
-}
-```
+[See Gradle Plugins](https://plugins.gradle.org/plugin/com.github.zhurlik.jbossmodules)
 
 ## How to use
 ```groovy

@@ -10,20 +10,6 @@ The main idea is to have an ability to make [JBoss Modules](https://docs.jboss.o
 ## How to install
 [See Gradle Plugins](https://plugins.gradle.org/plugin/com.github.zhurlik.jbossmodules)
 
-```
-buildscript {
-    repositories {
-        maven {
-            url uri('http://dl.bintray.com/zhurlik/mvn')
-        }
-    }
-
-    dependencies {
-        classpath 'com.github.zhurlik:gradle-jboss-modules:0.7'
-    }
-}
-```
-
 ## How to use
 
 Here is a little bit  how you can use this plugin. For more details look at [samples/build.gradle](https://github.com/zhurlik/gradle-jboss-modules-plugin/blob/master/samples/build.gradle)

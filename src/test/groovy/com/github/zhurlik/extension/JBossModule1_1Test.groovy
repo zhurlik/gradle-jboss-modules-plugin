@@ -59,6 +59,7 @@ class JBossModule1_1Test extends BasicJBossModuleTest {
 
         // 2
         module = new JBossModule('spring-core')
+        module.ver = getVersion()
         module.moduleName = 'org.springframework.spring-core'
         module.resources = ['spring-core-3.2.5.RELEASE.jar']
         module.dependencies = ['javax.api',
@@ -81,6 +82,7 @@ class JBossModule1_1Test extends BasicJBossModuleTest {
 
         // 3
         module = new JBossModule('test-module-3')
+        module.ver = getVersion()
         module.moduleName = 'test.module.3'
         module.mainClass = 'test.MainClass'
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -93,6 +95,7 @@ class JBossModule1_1Test extends BasicJBossModuleTest {
 
         // 4
         module = new JBossModule('test-module-4')
+        module.ver = getVersion()
         module.moduleName = 'test.module.4'
         module.properties = [prop1: 'value1', prop2: 'value2', '': '']
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -108,6 +111,7 @@ class JBossModule1_1Test extends BasicJBossModuleTest {
 
         // 5
         module = new JBossModule('test-module-5')
+        module.ver = getVersion()
         module.moduleName = 'test.module.5'
         module.resources = ['res1', [name: 'res2', path: 'path2'], [path: 'res3', filter: [include: 'incl*', exclude: ['exclude1', 'exclude2']]]]
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -132,6 +136,7 @@ class JBossModule1_1Test extends BasicJBossModuleTest {
 
         // 6
         module = new JBossModule('test-module-6')
+        module.ver = getVersion()
         module.moduleName = 'test.module.6'
         module.dependencies = ['module1', 'module2',
                                [name   : 'module3', slot: '1.3', services: 'none', optional: true, export: 'false',

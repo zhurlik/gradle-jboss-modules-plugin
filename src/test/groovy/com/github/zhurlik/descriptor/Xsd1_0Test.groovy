@@ -66,7 +66,6 @@ class Xsd1_0Test {
     public void testValidate() throws Exception {
         def module = new JBossModule('test')
         module.moduleName = 'test.module'
-        module.ver = V_1_0
 
         assert builder.isValid(module.moduleDescriptor)
 

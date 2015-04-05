@@ -1,5 +1,4 @@
 package com.github.zhurlik.extension
-
 import com.github.zhurlik.Ver
 import com.github.zhurlik.descriptor.Builder
 import groovy.util.logging.Slf4j
@@ -14,7 +13,6 @@ import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertNull
 import static org.junit.Assert.assertTrue
-
 /**
  * A common stuff for testing.
  *
@@ -206,6 +204,7 @@ abstract class BasicJBossModuleTest {
         project.jbossrepos {
             testServer {
                 home = projectDir.path + separator + "testServer"
+                version = owner.getVersion()
             }
             testServer1 {
                 home = projectDir.path + separator + "testServer1"

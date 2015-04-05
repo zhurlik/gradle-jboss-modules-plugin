@@ -1,5 +1,4 @@
 package com.github.zhurlik.descriptor
-
 import com.github.zhurlik.extension.JBossModule
 import org.junit.Before
 import org.junit.Test
@@ -7,7 +6,6 @@ import org.junit.Test
 import static com.github.zhurlik.Ver.V_1_1
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
-
 /**
  *
  * @author zhurlik@gmail.com
@@ -71,7 +69,7 @@ class Xsd1_1Test {
     public void testValidate() throws Exception {
         def module = new JBossModule('test')
         module.moduleName = 'test.module'
-
+        module.ver = V_1_1
         assert builder.isValid(module.moduleDescriptor)
 
         // not valid

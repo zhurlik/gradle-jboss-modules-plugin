@@ -1,7 +1,7 @@
 # gradle-jboss-modules-plugin
-[![Build Status](https://travis-ci.org/zhurlik/gradle-jboss-modules-plugin.svg?branch=master)](https://travis-ci.org/zhurlik/gradle-jboss-modules-plugin)
-[![Coverage Status](https://coveralls.io/repos/zhurlik/gradle-jboss-modules-plugin/badge.png)](https://coveralls.io/r/zhurlik/gradle-jboss-modules-plugin)
-[ ![Download](https://api.bintray.com/packages/zhurlik/mvn/gradle-jboss-modules-plugin/images/download.svg) ](https://bintray.com/zhurlik/mvn/gradle-jboss-modules-plugin/_latestVersion)
+Travis-CI:[![Build Status](https://travis-ci.org/zhurlik/gradle-jboss-modules-plugin.svg?branch=master)](https://travis-ci.org/zhurlik/gradle-jboss-modules-plugin)
+Coverage:[![Coverage Status](https://coveralls.io/repos/zhurlik/gradle-jboss-modules-plugin/badge.png)](https://coveralls.io/r/zhurlik/gradle-jboss-modules-plugin)
+BinTray:[![Download](https://api.bintray.com/packages/zhurlik/mvn/gradle-jboss-modules-plugin/images/download.svg) ](https://bintray.com/zhurlik/mvn/gradle-jboss-modules-plugin/_latestVersion)
 ***
 This plugin for gradle allows to create modules to be able to use them under JBoss 7.x/8.x   
 The standard plugin 'distribution' generates archives for every servers which were defined in the project.

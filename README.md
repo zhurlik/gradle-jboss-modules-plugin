@@ -32,7 +32,9 @@ repositories {
 }
 
 dependencies {
-    jbossmodules 'org.springframework:spring-core:4.1.1.RELEASE'
+    ['aop', 'beans', 'core', 'context'].each {
+        jbossmodules "org.springframework:spring-${it}:${springVersion}"
+    }
 }
 
 jbossrepos {
@@ -43,6 +45,37 @@ jbossrepos {
 }
 
 modules {
+
+    // springframework
+    springCore {
+        moduleName = 'org.springframework.core'
+        resources = ["spring-core-${springVersion}.jar"]
+        dependencies = ['javax.api',
+                        'org.jboss.vfs',
+                        'org.apache.commons.logging'
+        ]
+    }
+
+    springBeans {
+        moduleName = 'org.springframework.beans'
+        resources = ["spring-beans-${springVersion}.jar"]
+        dependencies = ['org.springframework.spring-core',
+                        'javax.api',
+                        'org.apache.commons.logging'
+        ]
+    }
+
+    springAop {
+        moduleName = 'org.springframework.aop'
+        resources = ["spring-aop-${springVersion}.jar", 'aopalliance-1.0.jar']
+        dependencies = ['org.springframework.spring-beans',
+                        'org.springframework.spring-core',
+                        'javax.api', 'org.apache.commons.logging'
+        ]
+    }
+    // springframework
+
+
     moduleA {
         // to define on which servers this module will be available, by default - all
         servers = ['serverA']
@@ -50,7 +83,7 @@ modules {
         mainClass = 'zh'
         slot = '3.3.3'
         properties = ['ver' : '1.0', 'test' : 'zhurlik']
-        resources = ['test1.jar', 'spring-core-4.1.1.RELEASE.jar',
+        resources = ['test1.jar', "spring-core-${springVersion}.jar",
                      [name: 'name', path: 'path1', filter: [include:'**']]
         ]
         dependencies = [
@@ -58,6 +91,25 @@ modules {
                 [name: 'module2', export: 'true'],
                 [name: 'module3', export: 'false', exports: [
                         include: ['mine'],
+                        exclude: ['*not*a', '*not*b']
+                    ]
+                ]
+        ]
+    }
+
+    moduleB {
+        moduleName = 'com.github.zhurlik.b'
+        mainClass = 'zh'
+        slot = '3.3.3'
+        properties = ['ver' : '1.0', 'test' : 'zhurlik']
+        resources = ['test1.jar', 'test2.jar',
+                     [name: 'name', path: 'path1', filter: [exclude: '**']]
+        ]
+        dependencies = [
+                [name: 'module1'],
+                [name: 'module2', export: 'true'],
+                [name: 'module3', export: 'false', imports: [
+                        include: 'mine',
                         exclude: ['*not*a', '*not*b']
                     ]
                 ]

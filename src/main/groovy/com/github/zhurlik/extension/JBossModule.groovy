@@ -1,10 +1,9 @@
 package com.github.zhurlik.extension
-
 import com.github.zhurlik.Ver
 import groovy.util.logging.Slf4j
 import org.gradle.api.Project
 
-import static com.github.zhurlik.Ver.V_1_1
+import static com.github.zhurlik.Ver.V_1_0
 import static java.io.File.separator
 
 /**
@@ -20,7 +19,7 @@ class JBossModule {
     def resources = []
     def dependencies = []
     def exports = []
-    def Ver ver = V_1_1
+    def Ver ver = V_1_0
     def boolean moduleAlias = false
     def boolean moduleAbsent = false
     def String defaultLoader
@@ -151,8 +150,15 @@ class JBossModule {
                 assert moduleDir.mkdirs(), 'Can\'t create a folder'
             }
 
+            // use server's version
+            def originalVer = this.ver
+            this.ver = server.version
+
             def xmlfile = new File(moduleDir, 'module.xml') << getModuleDescriptor()
             log.debug '>> Module Descriptor:' + xmlfile.path
+
+            // revert version
+            this.ver = originalVer
 
             // copy jars
             def jarNames = this.resources.findAll() {

@@ -19,7 +19,10 @@ repositories {
 }
 
 dependencies {
-    jbossmodules "org.springframework:spring-core:${springVersion}"
+    ['aop', 'beans', 'core', 'context'].each {
+        jbossmodules "org.springframework:spring-${it}:${springVersion}"
+    }
+
 }
 
 jbossrepos {
@@ -30,6 +33,37 @@ jbossrepos {
 }
 
 modules {
+
+    // springframework
+    springCore {
+        moduleName = 'org.springframework.core'
+        resources = ["spring-core-${springVersion}.jar"]
+        dependencies = ['javax.api',
+                        'org.jboss.vfs',
+                        'org.apache.commons.logging'
+        ]
+    }
+
+    springBeans {
+        moduleName = 'org.springframework.beans'
+        resources = ["spring-beans-${springVersion}.jar"]
+        dependencies = ['org.springframework.spring-core',
+                        'javax.api',
+                        'org.apache.commons.logging'
+        ]
+    }
+
+    springAop {
+        moduleName = 'org.springframework.aop'
+        resources = ["spring-aop-${springVersion}.jar", 'aopalliance-1.0.jar']
+        dependencies = ['org.springframework.spring-beans',
+                        'org.springframework.spring-core',
+                        'javax.api', 'org.apache.commons.logging'
+        ]
+    }
+    // springframework
+
+
     moduleA {
         // to define on which servers this module will be available, by default - all
         servers = ['serverA']

@@ -1,6 +1,6 @@
+apply plugin: 'com.gradle.plugin-publish'
 apply plugin: 'idea'
 apply plugin: 'groovy'
-apply plugin: 'signing'
 apply plugin: 'cobertura'
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
@@ -8,16 +8,21 @@ apply plugin: 'com.github.kt3k.coveralls'
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
     }
 
     dependencies {
         classpath "net.saliman:gradle-cobertura-plugin:2.2.5" // cobertura plugin
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.1'
+        classpath 'com.gradle.publish:plugin-publish-plugin:0.9.0'
     }
 }
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 cobertura {
@@ -85,45 +90,6 @@ task groovydocJar(type: Jar, dependsOn: 'groovydoc') {
     classifier = 'javadoc'
 }
 
-signing {
-    // we only want to require signing if we are building a release version and we are going to publish it
-    // required { gradle.taskGraph.hasTask("uploadArchives") }
-    required = false
-    sign configurations.archives
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            pom.project {
-                name 'Gradle Plugin for JBoss Modules'
-                description 'A gradle plugin that allows to make JBoss Modules'
-                url 'https://github.com/zhurlik/gradle-jboss-modules-plugin'
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
-                    }
-                }
-                scm {
-                    connection 'scm:git:git@github.com:zhurlik/gradle-jboss-modules-plugin.git'
-                    developerConnection 'scm:git:git@github.com:zhurlik/gradle-jboss-modules-plugin.git'
-                    url 'git@github.com:zhurlik/gradle-jboss-modules-plugin.git'
-                }
-                developers {
-                    developer {
-                        name 'Uladzimir Zhuraulevich'
-                        email 'zhurlik@gmail.com'
-                        organizationUrl 'https://github.com/zhurlik'
-                    }
-                }
-            }
-        }
-    }
-}
-
 // add source/doc jar tasks as artifacts
 artifacts {
     archives jar
@@ -132,4 +98,20 @@ artifacts {
 
 tasks.clean.doFirst {
     delete 'tmp-repo/com'
+}
+
+// The configuration example below shows the minimum required properties
+// configured to publish your plugin to the plugin portal
+pluginBundle {
+    website = 'https://github.com/zhurlik'
+    vcsUrl = 'https://github.com/zhurlik/gradle-jboss-modules-plugin'
+    description = 'A gradle plugin that allows to make JBoss Modules'
+    tags = ['java', 'jboss', 'module', 'gradle', 'plugin', 'groovy', 'wildfly']
+
+    plugins {
+        jbossModulesPlugin {
+            id = 'com.github.zhurlik.jbossmodules'
+            displayName = 'Gradle JBoss Modules plugin'
+        }
+    }
 }

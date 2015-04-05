@@ -155,13 +155,15 @@ class JBossModule {
             log.debug '>> Module Descriptor:' + xmlfile.path
 
             // copy jars
-            def jarNames = this.resources.findAll() { it instanceof String } + this.resources.findAll() {
-                !(it instanceof String)
+            def jarNames = this.resources.findAll() {
+                it instanceof String || it instanceof GString
+            } + this.resources.findAll() {
+                !(it instanceof String || it instanceof GString)
             }.collect() { it.path }
             jarNames.each() { jar ->
-                project.configurations.jbossmodules.files.findAll() { it.name == jar }.each {
+                project.configurations.jbossmodules.files.findAll() { it.name == jar.toString() }.each {
                     final String source = it.path
-                    final String target = [moduleDirName, jar].join(separator)
+                    final String target = [moduleDirName, jar.toString()].join(separator)
                     new AntBuilder().copy(file: source, toFile: target, overwrite: true)
                     log.debug '>> Resource:' + target
                 }

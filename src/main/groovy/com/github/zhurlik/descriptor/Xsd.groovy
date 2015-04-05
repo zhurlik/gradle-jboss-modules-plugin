@@ -234,8 +234,8 @@ abstract class Xsd {
         jmodule.resources.findAll({
             !((it instanceof Map) && (it.type in ['artifact', 'native-artifact']))
         }).each() { res ->
-            if (res instanceof String) {
-                xml.'resource-root'(path: res)
+            if (res instanceof String || res instanceof GString) {
+                xml.'resource-root'(path: res.toString())
                 // next resource
                 return
             }

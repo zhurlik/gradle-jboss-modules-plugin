@@ -202,15 +202,16 @@ class JBossModule1_0Test extends BasicJBossModuleTest {
         }
 
         // to have a reference for jar file
+        def slf4jVersion = '1.7.7'
         project.dependencies {
-            jbossmodules 'org.slf4j:slf4j-api:1.7.7'
+            jbossmodules "org.slf4j:slf4j-api:${slf4jVersion}"
         }
 
         // describe a module via gradle
         project.modules {
             slf4j {
                 moduleName = 'org.slf4j'
-                resources = ['slf4j-api-1.7.7.jar']
+                resources = ["slf4j-api-${slf4jVersion}.jar"]
                 dependencies = ['org.slf4j.impl']
             }
         }

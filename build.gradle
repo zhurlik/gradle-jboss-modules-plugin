@@ -129,3 +129,7 @@ artifacts {
     archives jar
     archives sourcesJar, groovydocJar
 }
+
+tasks.clean.doFirst {
+    delete 'tmp-repo/com'
+}

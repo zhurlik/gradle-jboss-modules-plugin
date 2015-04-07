@@ -5,7 +5,10 @@
 This plugin for gradle allows to create modules to be able to use them under JBoss 7.x/8.x   
 The standard plugin 'distribution' generates archives for every servers which were defined in the project.
 ***
-The main idea is to have an ability to make [JBoss Modules](https://docs.jboss.org/author/display/MODULES/Defining+a+module)
+The main idea is to have an ability to make [JBoss Modules](https://docs.jboss.org/author/display/MODULES/Defining+a+module)    
+    
+TODO: next step is try to make a module from pom.xml
+      
 ## How to install
 [See Gradle Plugins](https://plugins.gradle.org/plugin/com.github.zhurlik.jbossmodules)
 

@@ -43,28 +43,24 @@ ${module} {
 
                     def template = new groovy.text.SimpleTemplateEngine().createTemplate(tpl)
 
-                    // input parameters for a template
+                    // input parameters for the template
                     def binding = [
                             module              : pomXml.artifactId.text().replaceAll('.-', ''),
-                            moduleName          : pomXml.groupId.text() + '.' + pomXml.artifactId.text(),
+                            moduleName          : (pomXml.groupId.text() in ['', null]) ? pomXml.artifactId.text() : pomXml.groupId.text() + '.' + pomXml.artifactId.text(),
                             resources           : jarName,
                             requiredResources   : pomXml.dependencies.dependency.findAll({
                                 it.scope.text() == 'compile' && it.optional.text() != 'true'
-                            }).collect {
-                                it.artifactId.text() + '-' + it.version.text() + '.jar'
-                            }.toString(),
+                            }).collect { it.artifactId.text() + '-' + it.version.text() + '.jar' }.toString(),
                             optionalResources   : pomXml.dependencies.dependency.findAll({
-                                it.scope.text() == 'compile' && it.optional.text() == 'true'
-                            }).collect {
-                                it.artifactId.text() + '-' + it.version.text() + '.jar'
-                            }.toString(),
+                                it.scope.text() in ['compile', 'provided'] && it.optional.text() == 'true'
+                            }).collect { it.artifactId.text() + '-' + it.version.text() + '.jar' }.toString(),
                             requiredDependencies: pomXml.dependencies.dependency.findAll({
                                 it.scope.text() == 'compile' && it.optional.text() != 'true'
                             }).collect {
                                 (it.groupId.text().contains(it.artifactId.text())) ? it.groupId.text() : it.groupId.text() + '.' + it.artifactId.text()
                             }.toString(),
                             optionalDependencies: pomXml.dependencies.dependency.findAll({
-                                it.scope.text() == 'compile' && it.optional.text() == 'true'
+                                it.scope.text() in ['compile', 'provided'] && it.optional.text() == 'true'
                             }).collect {
                                 (it.groupId.text().contains(it.artifactId.text())) ? it.groupId.text() : it.groupId.text() + '.' + it.artifactId.text()
                             }.toString()
@@ -74,7 +70,7 @@ ${module} {
                     def String response = template.make(binding)
                     result = response
 
-                    logger.debug('>> JBossModules: \n{}', response)
+                    println '>> JBossModules: \n' + response
                 }
             }
         }

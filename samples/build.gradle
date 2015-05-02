@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.zhurlik:gradle-jboss-modules:0.8'
+        classpath 'com.github.zhurlik:gradle-jboss-modules:0.9'
     }
 }
 
@@ -25,6 +25,7 @@ dependencies {
     }
     jbossmodules 'com.caucho:hessian:4.0.38'
     jbossmodules 'com.thoughtworks.xstream:xstream:1.4.7'
+    jbossmodules 'org.apache.camel:camel-core:2.15.1'
 }
 
 jbossrepos {
@@ -255,6 +256,10 @@ modules {
                 ]
         ]
     }
+}
+
+task initCamelModule(type: com.github.zhurlik.task.InitModuleTask) {
+    pomName = 'camel-core-2.15.1'
 }
 
 //jbossrepos.each() {com.github.zhurlik.extension.JBossServer it->

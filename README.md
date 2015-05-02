@@ -7,8 +7,6 @@ The standard plugin 'distribution' generates archives for every servers which we
 ***
 The main idea is to have an ability to make [JBoss Modules](https://docs.jboss.org/author/display/MODULES/Defining+a+module)    
     
-TODO: next step is try to make a module from pom.xml
-      
 ## How to install
 [See Gradle Plugins](https://plugins.gradle.org/plugin/com.github.zhurlik.jbossmodules)
 
@@ -124,4 +122,12 @@ jbossrepos.each() {com.github.zhurlik.extension.JBossServer it->
 ```
 ```gradle makeModules```   
 ```gradle checkModules```   
-```gradle serverADistTar```   
+```gradle serverADistTar```
+
+## Additional task InitModuleTask
+Right now there is easy way to extract information from a pom file that can be used for generation JBoss Mdule
+```
+task initCamelModule(type: com.github.zhurlik.task.InitModuleTask) {
+    pomName = 'camel-core-2.15.1'
+}
+```

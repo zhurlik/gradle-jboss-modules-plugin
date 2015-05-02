@@ -13,6 +13,7 @@ import static com.github.zhurlik.Ver.V_1_3
 import static java.io.File.separator
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
+
 /**
  * Testing a chain of tasks which are provided by plugin.
  *
@@ -21,7 +22,8 @@ import static org.junit.Assert.assertTrue
 @Slf4j
 class TasksTest {
 
-    private final File projectDir = new File(getClass().getClassLoader().getResource('').toURI().path + separator + 'projectTest')
+    private
+    final File projectDir = new File(getClass().getClassLoader().getResource('').toURI().path + separator + 'projectTest')
 
     @Before
     public void setUp() throws Exception {
@@ -108,5 +110,45 @@ class TasksTest {
                 "  </dependencies>\n" +
                 "</module>", new File([server.home, testM.path, 'module.xml'].join(separator)).text
 
+    }
+
+    @Test
+    public void testInitFromPom() throws Exception {
+        // empty project with all needed
+        final Project project = ProjectBuilder.builder()
+                .withName('test-project')
+                .withProjectDir(projectDir)
+                .build()
+
+        project.apply plugin: 'com.github.zhurlik.jbossmodules'
+
+        // using a maven to download jar files
+        project.repositories {
+            mavenCentral()
+        }
+
+        project.dependencies {
+            jbossmodules 'org.springframework:spring-oxm:4.1.6.RELEASE'
+        }
+
+        def task = project.task('initModule', type: InitModuleTask)
+        task.pomName = 'spring-oxm-4.1.6.RELEASE'
+
+        log.debug '>> Task: initModule'
+        project.tasks.initModule.actions.each {
+            it.execute(project.tasks.initModule)
+        }
+
+        assertEquals '''\
+sprinoxm {
+    moduleName = 'org.springframework.spring-oxm\'
+    resources = ['spring-oxm-4.1.6.RELEASE.jar']
+    dependencies = [org.springframework.spring-beans, org.springframework.spring-core]
+    // or via more resources [spring-beans-4.1.6.RELEASE.jar, spring-core-4.1.6.RELEASE.jar]
+
+    // optional which can be needed:
+    // either resources = [xstream-1.4.7.jar, xmlbeans-2.6.0.jar, castor-xml-1.3.3.jar, jibx-run-1.2.6.jar]
+    // or dependencies = [com.thoughtworks.xstream, org.apache.xmlbeans, org.codehaus.castor.castor-xml, org.jibx.jibx-run]
+}''', project.tasks.initModule.result
     }
 }

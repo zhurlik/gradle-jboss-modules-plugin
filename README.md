@@ -92,7 +92,7 @@ modules {
         mainClass = 'zh'
         slot = '3.3.3'
         properties = ['ver' : '1.0', 'test' : 'zhurlik']
-        resources = ['test1.jar', 'test2.jar',
+        resources = ['test1.jar', 'test2.jar', 'custom.*',
                      [name: 'name', path: 'path1', filter: [exclude: '**']]
         ]
         dependencies = [

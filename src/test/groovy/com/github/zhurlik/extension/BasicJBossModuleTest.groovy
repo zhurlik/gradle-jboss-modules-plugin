@@ -215,17 +215,17 @@ abstract class BasicJBossModuleTest {
         module.makeLocally(project)
 
         // nothing for testServer1
-        assertNull getClass().getClassLoader().getResource('projectTest/build/testServer1/modules/' + prefix + 'org/apache/log4j/main/log4j-1.2.17.jar')
-        assertNull getClass().getClassLoader().getResource('projectTest/build/testServer1/modules/' + prefix + 'org/apache/log4j/main/module.xml')
+        assertNull getClass().getClassLoader().getResource('projectTest/build/install/testServer1/modules/' + prefix + 'org/apache/log4j/main/log4j-1.2.17.jar')
+        assertNull getClass().getClassLoader().getResource('projectTest/build/install/testServer1/modules/' + prefix + 'org/apache/log4j/main/module.xml')
 
-        assertTrue new File(getClass().getClassLoader().getResource('projectTest/build/testServer/modules/' + prefix + 'org/apache/log4j/main/log4j-1.2.17.jar').toURI().path).exists()
-        assertTrue new File(getClass().getClassLoader().getResource('projectTest/build/testServer/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).exists()
+        assertTrue new File(getClass().getClassLoader().getResource('projectTest/build/install/testServer/modules/' + prefix + 'org/apache/log4j/main/log4j-1.2.17.jar').toURI().path).exists()
+        assertTrue new File(getClass().getClassLoader().getResource('projectTest/build/install/testServer/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).exists()
         assertEquals 'Module Descriptor:', "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='org.apache.log4j'>\n" +
                 "  <resources>\n" +
                 "    <resource-root path='log4j-1.2.17.jar' />\n" +
                 "  </resources>\n" +
-                "</module>", new File(getClass().getClassLoader().getResource('projectTest/build/testServer/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).text
+                "</module>", new File(getClass().getClassLoader().getResource('projectTest/build/install/testServer/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).text
     }
 
     @Test

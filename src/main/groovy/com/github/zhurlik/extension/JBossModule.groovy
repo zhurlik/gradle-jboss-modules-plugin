@@ -119,8 +119,8 @@ class JBossModule {
     public void deployToJBoss(final JBossServer server, final Project project) {
         log.debug '>> Deploying the module:{} to JBoss Server:{}', this.moduleName, server.name
 
-        // to have full path for ${project}/${build}/{server}/modules/module/name/dir/{main|slot}
-        def String source = [project.buildDir.path, server.name, getPath()].join(separator)
+        // to have full path for ${project}/${build}/install/{server}/modules/module/name/dir/{main|slot}
+        def String source = [project.buildDir.path, 'install', server.name, getPath()].join(separator)
         def String target = [server.home, getPath()].join(separator)
 
         new AntBuilder().copy(toDir: target, overwrite: true) {
@@ -141,8 +141,8 @@ class JBossModule {
                 return //continue
             }
 
-            // to have full path for ${project}/${build}/{serverName}/modules/module/name/dir/{main|slot}
-            def String moduleDirName = [project.buildDir.path, server.name, getPath()].join(separator)
+            // to have full path for ${project}/${build}/install/{serverName}/modules/module/name/dir/{main|slot}
+            def String moduleDirName = [project.buildDir.path, 'install', server.name, getPath()].join(separator)
 
             // save a xml
             def File moduleDir = new File(moduleDirName)

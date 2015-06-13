@@ -30,7 +30,7 @@ class JBossServerTest {
 
         log.debug 'Case2:'
         server = new JBossServer('jboss-test-7.1.1')
-        server.home = this.class.classLoader.getResource('./7.1.1/').toURI().path
+        server.home = this.class.classLoader.getResource('./install/7.1.1/').toURI().path
         server.initTree()
         assertNotNull server
 
@@ -48,7 +48,7 @@ class JBossServerTest {
     public void testUndeploy() throws Exception {
         log.debug '>> Testing undeploying process...'
         server = new JBossServer('jboss-test-7.1.1')
-        server.home = this.class.classLoader.getResource('./7.1.1/').toURI().path
+        server.home = this.class.classLoader.getResource('./install/7.1.1/').toURI().path
         server.initTree()
 
         JBossModule jbModule = server.getModule('org.apache.xml-resolver')

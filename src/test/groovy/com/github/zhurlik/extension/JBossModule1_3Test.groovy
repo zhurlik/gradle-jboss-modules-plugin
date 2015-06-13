@@ -241,7 +241,7 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
             slf4j {
                 ver = getVersion()
                 moduleName = 'org.slf4j'
-                resources = ['slf4j-api-1.7.7.jar']
+                resources = ['slf4j-api-.*\\.jar']
                 dependencies = ['org.slf4j.impl']
             }
         }

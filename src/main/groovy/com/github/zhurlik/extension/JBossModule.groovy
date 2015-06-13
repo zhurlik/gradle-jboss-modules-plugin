@@ -166,12 +166,18 @@ class JBossModule {
             } + this.resources.findAll() {
                 !(it instanceof String || it instanceof GString)
             }.collect() { it.path }
+
             jarNames.each() { jar ->
-                project.configurations.jbossmodules.files.findAll() { it.name == jar.toString() }.each {
+                // jar names can contain the regex 'spring-web.*'
+                project.configurations.jbossmodules.files.findAll() { it.name ==~ jar.toString() }.each {
                     final String source = it.path
-                    final String target = [moduleDirName, jar.toString()].join(separator)
-                    new AntBuilder().copy(file: source, toFile: target, overwrite: true)
+                    final String target = [moduleDirName, it.name].join(separator)
+                    final AntBuilder ant = new AntBuilder()
+                    ant.copy(file: source, toFile: target, overwrite: true)
                     log.debug '>> Resource:' + target
+
+                    // replacing the regex with the correct jar name
+                    ant.replace(file: xmlfile.path, token: jar.toString(), value: it.name)
                 }
             }
 

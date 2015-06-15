@@ -42,10 +42,11 @@ class JBossModulesPlugin implements Plugin<Project> {
             project.jbossrepos.each { JBossServer server ->
                 project.distributions.create(server.name)
                 project.distributions[server.name].baseName = server.name
-                project.distributions[server.name].contents.from([project.buildDir.path, server.name, 'modules'].join(separator))
+                project.distributions[server.name].contents.from([project.buildDir.path, 'install', server.name, 'modules'].join(separator))
 
-                // {server.name}Dist* tasks depend on checkModules to be able to create modules
-                project.tasks.findAll {it.name.startsWith(server.name + 'Dist') || it.name.equalsIgnoreCase('install' + it.name + 'dist')}.each {t->
+                // {server.name}DistTar/Zip tasks depend on checkModules to be able to create modules
+                project.tasks.findAll { it.name.startsWith(server.name + 'Dist') }.each { t ->
+                    logger.info '>> Task:' + t.name + ' will depend on chechModules'
                     t.dependsOn 'checkModules'
                 }
             }

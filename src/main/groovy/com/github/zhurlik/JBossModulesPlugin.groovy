@@ -60,9 +60,13 @@ class JBossModulesPlugin implements Plugin<Project> {
         }
 
         // special tasks
-        project.task('makeModules', type: MakeModulesTask)
-        project.task('checkModules', type: CheckModulesTask)
-        project.task('deployModules', type: DeployModulesTask)
+        def makeModulesTask = project.task('makeModules', type: MakeModulesTask)
+        project.task('checkModules', type: CheckModulesTask) {
+            outputs.upToDateWhen {
+                !makeModulesTask.didWork
+            }
+        }
+        def deployModulesTask = project.task('deployModules', type: DeployModulesTask)
         project.tasks.checkModules.dependsOn('makeModules')
         project.tasks.deployModules.dependsOn('checkModules')
     }

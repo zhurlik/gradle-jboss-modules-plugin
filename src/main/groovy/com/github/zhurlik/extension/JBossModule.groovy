@@ -1,6 +1,7 @@
 package com.github.zhurlik.extension
 import com.github.zhurlik.Ver
 import groovy.util.logging.Slf4j
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 
 import static com.github.zhurlik.Ver.V_1_0
@@ -30,6 +31,7 @@ class JBossModule {
 
     // a list of server names for which this module will be available, empty - for all
     def servers = []
+    def configuration
 
     /**
      * The special constructor to be able to use in the gradle script
@@ -133,6 +135,7 @@ class JBossModule {
      */
     public void makeLocally(final Project project) {
         log.debug '>> Module:' + this.name
+        def configuration = this.configuration ?: project.configurations.jbossmodules
 
         project.jbossrepos.each {JBossServer server ->
 
@@ -169,7 +172,14 @@ class JBossModule {
 
             jarNames.each() { jar ->
                 // jar names can contain the regex 'spring-web.*'
-                project.configurations.jbossmodules.files.findAll() { it.name ==~ jar.toString() }.each {
+                def jarFiles = configuration.files.findAll() { it.name ==~ jar.toString() }
+
+                // throw an error if the regex doesn't match any files
+                if (jarFiles.size() == 0) {
+                    throw new GradleException("Could not resolve files from $configuration for pattern '$jar' on module '${this.name}'")
+                }
+
+                jarFiles.each {
                     final String source = it.path
                     final String target = [moduleDirName, it.name].join(separator)
                     final AntBuilder ant = new AntBuilder()

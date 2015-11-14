@@ -154,7 +154,8 @@ class JBossModule {
             def originalVer = this.ver
             this.ver = server.version
 
-            def xmlfile = new File(moduleDir, 'module.xml') << getModuleDescriptor()
+            def xmlfile = new File(moduleDir, 'module.xml')
+            xmlfile.text = getModuleDescriptor()
             log.debug '>> Module Descriptor:' + xmlfile.path
 
             // revert version

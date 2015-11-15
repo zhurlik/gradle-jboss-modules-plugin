@@ -7,7 +7,6 @@ import groovy.xml.MarkupBuilder
 import javax.xml.transform.stream.StreamSource
 
 import static com.github.zhurlik.Ver.V_1_0
-import static java.io.File.separator
 
 /**
  * Generates a xml descriptor for JBoss Module ver.1.0
@@ -49,7 +48,7 @@ class Xsd1_0 extends Builder<JBossModule> {
 
     @Override
     String getPath(final JBossModule jbModule) {
-        return ['modules', jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join(separator)
+        return ['modules', jbModule.moduleName.replaceAll('\\.', "/"), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join("/")
     }
 
     @Override

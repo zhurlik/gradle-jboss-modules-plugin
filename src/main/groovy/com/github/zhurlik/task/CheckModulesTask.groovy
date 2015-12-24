@@ -3,7 +3,6 @@ package com.github.zhurlik.task
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.TaskAction
 
 import static java.io.File.separator

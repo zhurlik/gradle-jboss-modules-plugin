@@ -66,7 +66,7 @@ class JBossModulesPlugin implements Plugin<Project> {
                 !makeModulesTask.didWork
             }
         }
-        def deployModulesTask = project.task('deployModules', type: DeployModulesTask)
+        project.task('deployModules', type: DeployModulesTask)
         project.tasks.checkModules.dependsOn('makeModules')
         project.tasks.deployModules.dependsOn('checkModules')
     }

@@ -146,7 +146,7 @@ jbossrepos.each() {com.github.zhurlik.extension.JBossServer it->
 ```gradle serverADistTar```
 
 ## Additional task InitModuleTask
-Right now there is easy way to extract information from a pom file that can be used for generation JBoss Mdule
+Right now there is easy way to extract information from a pom file that can be used for generation JBoss Module
 ```
 task initCamelModule(type: com.github.zhurlik.task.InitModuleTask) {
     pomName = 'camel-core-2.15.1'

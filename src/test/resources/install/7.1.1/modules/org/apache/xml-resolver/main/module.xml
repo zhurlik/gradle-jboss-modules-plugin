@@ -4,6 +4,7 @@
     </properties>
 
     <resources>
+        <resource-root path='.' />
         <resource-root path="xml-resolver-1.2.fake"/>
     </resources>
     <dependencies>

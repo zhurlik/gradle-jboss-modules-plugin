@@ -172,6 +172,10 @@ class JBossModule {
             }.collect() { it.path }
 
             jarNames.each() { jar ->
+                if (jar == '.') {
+                    return // the case if you would like to have <resource-root path='.' />
+                }
+
                 // jar names can contain the regex 'spring-web.*'
                 def jarFiles = configuration.files.findAll() { it.name ==~ jar.toString() }
 

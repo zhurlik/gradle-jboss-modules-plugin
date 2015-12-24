@@ -180,7 +180,7 @@ abstract class BasicJBossModuleTest {
         // only for testServer
         module.servers = ['testServer']
         module.moduleName = 'org.apache.log4j'
-        module.resources = ['log4j-1.2.17.jar']
+        module.resources = ['.', 'log4j-1.2.17.jar']
 
         // empty project with all needed
         final Project project = ProjectBuilder.builder()
@@ -223,6 +223,7 @@ abstract class BasicJBossModuleTest {
         assertEquals 'Module Descriptor:', "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='org.apache.log4j'>\n" +
                 "  <resources>\n" +
+                "    <resource-root path='.' />\n" +
                 "    <resource-root path='log4j-1.2.17.jar' />\n" +
                 "  </resources>\n" +
                 "</module>", new File(getClass().getClassLoader().getResource('projectTest/build/install/testServer/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).text

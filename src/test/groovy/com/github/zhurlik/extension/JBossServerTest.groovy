@@ -60,6 +60,7 @@ class JBossServerTest {
                 "    <property name='jboss.api' value='private' />\n" +
                 "  </properties>\n" +
                 "  <resources>\n" +
+                "    <resource-root path='.' />\n" +
                 "    <resource-root path='xml-resolver-1.2.fake' />\n" +
                 "  </resources>\n" +
                 "  <dependencies>\n" +

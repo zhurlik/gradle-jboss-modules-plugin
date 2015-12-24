@@ -21,10 +21,17 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    hibernate43
+    hibernate50
+}
+
 dependencies {
     ['aop', 'beans', 'core', 'context'].each {
         jbossmodules "org.springframework:spring-${it}:${springVersion}"
     }
+    hibernate43 'org.hibernate:hibernate-core:4.3.11.Final'
+    hibernate50 'org.hibernate:hibernate-core:5.0.6.Final'
 }
 
 jbossrepos {
@@ -64,7 +71,21 @@ modules {
         ]
     }
     // springframework
-
+    
+    // specify multiple versions of the same module
+    hibernate43 {
+        moduleName 'org.hibernate.core'
+        resources = ["hibernate-core-4.3.11.Final.jar"]
+        slot = '4.3.11'
+        configuration = configurations.hibernate43
+    }
+      
+    hibernate50 {
+        moduleName 'org.hibernate.core'
+        resources = ["hibernate-core-5.0.6.Final.jar"]
+        slot = '5.0.6'
+        configuration = configurations.hibernate50
+    }
 
     moduleA {
         // to define on which servers this module will be available, by default - all

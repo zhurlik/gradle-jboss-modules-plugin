@@ -1,1 +1,21 @@
 apply plugin: 'java'
+
+configurations {
+    jar1
+    jar2
+}
+
+task test1Jar(type:Jar){
+    archiveName = "test1.jar"
+}
+
+task test2Jar(type:Jar){
+    archiveName = "test2.jar"
+}
+
+artifacts {
+    archives test1Jar, test2Jar
+    jar1 test1Jar
+    jar2 test2Jar
+}
+

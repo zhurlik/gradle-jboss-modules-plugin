@@ -4,6 +4,9 @@ import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
 import groovy.xml.MarkupBuilder
 
+import static com.github.zhurlik.Ver.V_1_3
+import static com.github.zhurlik.Ver.V_1_5
+
 /**
  * This class contains main methods to generate and to write tags of a xml descriptor using different xsd files.
  * <p> See
@@ -276,29 +279,6 @@ abstract class Xsd {
     }
 
     /**
-     *  Writes a maven artifact within this deployment.
-     *
-     *  <p>A maven native artifact within this deployment. This is a jar that contains a lib/ directory
-     *  with corresponding platform directories and binaries. This element will cause the jar to
-     *  be unzipped within the artifact's local repository directory.</p>
-     *
-     *  See either <xsd:element name="artifact" type="artifactType"> or <xsd:element name="native-artifact" type="artifactType">
-     *
-     * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference to xml
-     */
-    protected void writeArtifacts(final JBossModule jmodule, final MarkupBuilder xml) {
-        jmodule.resources.findAll({ ((it instanceof Map) && (it.type in ['artifact', 'native-artifact'])) }).each() {
-            // URI that points to the maven artifact "group:artifact:version[:classifier]"
-            if ('artifact' == it.type) {
-                xml.artifact(name: it.name)
-            } else if ('native-artifact' == it.type) {
-                xml.'native-artifact'(name: it.name)
-            }
-        }
-    }
-
-    /**
      * Writes a list of zero or more resource roots for this deployment.
      *  <resources>
      *      <resource-root path="jboss-msc-1.0.1.GA.jar" name="bla-bla">
@@ -326,8 +306,10 @@ abstract class Xsd {
                 // <resource-root>
                 writeResourceType(jmodule, xml)
 
-                // either <artifact> or <native-artifact>
-                writeArtifacts(jmodule, xml)
+                if (jmodule.ver in [V_1_3, V_1_5]) {
+                    // either <artifact> or <native-artifact>
+                    writeArtifacts(jmodule, xml)
+                }
             }
         }
     }

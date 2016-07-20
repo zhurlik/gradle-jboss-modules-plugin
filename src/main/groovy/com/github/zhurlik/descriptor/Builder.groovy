@@ -102,21 +102,57 @@ abstract class Builder<T extends JBossModule> extends Xsd {
             }
 
             it.artifact.each {
-                def el = [:]
-                el.type = 'artifact'
+                def complexEl = [:]
+                complexEl.type = 'artifact'
                 it.attributes().each {
-                    el.put(it.key, it.value)
+                    complexEl.put(it.key, it.value)
                 }
-                jbModule.resources.add(el)
+
+                it.filter.each() { f ->
+                    def filter = [:]
+                    f.include.each() {
+                        filter.include = f.include.@path.text()
+                    }
+                    f.exclude.each() {
+                        filter.exclude = f.exclude.@path.text()
+                    }
+                    if (f.'exclude-set'.children().size() > 0) {
+                        filter.exclude = f.'exclude-set'.path.collect() { it.@name.text() }
+                    }
+                    if (f.'include-set'.children().size() > 0) {
+                        filter.include = f.'include-set'.path.collect() { it.@name.text() }
+                    }
+                    complexEl.filter = filter
+                }
+
+                jbModule.resources.add(complexEl)
             }
 
             it.'native-artifact'.each {
-                def el = [:]
-                el.type = 'native-artifact'
+                def complexEl = [:]
+                complexEl.type = 'native-artifact'
                 it.attributes().each {
-                    el.put(it.key, it.value)
+                    complexEl.put(it.key, it.value)
                 }
-                jbModule.resources.add(el)
+
+                it.filter.each() { f ->
+                    def filter = [:]
+                    f.include.each() {
+                        filter.include = f.include.@path.text()
+                    }
+                    f.exclude.each() {
+                        filter.exclude = f.exclude.@path.text()
+                    }
+                    if (f.'exclude-set'.children().size() > 0) {
+                        filter.exclude = f.'exclude-set'.path.collect() { it.@name.text() }
+                    }
+                    if (f.'include-set'.children().size() > 0) {
+                        filter.include = f.'include-set'.path.collect() { it.@name.text() }
+                    }
+                    complexEl.filter = filter
+                }
+
+                jbModule.resources.add(complexEl)
             }
         }
 

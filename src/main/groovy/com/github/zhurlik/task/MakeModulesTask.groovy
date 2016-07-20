@@ -2,16 +2,12 @@ package com.github.zhurlik.task
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 import org.gradle.api.DefaultTask
-import org.gradle.api.DomainObjectCollection
 import org.gradle.api.GradleException
 import org.gradle.api.file.FileCollection
-import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.TaskExecutionException
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
 /**
  * The main task to create folder structure for JBoss Modules like this

@@ -230,10 +230,12 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
         module.moduleName = 'my.module'
         module.resources = [
                 [type: 'artifact', name: 'group:module:1.0', filter: [include: 'incl*', exclude: ['exclude1', 'exclude2']]],
-                [type: 'native-artifact', name: 'group:module:1.1', filter: [include: ['include1', 'include2'], exclude: 'excl*']]
+                [type: 'artifact', name: 'group:module:1.1', filter: [include: ['include A', 'include B'], exclude: 'all***']],
+                [type: 'native-artifact', name: 'group:module:1.1', filter: [include: ['include1', 'include2'], exclude: 'excl*']],
+                [type: 'native-artifact', name: 'group:module:1.2', filter: [include: '*', exclude: ['exclude 1', 'exclude 2']]]
         ]
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module'>\n" +
+                "<module xmlns='urn:jboss:module:1.6' name='my.module'>\n" +
                 "  <resources>\n" +
                 "    <artifact name='group:module:1.0'>\n" +
                 "      <filter>\n" +
@@ -244,6 +246,15 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
                 "        </exclude-set>\n" +
                 "      </filter>\n" +
                 "    </artifact>\n" +
+                "    <artifact name='group:module:1.1'>\n" +
+                "      <filter>\n" +
+                "        <include-set>\n" +
+                "          <path name='include A' />\n" +
+                "          <path name='include B' />\n" +
+                "        </include-set>\n" +
+                "        <exclude path='all***' />\n" +
+                "      </filter>\n" +
+                "    </artifact>\n" +
                 "    <native-artifact name='group:module:1.1'>\n" +
                 "      <filter>\n" +
                 "        <include-set>\n" +
@@ -251,6 +262,15 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
                 "          <path name='include2' />\n" +
                 "        </include-set>\n" +
                 "        <exclude path='excl*' />\n" +
+                "      </filter>\n" +
+                "    </native-artifact>\n" +
+                "    <native-artifact name='group:module:1.2'>\n" +
+                "      <filter>\n" +
+                "        <include path='*' />\n" +
+                "        <exclude-set>\n" +
+                "          <path name='exclude 1' />\n" +
+                "          <path name='exclude 2' />\n" +
+                "        </exclude-set>\n" +
                 "      </filter>\n" +
                 "    </native-artifact>\n" +
                 "  </resources>\n" +

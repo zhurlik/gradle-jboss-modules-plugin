@@ -247,6 +247,40 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
         assert module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
+        //3
+        module = new JBossModule('testModule-3')
+        module.ver = getVersion()
+        module.moduleName = 'my.module'
+        module.resources = [
+                [type: 'artifact', name: 'group:module:1.0', filter: [include: 'incl*', exclude: ['exclude1', 'exclude2']]],
+                [type: 'native-artifact', name: 'group:module:1.1', filter: [exclude: ['1111', '2222'], include: 'incl*']]
+        ]
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module'>\n" +
+                "  <resources>\n" +
+                "    <artifact name='group:module:1.0'>\n" +
+                "      <filter>\n" +
+                "        <include path='incl*' />\n" +
+                "        <exclude-set>\n" +
+                "          <path name='exclude1' />\n" +
+                "          <path name='exclude2' />\n" +
+                "        </exclude-set>\n" +
+                "      </filter>\n" +
+                "    </artifact>\n" +
+                "    <native-artifact name='group:module:1.1'>\n" +
+                "      <filter>\n" +
+                "        <include path='incl*' />\n" +
+                "        <exclude-set>\n" +
+                "          <path name='1111' />\n" +
+                "          <path name='2222' />\n" +
+                "        </exclude-set>\n" +
+                "      </filter>\n" +
+                "    </native-artifact>\n" +
+                "  </resources>\n" +
+                "</module>"
+        assertEquals 'Case3:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
 
     @Test

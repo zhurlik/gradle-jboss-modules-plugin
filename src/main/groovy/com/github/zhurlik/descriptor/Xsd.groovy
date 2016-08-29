@@ -4,8 +4,7 @@ import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
 import groovy.xml.MarkupBuilder
 
-import static com.github.zhurlik.Ver.V_1_3
-import static com.github.zhurlik.Ver.V_1_5
+import static com.github.zhurlik.Ver.*
 
 /**
  * This class contains main methods to generate and to write tags of a xml descriptor using different xsd files.
@@ -15,6 +14,8 @@ import static com.github.zhurlik.Ver.V_1_5
  *     <li><a href="https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_1.xsd">module-1_1.xsd</a></li>
  *     <li><a href="https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_2.xsd">module-1_2.xsd</a></li>
  *     <li><a href="https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_3.xsd">module-1_3.xsd</a></li>
+ *     <li><a href="https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_5.xsd">module-1_5.xsd</a></li>
+ *     <li><a href="https://github.com/jboss-modules/jboss-modules/blob/master/src/main/resources/schema/module-1_6.xsd">module-1_6.xsd</a></li>
  *     </ul>
  * </p>
  *
@@ -306,7 +307,7 @@ abstract class Xsd {
                 // <resource-root>
                 writeResourceType(jmodule, xml)
 
-                if (jmodule.ver in [V_1_3, V_1_5]) {
+                if (jmodule.ver in [V_1_3, V_1_5, V_1_6]) {
                     // either <artifact> or <native-artifact>
                     writeArtifacts(jmodule, xml)
                 }

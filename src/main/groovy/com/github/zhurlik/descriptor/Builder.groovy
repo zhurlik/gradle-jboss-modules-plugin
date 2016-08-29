@@ -58,6 +58,8 @@ abstract class Builder<T extends JBossModule> extends Xsd {
                 case 'name': jbModule.moduleName = it.value
                     jbModule.name = it.value
                     break
+                case 'version': jbModule.version = it.value
+                    break
             }
         }
 

@@ -57,8 +57,10 @@ class Xsd1_6 extends Builder<JBossModule> {
 
     @Override
     protected void writeModuleType(JBossModule jmodule, MarkupBuilder xml) {
-        // <module xmlns="urn:jboss:module:1.5" name="org.jboss.msc">
-        final attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])
+        // <module xmlns="urn:jboss:module:1.6" name="org.jboss.msc">
+        final attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] +
+                ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot]) +
+                ((jmodule.version in [null, '']) ? [:] : [version: jmodule.version])
         xml.module(attrs) {
             writeExports(jmodule, xml)
             writeMainClass(jmodule, xml)

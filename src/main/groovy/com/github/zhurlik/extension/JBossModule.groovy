@@ -15,7 +15,7 @@ import static java.io.File.separator
  */
 @Slf4j
 class JBossModule {
-    def String name, moduleName, slot, mainClass, targetName
+    def String name, moduleName, slot, mainClass, targetName, version
     def properties = [:]
     def resources = []
     def dependencies = []
@@ -93,6 +93,18 @@ class JBossModule {
         assert slot ==~ /[-a-zA-Z0-9_+*.]+/,
                 'Slot must be: [-a-zA-Z0-9_+*.]+'
         this.slot = slot
+    }
+
+    /**
+     * The version of this module (optional).
+     * ([a-zA-Z0-9]+)([-_+.][a-zA-Z0-9]+)*
+     *
+     * @param version
+     */
+    void setVersion(final String version) {
+        assert version ==~ /([a-zA-Z0-9]+)([-_+.][a-zA-Z0-9]+)*/,
+                'Version must be: ([a-zA-Z0-9]+)([-_+.][a-zA-Z0-9]+)*'
+        this.version = version
     }
 
     /**

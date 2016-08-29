@@ -217,8 +217,9 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
         module.ver = getVersion()
         module.moduleName = 'my.module'
         module.resources = [
-                            [type: 'artifact', name: 'group:module:1.0', filter: [include: 'incl*', exclude: ['exclude1', 'exclude2']]],
-                            [type: 'native-artifact', name: 'group:module:1.1', filter: [include: ['include1', 'include2'], exclude: 'excl*']]
+                [type: 'artifact', name: 'group:module:1.0', filter: [include: 'incl*', exclude: ['exclude1', 'exclude2']]],
+                [type: 'artifact', name: 'group:module:2.0', filter: [include: ['include A', 'include B'], exclude: 'all*']],
+                [type: 'native-artifact', name: 'group:module:1.1', filter: [include: ['include1', 'include2'], exclude: 'excl*']]
         ]
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module'>\n" +
@@ -230,6 +231,15 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
                 "          <path name='exclude1' />\n" +
                 "          <path name='exclude2' />\n" +
                 "        </exclude-set>\n" +
+                "      </filter>\n" +
+                "    </artifact>\n" +
+                "    <artifact name='group:module:2.0'>\n" +
+                "      <filter>\n" +
+                "        <include-set>\n" +
+                "          <path name='include A' />\n" +
+                "          <path name='include B' />\n" +
+                "        </include-set>\n" +
+                "        <exclude path='all*' />\n" +
                 "      </filter>\n" +
                 "    </artifact>\n" +
                 "    <native-artifact name='group:module:1.1'>\n" +

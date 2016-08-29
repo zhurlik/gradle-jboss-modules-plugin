@@ -273,7 +273,7 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
         // describe a module via gradle
         project.modules {
             slf4j {
-                ver = getVersion()
+                ver = V_1_5
                 moduleName = 'org.slf4j'
                 resources = ['slf4j-api-.*\\.jar']
                 dependencies = ['org.slf4j.impl']

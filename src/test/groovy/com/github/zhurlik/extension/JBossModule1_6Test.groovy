@@ -7,7 +7,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
 import org.junit.Test
 
-import static com.github.zhurlik.Ver.V_1_3
+import static com.github.zhurlik.Ver.V_1_6
 import static java.io.File.separator
 import static org.junit.Assert.*
 
@@ -17,7 +17,7 @@ import static org.junit.Assert.*
  * @author zhurlik@gmail.com
  */
 @Slf4j
-class JBossModule1_3Test extends BasicJBossModuleTest {
+class JBossModule1_6Test extends BasicJBossModuleTest {
     @Before
     public void init() throws Exception {
         super.setUp();
@@ -37,6 +37,19 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         module.slot = '1.0'
         String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0' />"
+        assertEquals 'Case1:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        // 1.0
+        module = new JBossModule('testModule')
+        module.ver = getVersion()
+        module.moduleName = 'my.module'
+        module.mainClass = ''
+        module.slot = '1.0'
+        module.version = '1-0'
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0' version='1-0' />"
         assertEquals 'Case1:', xml, module.moduleDescriptor
         assert module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
@@ -61,7 +74,6 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         assertEquals 'Case1.1:', xml, module.moduleDescriptor
         assert module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
-
 
         // 2
         module = new JBossModule('spring-core')
@@ -211,6 +223,42 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         assertEquals 'Case1:', xml, module.moduleDescriptor
         assert module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        //2
+        module = new JBossModule('testModule-2')
+        module.ver = getVersion()
+        module.moduleName = 'my.module'
+        module.resources = [
+                [type: 'artifact', name: 'group:module:1.0', filter: [include: 'incl*', exclude: ['exclude1', 'exclude2']]],
+                [type: 'native-artifact', name: 'group:module:1.1', filter: [include: ['include1', 'include2'], exclude: 'excl*']]
+        ]
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module'>\n" +
+                "  <resources>\n" +
+                "    <artifact name='group:module:1.0'>\n" +
+                "      <filter>\n" +
+                "        <include path='incl*' />\n" +
+                "        <exclude-set>\n" +
+                "          <path name='exclude1' />\n" +
+                "          <path name='exclude2' />\n" +
+                "        </exclude-set>\n" +
+                "      </filter>\n" +
+                "    </artifact>\n" +
+                "    <native-artifact name='group:module:1.1'>\n" +
+                "      <filter>\n" +
+                "        <include-set>\n" +
+                "          <path name='include1' />\n" +
+                "          <path name='include2' />\n" +
+                "        </include-set>\n" +
+                "        <exclude path='excl*' />\n" +
+                "      </filter>\n" +
+                "    </native-artifact>\n" +
+                "  </resources>\n" +
+                "</module>"
+        assertEquals 'Case2:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
     }
 
     @Test
@@ -237,7 +285,7 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         // describe a module via gradle
         project.modules {
             slf4j {
-                ver = V_1_3
+                ver = V_1_6
                 moduleName = 'org.slf4j'
                 resources = ['slf4j-api-.*\\.jar']
                 dependencies = ['org.slf4j.impl']
@@ -248,7 +296,7 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         project.jbossrepos {
             testServer {
                 home = projectDir.path + separator + "testServer"
-                version = V_1_3
+                version = V_1_6
             }
         }
 
@@ -294,6 +342,6 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
 
     @Override
     protected Ver getVersion() {
-        return V_1_3
+        return V_1_6
     }
 }

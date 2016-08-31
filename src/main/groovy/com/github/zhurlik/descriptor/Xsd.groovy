@@ -117,7 +117,7 @@ abstract class Xsd {
 
                 // include
                 if (jmodule.exports.include != null) {
-                    if (jmodule.exports.include instanceof String || jmodule.exports.include.size() == 1) {
+                    if (jmodule.exports.include instanceof String || jmodule.exports.include instanceof GString || jmodule.exports.include.size() == 1) {
                         xml.'include'(path: jmodule.exports.include.toString())
                     } else if (jmodule.exports.include.size() > 1) {
                         xml.'include-set'() {
@@ -128,7 +128,7 @@ abstract class Xsd {
 
                 // exclude
                 if (jmodule.exports.exclude != null) {
-                    if (jmodule.exports.exclude instanceof String || jmodule.exports.exclude.size() == 1) {
+                    if (jmodule.exports.exclude instanceof String || jmodule.exports.exclude instanceof GString || jmodule.exports.exclude.size() == 1) {
                         xml.'exclude'(path: jmodule.exports.exclude.toString())
                     } else if (jmodule.exports.exclude.size() > 1) {
                         xml.'exclude-set'() {
@@ -248,7 +248,7 @@ abstract class Xsd {
                     xml.filter() {
                         // include
                         if (res.filter.include != null) {
-                            if (res.filter.include instanceof String || res.filter.include.size() == 1) {
+                            if (res.filter.include instanceof String || res.filter.include instanceof GString || res.filter.include.size() == 1) {
                                 xml.'include'(path: res.filter.include.toString())
                             } else if (res.filter.include.size() > 1) {
                                 xml.'include-set'() {
@@ -261,7 +261,7 @@ abstract class Xsd {
 
                         //exclude
                         if (res.filter.exclude != null) {
-                            if (res.filter.exclude instanceof String || res.filter.exclude.size() == 1) {
+                            if (res.filter.exclude instanceof String || res.filter.exclude instanceof GString || res.filter.exclude.size() == 1) {
                                 xml.'exclude'(path: res.filter.exclude.toString())
                             } else if (res.filter.exclude.size() > 1) {
                                 xml.'exclude-set'() {
@@ -404,7 +404,7 @@ abstract class Xsd {
                         xml.imports() {
                             // include
                             if (dep.imports.include != null) {
-                                if (dep.imports.include instanceof String || dep.imports.include.size() == 1) {
+                                if (dep.imports.include instanceof String || dep.imports.include instanceof GString || dep.imports.include.size() == 1) {
                                     xml.'include'(path: dep.imports.include.toString())
                                 } else if (dep.imports.include.size() > 1) {
                                     xml.'include-set'() {
@@ -415,7 +415,7 @@ abstract class Xsd {
 
                             // exclude
                             if (dep.imports.exclude != null) {
-                                if (dep.imports.exclude instanceof String || dep.imports.exclude.size() == 1) {
+                                if (dep.imports.exclude instanceof String || dep.imports.exclude instanceof GString || dep.imports.exclude.size() == 1) {
                                     xml.'exclude'(path: dep.imports.exclude.toString())
                                 } else if (dep.imports.exclude.size() > 1) {
                                     xml.'exclude-set'() {
@@ -431,7 +431,7 @@ abstract class Xsd {
                         xml.exports() {
                             // include
                             if (dep.exports.include != null) {
-                                if (dep.exports.include instanceof String || dep.exports.include.size() == 1) {
+                                if (dep.exports.include instanceof String || dep.exports.include instanceof GString || dep.exports.include.size() == 1) {
                                     xml.'include'(path: dep.exports.include.toString())
                                 } else if (dep.exports.include.size() > 1) {
                                     xml.'include-set'() {
@@ -442,7 +442,7 @@ abstract class Xsd {
 
                             // exclude
                             if (dep.exports.exclude != null) {
-                                if (dep.exports.exclude instanceof String || dep.exports.exclude.size() == 1) {
+                                if (dep.exports.exclude instanceof String || dep.exports.exclude instanceof GString || dep.exports.exclude.size() == 1) {
                                     xml.'exclude'(path: dep.exports.exclude.toString())
                                 } else if (dep.exports.exclude.size() > 1) {
                                     xml.'exclude-set'() {
@@ -497,7 +497,7 @@ abstract class Xsd {
                     xml.exports() {
                         // include
                         if (dep.exports.include != null) {
-                            if (dep.exports.include instanceof String || dep.exports.include.size() == 1) {
+                            if (dep.exports.include instanceof String || dep.exports.include instanceof GString || dep.exports.include.size() == 1) {
                                 xml.'include'(path: dep.exports.include.toString())
                             } else if (dep.exports.include.size() > 1) {
                                 xml.'include-set'() {
@@ -508,7 +508,7 @@ abstract class Xsd {
 
                         // exclude
                         if (dep.exports.exclude != null) {
-                            if (dep.exports.exclude instanceof String || dep.exports.exclude.size() == 1) {
+                            if (dep.exports.exclude instanceof String || dep.exports.exclude instanceof GString || dep.exports.exclude.size() == 1) {
                                 xml.'exclude'(path: dep.exports.exclude.toString())
                             } else if (dep.exports.exclude.size() > 1) {
                                 xml.'exclude-set'() {

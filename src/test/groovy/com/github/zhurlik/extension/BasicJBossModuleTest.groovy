@@ -76,6 +76,116 @@ abstract class BasicJBossModuleTest {
     }
 
     @Test
+    public void testResources() throws Exception {
+        // 1
+        module = new JBossModule('testModule')
+        module.ver = getVersion()
+        module.moduleName = 'my.module'
+        module.slot = '1.0'
+        module.resources = [
+                [name: 'testName', path: 'testPath', filter: [include: 'all', exclude: 'not this']]
+        ]
+
+        String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0'>\n" +
+                "  <resources>\n" +
+                "    <resource-root name='testName' path='testPath'>\n" +
+                "      <filter>\n" +
+                "        <include path='all' />\n" +
+                "        <exclude path='not this' />\n" +
+                "      </filter>\n" +
+                "    </resource-root>\n" +
+                "  </resources>\n" +
+                "</module>"
+        assertEquals 'Case1:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        // 2
+        module = new JBossModule('testModule')
+        module.ver = getVersion()
+        module.moduleName = 'my.module1'
+        module.slot = '1.1'
+        module.resources = [
+                [name: 'testName', path: 'testPath', filter: [include: ['11', '22' ], exclude: ['not aa', 'not bb']]]
+        ]
+
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module1' slot='1.1'>\n" +
+                "  <resources>\n" +
+                "    <resource-root name='testName' path='testPath'>\n" +
+                "      <filter>\n" +
+                "        <include-set>\n" +
+                "          <path name='11' />\n" +
+                "          <path name='22' />\n" +
+                "        </include-set>\n" +
+                "        <exclude-set>\n" +
+                "          <path name='not aa' />\n" +
+                "          <path name='not bb' />\n" +
+                "        </exclude-set>\n" +
+                "      </filter>\n" +
+                "    </resource-root>\n" +
+                "  </resources>\n" +
+                "</module>"
+        assertEquals 'Case2:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+    }
+
+    @Test
+    public void testExports() throws Exception {
+        // 1
+        module = new JBossModule('testModule')
+        module.ver = getVersion()
+        module.moduleName = 'my.module'
+        module.slot = '1.0'
+        module.exports = [
+                include: 'all',
+                exclude: ['not this', 'not 1']
+        ]
+
+        String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0'>\n" +
+                "  <exports>\n" +
+                "    <include path='all' />\n" +
+                "    <exclude-set>\n" +
+                "      <path name='not this' />\n" +
+                "      <path name='not 1' />\n" +
+                "    </exclude-set>\n" +
+                "  </exports>\n" +
+                "</module>"
+        assertEquals 'Case1:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        // 2
+        module = new JBossModule('testModule1')
+        module.ver = getVersion()
+        module.moduleName = 'my.module1'
+        module.slot = '1.1'
+        final String t = 123
+        module.exports = [
+                include: ['all', "$t"],
+                exclude: 'not this'
+        ]
+
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module1' slot='1.1'>\n" +
+                "  <exports>\n" +
+                "    <include-set>\n" +
+                "      <path name='all' />\n" +
+                "      <path name='123' />\n" +
+                "    </include-set>\n" +
+                "    <exclude path='not this' />\n" +
+                "  </exports>\n" +
+                "</module>"
+        assertEquals 'Case2:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+    }
+
+    @Test
     public void testPermissionsTag() throws Exception {
         // 1
         module = new JBossModule('testModule')

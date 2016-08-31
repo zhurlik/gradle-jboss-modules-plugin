@@ -271,6 +271,7 @@ abstract class BasicJBossModuleTest {
                  imports: [exclude: ['exclude1', 'exclude2']],
                  exports: [include: '**']
                 ],
+                [name: 'module4', exports:[include: ['1111', '222'], exclude: 'all*']],
                 [type: 'system', paths: 'test-path'],
                 [type: 'system', export: true, paths: ['path1', 'path2'], exports: [exclude: ['exclude1', 'exclude2']]],
                 [type: 'system', export: false, paths: 'test-path', exports: [include: '**']]
@@ -290,6 +291,15 @@ abstract class BasicJBossModuleTest {
                 "      </imports>\n" +
                 "      <exports>\n" +
                 "        <include path='**' />\n" +
+                "      </exports>\n" +
+                "    </module>\n" +
+                "    <module name='module4'>\n" +
+                "      <exports>\n" +
+                "        <include-set>\n" +
+                "          <path name='1111' />\n" +
+                "          <path name='222' />\n" +
+                "        </include-set>\n" +
+                "        <exclude path='all*' />\n" +
                 "      </exports>\n" +
                 "    </module>\n" +
                 "    <system>\n" +

@@ -385,8 +385,8 @@ abstract class BasicJBossModuleTest {
                 [name: 'module4', exports:[include: ['1111', '222'], exclude: "all$t"]],
                 [name: 'module5', imports:[include: ['1111', '222'], exclude: "all$t"]],
                 [type: 'system', paths: 'test-path'],
-                [type: 'system', export: true, paths: ['path1', 'path2'], exports: [exclude: ['exclude1', 'exclude2']]],
-                [type: 'system', export: false, paths: 'test-path', exports: [include: '**']]
+                [type: 'system', export: true, paths: ['path1', 'path2'], exports: [exclude: ['exclude1', 'exclude2'], include: "but include $t"]],
+                [type: 'system', export: false, paths: 'test-path', exports: [include: ['11', '22'], exclude: "but not $t"]]
         ]
         module.slot = '1.0'
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -439,6 +439,7 @@ abstract class BasicJBossModuleTest {
                 "        <path name='path2' />\n" +
                 "      </paths>\n" +
                 "      <exports>\n" +
+                "        <include path='but include **' />\n" +
                 "        <exclude-set>\n" +
                 "          <path name='exclude1' />\n" +
                 "          <path name='exclude2' />\n" +
@@ -450,7 +451,11 @@ abstract class BasicJBossModuleTest {
                 "        <path name='test-path' />\n" +
                 "      </paths>\n" +
                 "      <exports>\n" +
-                "        <include path='**' />\n" +
+                "        <include-set>\n" +
+                "          <path name='11' />\n" +
+                "          <path name='22' />\n" +
+                "        </include-set>\n" +
+                "        <exclude path='but not **' />\n" +
                 "      </exports>\n" +
                 "    </system>\n" +
                 "  </dependencies>\n" +

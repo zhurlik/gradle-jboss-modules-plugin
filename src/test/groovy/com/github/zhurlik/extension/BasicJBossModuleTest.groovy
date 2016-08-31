@@ -375,13 +375,15 @@ abstract class BasicJBossModuleTest {
         module = new JBossModule('testModule')
         module.ver = getVersion()
         module.moduleName = 'my.module'
+        String t = "**"
         module.dependencies = [
                 'module1', 'module2',
                 [name   : 'module3', slot: '1.3', services: 'none', optional: true, export: 'false',
-                 imports: [exclude: ['exclude1', 'exclude2']],
-                 exports: [include: '**']
+                 imports: [exclude: ['exclude1', 'exclude2'], include: "$t"],
+                 exports: [include: "$t", exclude: ['not a', 'not b']]
                 ],
-                [name: 'module4', exports:[include: ['1111', '222'], exclude: 'all*']],
+                [name: 'module4', exports:[include: ['1111', '222'], exclude: "all$t"]],
+                [name: 'module5', imports:[include: ['1111', '222'], exclude: "all$t"]],
                 [type: 'system', paths: 'test-path'],
                 [type: 'system', export: true, paths: ['path1', 'path2'], exports: [exclude: ['exclude1', 'exclude2']]],
                 [type: 'system', export: false, paths: 'test-path', exports: [include: '**']]
@@ -394,6 +396,7 @@ abstract class BasicJBossModuleTest {
                 "    <module name='module2' />\n" +
                 "    <module export='false' name='module3' optional='true' services='none' slot='1.3'>\n" +
                 "      <imports>\n" +
+                "        <include path='**' />\n" +
                 "        <exclude-set>\n" +
                 "          <path name='exclude1' />\n" +
                 "          <path name='exclude2' />\n" +
@@ -401,6 +404,10 @@ abstract class BasicJBossModuleTest {
                 "      </imports>\n" +
                 "      <exports>\n" +
                 "        <include path='**' />\n" +
+                "        <exclude-set>\n" +
+                "          <path name='not a' />\n" +
+                "          <path name='not b' />\n" +
+                "        </exclude-set>\n" +
                 "      </exports>\n" +
                 "    </module>\n" +
                 "    <module name='module4'>\n" +
@@ -409,8 +416,17 @@ abstract class BasicJBossModuleTest {
                 "          <path name='1111' />\n" +
                 "          <path name='222' />\n" +
                 "        </include-set>\n" +
-                "        <exclude path='all*' />\n" +
+                "        <exclude path='all**' />\n" +
                 "      </exports>\n" +
+                "    </module>\n" +
+                "    <module name='module5'>\n" +
+                "      <imports>\n" +
+                "        <include-set>\n" +
+                "          <path name='1111' />\n" +
+                "          <path name='222' />\n" +
+                "        </include-set>\n" +
+                "        <exclude path='all**' />\n" +
+                "      </imports>\n" +
                 "    </module>\n" +
                 "    <system>\n" +
                 "      <paths>\n" +

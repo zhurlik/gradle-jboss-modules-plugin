@@ -155,11 +155,12 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
         // 6
         module = new JBossModule('test-module-6')
         module.ver = getVersion()
+        String t = "**"
         module.moduleName = 'test.module.6'
         module.dependencies = ['module1', 'module2',
                                [name   : 'module3', slot: '1.3', services: 'none', optional: true, export: 'false',
                                 imports: [exclude: ['exclude1', 'exclude2']],
-                                exports: [include: '**']
+                                exports: [include: "$t"]
                                ]
         ]
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -228,11 +229,12 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
         module = new JBossModule('testModule-2')
         module.ver = getVersion()
         module.moduleName = 'my.module'
+        String t = "*"
         module.resources = [
-                [type: 'artifact', name: 'group:module:1.0', filter: [include: 'incl*', exclude: ['exclude1', 'exclude2']]],
-                [type: 'artifact', name: 'group:module:1.1', filter: [include: ['include A', 'include B'], exclude: 'all***']],
-                [type: 'native-artifact', name: 'group:module:1.1', filter: [include: ['include1', 'include2'], exclude: 'excl*']],
-                [type: 'native-artifact', name: 'group:module:1.2', filter: [include: '*', exclude: ['exclude 1', 'exclude 2']]]
+                [type: 'artifact', name: 'group:module:1.0', filter: [include: "incl$t", exclude: ['exclude1', 'exclude2']]],
+                [type: 'artifact', name: 'group:module:1.1', filter: [include: ['include A', 'include B'], exclude: "all$t**"]],
+                [type: 'native-artifact', name: 'group:module:1.1', filter: [include: ['include1', 'include2'], exclude: "excl$t"]],
+                [type: 'native-artifact', name: 'group:module:1.2', filter: [include: "$t", exclude: ['exclude 1', 'exclude 2']]]
         ]
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.6' name='my.module'>\n" +

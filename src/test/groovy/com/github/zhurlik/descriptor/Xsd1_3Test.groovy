@@ -6,6 +6,7 @@ import org.junit.Test
 
 import static com.github.zhurlik.Ver.V_1_3
 import static org.junit.Assert.assertEquals
+
 /**
  *
  * @author zhurlik@gmail.com
@@ -30,7 +31,7 @@ class Xsd1_3Test {
         }
 
         try {
-            builder.getXmlDescriptor(new JBossModule ('test').setVer(V_1_3))
+            builder.getXmlDescriptor(new JBossModule('test').setVer(V_1_3))
             assert false
         } catch (AssertionError ex) {
             assert true

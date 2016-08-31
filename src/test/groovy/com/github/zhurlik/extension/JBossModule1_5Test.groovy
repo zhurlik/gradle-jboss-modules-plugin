@@ -261,9 +261,10 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
         module = new JBossModule('testModule-3')
         module.ver = getVersion()
         module.moduleName = 'my.module'
+        String t = "*"
         module.resources = [
-                [type: 'artifact', name: 'group:module:1.0', filter: [include: 'incl*', exclude: ['exclude1', 'exclude2']]],
-                [type: 'native-artifact', name: 'group:module:1.1', filter: [exclude: ['1111', '2222'], include: 'incl*']]
+                [type: 'artifact', name: 'group:module:1.0', filter: [include: "incl$t", exclude: ['exclude1', 'exclude2']]],
+                [type: 'native-artifact', name: 'group:module:1.1', filter: [exclude: ['1111', '2222'], include: "incl$t"]]
         ]
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module'>\n" +

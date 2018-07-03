@@ -314,7 +314,7 @@ abstract class BasicJBossModuleTest {
         project.jbossrepos {
             testServer {
                 home = projectDir.path + separator + "testServer"
-                version = owner.getVersion()
+                version = this.getVersion()
             }
             testServer1 {
                 home = projectDir.path + separator + "testServer1"

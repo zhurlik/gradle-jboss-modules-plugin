@@ -48,7 +48,6 @@ targetCompatibility = VERSION_1_7
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 // for local testing

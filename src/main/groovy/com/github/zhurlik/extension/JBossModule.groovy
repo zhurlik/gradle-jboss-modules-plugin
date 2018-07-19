@@ -208,7 +208,22 @@ class JBossModule {
                 }
             }
 
+            // copy static files from resources/<moduleName> into module
+            def String metadataDirName = [project.projectDir.path, 'src', 'main', 'resources', this.name].join(separator)
+            File metadataSource = new File(metadataDirName);
+
+            if (metadataSource.exists() && metadataSource.isDirectory()) {
+                log.debug '>> copying metadata from:' + metadataDirName
+                final AntBuilder ant = new AntBuilder()
+                ant.copy(toDir: moduleDirName, overwrite: true) {
+                    fileset(dir: metadataSource) {
+                        include(name: '**/*')
+                    }
+                }
+            }
+
             log.debug('>> Module is available here {}', moduleDir.path)
         }
     }
+
 }

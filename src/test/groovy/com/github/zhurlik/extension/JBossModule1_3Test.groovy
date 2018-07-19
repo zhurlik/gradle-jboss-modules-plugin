@@ -266,6 +266,9 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         assertEquals null, testM.moduleName
         assertTrue testM.dependencies.isEmpty()
 
+        // create static resources that will be added to modules
+        createTestMetadata(project, 'slf4j');
+
         // makes a module
         final JBossModule module = project.modules['slf4j']
         module.makeLocally(project)
@@ -290,6 +293,8 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
                 "    <module name='org.slf4j.impl' />\n" +
                 "  </dependencies>\n" +
                 "</module>", new File([server.home, testM.path, 'module.xml'].join(separator)).text
+        assertTrue new File([server.home, testM.path, 'META-INF', 'ra.xml'].join(separator)).exists()
+
     }
 
     @Override

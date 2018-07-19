@@ -31,6 +31,8 @@ dependencies {
     jbossmodules project(path: ':custom-jar', configuration: 'jar1')
     jbossmodules project(path: ':custom-jar', configuration: 'jar2')
     jbossmodules project(':custom-jar')
+    jbossmodules group: 'org.apache.activemq', name: 'activemq-broker', version: '5.10.0'
+    jbossmodules group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.4'
 }
 
 jbossrepos {
@@ -219,6 +221,13 @@ modules {
                 'org.apache.commons.logging'
         ]
     }
+
+    // Resource Adapter include additional files from /src/main/resources/activvemqra
+    activemqra {
+        moduleName = 'org.apache.activemq'
+        resources = ['.', 'activemq-broker-5.10.0.jar']
+    }
+
     // springframework
 
 

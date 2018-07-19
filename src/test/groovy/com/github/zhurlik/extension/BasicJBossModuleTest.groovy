@@ -465,5 +465,23 @@ abstract class BasicJBossModuleTest {
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
 
+    protected void createTestMetadata(Project project, String name) {
+        def String metadataDirName = [project.projectDir.path, 'src', 'main', 'resources', name, "META-INF"].join(separator)
+        def File metadataDir = new File(metadataDirName)
+
+        if (!metadataDir.exists()) {
+            metadataDir.mkdirs();
+        }
+
+        def xml = "<?xml version='1.0' encoding='utf-8'?>\n"
+        def String rarName = [metadataDirName, "ra.xml"].join(separator)
+
+        def File rar = new File(rarName);
+        if (!rar.exists()) {
+            rar.write(xml);
+        }
+
+    }
+
     abstract protected Ver getVersion()
 }

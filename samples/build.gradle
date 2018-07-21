@@ -19,6 +19,11 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    // additional configuration because activemqra requires different version of spring
+    activemqra
+}
+
 dependencies {
     ['web', 'context-support', 'jdbc', 'oxm', 'orm', 'jms', 'webmvc'].each {
         jbossmodules "org.springframework:spring-${it}:${springVersion}"
@@ -31,8 +36,24 @@ dependencies {
     jbossmodules project(path: ':custom-jar', configuration: 'jar1')
     jbossmodules project(path: ':custom-jar', configuration: 'jar2')
     jbossmodules project(':custom-jar')
-    jbossmodules group: 'org.apache.activemq', name: 'activemq-broker', version: '5.10.0'
-    jbossmodules group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.4'
+
+    // Begin activeMq
+    ['aop', 'beans', 'core', 'context', 'core', 'expression'].each {
+        activemqra "org.springframework:spring-${it}:3.2.8.RELEASE"
+    }
+    ['broker', 'client', 'jms-pool', 'kahadb-store', 'openwire-legacy', 'pool', 'ra', 'spring'].each {
+        activemqra group: 'org.apache.activemq', name: "activemq-${it}", version: '5.10.0'
+    }
+    activemqra group: 'org.apache.activemq.protobuf', name: 'activemq-protobuf', version: '1.1'
+    activemqra group: 'aopalliance', name: 'aopalliance', version: '1.0'
+    activemqra group: 'commons-pool', name: 'commons-pool', version: '1.6'
+    activemqra group: 'org.fusesource.hawtbuf', name: 'hawtbuf', version: '1.10'
+    activemqra group: 'org.apache.xbean', name: 'xbean-spring', version: '3.16'
+    activemqra group: 'commons-net', name: 'commons-net', version: '3.3'
+    activemqra group: 'commons-pool', name: 'commons-pool', version: '1.6'
+    activemqra group: 'org.apache.geronimo.specs', name: 'geronimo-j2ee-management_1.1_spec', version: '1.0.1'
+    activemqra group: 'log4j', name: 'log4j', version: '1.2.17'
+    // End activeMq
 }
 
 jbossrepos {
@@ -222,13 +243,40 @@ modules {
         ]
     }
 
-    // Resource Adapter include additional files from /src/main/resources/activvemqra
+    // springframework
+
+    // Resource Adapter includes additional metadata files from /src/main/resources/activemqra
+    // The default folder can be changed by setting (metadataDir = 'resources') property on server
     activemqra {
         moduleName = 'org.apache.activemq'
-        resources = ['.', 'activemq-broker-5.10.0.jar']
-    }
+        resources = ['.',
+                     'activemq-broker-5.10.0.jar',
+                     'activemq-client-5.10.0.jar',
+                     'activemq-jms-pool-5.10.0.jar',
+                     'activemq-kahadb-store-5.10.0.jar',
+                     'activemq-openwire-legacy-5.10.0.jar',
+                     'activemq-pool-5.10.0.jar',
+                     'activemq-protobuf-1.1.jar', 'activemq-ra-5.10.0.jar',
+                     'activemq-spring-5.10.0.jar',
+                     'aopalliance-1.0.jar',
+                     'commons-pool-1.6.jar',
+                     'commons-logging-1.1.3.jar',
+                     'hawtbuf-1.10.jar',
+                     'spring-aop-3.2.8.RELEASE.jar',
+                     'spring-beans-3.2.8.RELEASE.jar',
+                     'spring-context-3.2.8.RELEASE.jar',
+                     'spring-core-3.2.8.RELEASE.jar',
+                     'spring-expression-3.2.8.RELEASE.jar',
+                     'xbean-spring-3.16.jar',
+                     'commons-net-3.3.jar',
+                     'commons-pool-1.6.jar',
+                     'geronimo-j2ee-management_1.1_spec-1.0.1.jar',
+                     'log4j-1.2.17.jar']
+        exports = [exclude: ['org/springframework/**', 'org/apache/xbean/**', 'org/apache/commons/**', 'org/aopalliance/**', 'org/fusesource/**']]
+        dependencies = ['javax.api', 'org.slf4j', 'javax.resource.api', 'javax.jms.api', 'javax.management.j2ee.api']
 
-    // springframework
+        configuration = configurations.activemqra
+    }
 
 
     moduleA {

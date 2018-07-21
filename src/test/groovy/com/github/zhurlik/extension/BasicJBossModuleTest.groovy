@@ -1,4 +1,5 @@
 package com.github.zhurlik.extension
+
 import com.github.zhurlik.Ver
 import com.github.zhurlik.descriptor.Builder
 import groovy.util.logging.Slf4j
@@ -9,10 +10,8 @@ import org.junit.Before
 import org.junit.Test
 
 import static java.io.File.separator
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertNull
-import static org.junit.Assert.assertTrue
+import static org.junit.Assert.*
+
 /**
  * A common stuff for testing.
  *
@@ -465,20 +464,32 @@ abstract class BasicJBossModuleTest {
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
 
-    protected void createTestMetadata(Project project, String name) {
-        def String metadataDirName = [project.projectDir.path, 'src', 'main', 'resources', name, "META-INF"].join(separator)
-        def File metadataDir = new File(metadataDirName)
+    protected void createTestMetadata(Project project, JBossServer server, String name) {
+        def String metaInfDirName = [project.projectDir.path, 'src', 'main', server.metadataDir, name, "META-INF"].join(separator)
+        def File metadataDir = new File(metaInfDirName)
 
         if (!metadataDir.exists()) {
             metadataDir.mkdirs();
         }
 
         def xml = "<?xml version='1.0' encoding='utf-8'?>\n"
-        def String rarName = [metadataDirName, "ra.xml"].join(separator)
+        def String rarName = [metaInfDirName, "ra.xml"].join(separator)
 
-        def File rar = new File(rarName);
+        def File rar = new File(rarName)
         if (!rar.exists()) {
             rar.write(xml);
+        }
+
+        // create invalid module.xml file in metadataDir that should not be copied
+        def String metadataDirName = [project.projectDir.path, 'src', 'main', server.metadataDir, name].join(separator)
+        def String moduleName = [metadataDirName, "module.xml"].join(separator)
+        def File module = new File(moduleName)
+        if (!module.exists()) {
+            module.write("<?xml version='1.0' encoding='utf-8'?>\n" +
+                    "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='invalid'>\n" +
+                    "  <dependencies>\n" +
+                    "  </dependencies>\n" +
+                    "</module>")
         }
 
     }

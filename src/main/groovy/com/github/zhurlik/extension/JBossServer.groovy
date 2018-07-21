@@ -21,6 +21,7 @@ class JBossServer implements Server {
 
     // default value
     def Ver version = V_1_1
+    def metadataDir = 'resources'
 
     /**
      * The special constructor to be able to use in the gradle script

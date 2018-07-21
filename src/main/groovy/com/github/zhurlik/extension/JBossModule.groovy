@@ -208,9 +208,9 @@ class JBossModule {
                 }
             }
 
-            // copy static files from resources/<moduleName> into module
-            def String metadataDirName = [project.projectDir.path, 'src', 'main', 'resources', this.name].join(separator)
-            File metadataSource = new File(metadataDirName);
+            // copy static files from src/main/<metadataDir>/<moduleName> into module
+            String metadataDirName = [project.projectDir.path, 'src', 'main', server.metadataDir, this.name].join(separator)
+            File metadataSource = new File(metadataDirName)
 
             if (metadataSource.exists() && metadataSource.isDirectory()) {
                 log.debug '>> copying metadata from:' + metadataDirName
@@ -218,6 +218,8 @@ class JBossModule {
                 ant.copy(toDir: moduleDirName, overwrite: true) {
                     fileset(dir: metadataSource) {
                         include(name: '**/*')
+                        exclude(name: '**/module.xml')
+                        exclude(name: '**/*.jar')
                     }
                 }
             }

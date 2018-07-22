@@ -245,9 +245,12 @@ modules {
 
     // springframework
 
-    // Resource Adapter includes additional metadata files from /src/main/resources/activemqra
-    // The default folder can be changed by setting (metadataDir = 'resources') property on server
+    // Resource Adapter metadata files under src/${jboss-server}/dist/modules/${path-to-module}/
+    // (in this case /src/wildfly8.2/dist/modules/org.apache/activemq/main/) will be copied
+    // along with the module files define here into the distributions zip and tgz files.
     activemqra {
+        // to define on which servers this module will be available, by default - all
+        servers = ['wildfly8.2']
         moduleName = 'org.apache.activemq'
         resources = ['.',
                      'activemq-broker-5.10.0.jar',

@@ -33,8 +33,6 @@ dependencies {
     hibernate43 'org.hibernate:hibernate-core:4.3.11.Final'
     hibernate50 'org.hibernate:hibernate-core:5.0.6.Final'
     activemqra group: 'org.apache.activemq', name: "activemq-broker", version: '5.10.0'
-
-
 }
 
 jbossrepos {

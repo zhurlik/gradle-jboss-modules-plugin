@@ -311,10 +311,11 @@ abstract class BasicJBossModuleTest {
         }
 
         // describe an instance of jboss server
+        final testVer = getVersion()
         project.jbossrepos {
             testServer {
                 home = projectDir.path + separator + "testServer"
-                version = owner.getVersion()
+                version = testVer
             }
             testServer1 {
                 home = projectDir.path + separator + "testServer1"

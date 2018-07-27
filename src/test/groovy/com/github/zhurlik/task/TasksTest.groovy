@@ -86,6 +86,7 @@ class TasksTest {
 
         // to call afterEvaluate()
         project.evaluate()
+        project.file('build/distributions').mkdirs()
         log.debug '>> Task: testServerDistTar'
         project.tasks.testServerDistTar.actions.each {
             it.execute(project.tasks.testServerDistTar)

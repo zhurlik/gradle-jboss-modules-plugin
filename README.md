@@ -32,6 +32,7 @@ dependencies {
     }
     hibernate43 'org.hibernate:hibernate-core:4.3.11.Final'
     hibernate50 'org.hibernate:hibernate-core:5.0.6.Final'
+    jbossmodules group: 'org.apache.activemq', name: "activemq-broker", version: '5.10.0'
 }
 
 jbossrepos {
@@ -85,6 +86,17 @@ modules {
         resources = ["hibernate-core-5.0.6.Final.jar"]
         slot = '5.0.6'
         configuration = configurations.hibernate50
+    }
+
+    // Resource Adapter
+    // META-INF folder containing static files will be copied into module
+    // from src/${jboss-server}/dist/modules/${path-to-module}/main/
+    activemqra {
+        moduleName = 'org.apache.activemq'
+        resources = ['.',
+                     'activemq-broker-5.10.0.jar',
+                     // additional jars as required
+                    ]
     }
 
     moduleA {

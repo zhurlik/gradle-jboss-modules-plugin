@@ -1,6 +1,7 @@
 package com.github.zhurlik.descriptor
 
 import com.github.zhurlik.Ver
+import com.github.zhurlik.descriptor.parser.ConfigurationTag
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 import groovy.util.slurpersupport.GPathResult
@@ -34,14 +35,13 @@ abstract class Builder<T extends JBossModule> extends Xsd {
 
     JBossModule makeModule(final String txt) {
         //result
-        JBossModule jbModule = new JBossModule('empty')
+        final JBossModule jbModule = new JBossModule('empty')
         jbModule.ver = getVersion()
 
-        def xml = new XmlSlurper().parseText(txt)
+        final GPathResult xml = new XmlSlurper().parseText(txt)
 
         if ('configuration' == xml.name()) {
-            parseConfigurationTag(xml, jbModule)
-
+            ConfigurationTag.apply(xml).accept(jbModule)
             log.debug '>> Module: \'{}\' has been created', jbModule.name
             return jbModule
         }
@@ -353,37 +353,6 @@ abstract class Builder<T extends JBossModule> extends Xsd {
                 case 'target-name': jbModule.targetName = it.value
                     break
             }
-        }
-    }
-
-    /**
-     * To parse a root element <configuration>.
-     *
-     * @param xml
-     * @param jbModule
-     */
-    private static void parseConfigurationTag(final GPathResult xml, final JBossModule jbModule) {
-
-        jbModule.moduleConfiguration = true
-        jbModule.defaultLoader = xml.@'default-loader'.text()
-
-        xml.loader.each { l ->
-            def el = [:]
-            el.name = l.@name.text()
-
-            l.import.each {
-                el.import = it.text()
-            }
-
-            l.'module-path'.each {
-                el['module-path'] = it.@name.text()
-            }
-
-            jbModule.loaders.add(el)
-        }
-
-        if (jbModule.loaders.empty) {
-            jbModule.loaders.add(xml.@'default-loader'.text())
         }
     }
 

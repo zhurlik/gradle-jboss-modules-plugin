@@ -59,7 +59,7 @@ abstract class Xsd {
         assert jmodule.targetName != null, 'Target Name is null'
 
         def attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName]
-        attrs += (jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot]
+        attrs += (jmodule.slot in [null, ''] || version in [V_1_7]) ? [:] : [slot: jmodule.slot]
         attrs.put('target-name', jmodule.targetName)
         xml.'module-alias'(attrs)
     }
@@ -307,7 +307,7 @@ abstract class Xsd {
                 // <resource-root>
                 writeResourceType(jmodule, xml)
 
-                if (jmodule.ver in [V_1_3, V_1_5, V_1_6]) {
+                if (jmodule.ver in [V_1_3, V_1_5, V_1_6, V_1_7]) {
                     // either <artifact> or <native-artifact>
                     writeArtifacts(jmodule, xml)
                 }
@@ -398,7 +398,7 @@ abstract class Xsd {
             if (dep.exports == null && dep.imports == null) {
                 xml.module(dep.sort())
             } else {
-                xml.module(dep.findAll() { el -> el.key in ['name', 'slot', 'export', 'optional', 'services'] }.sort()) {
+                xml.module(dep.findAll() { el -> el.key in ['name', 'export', 'optional', 'services'] + (!(version in [V_1_7]) ? ['slot'] : [])}.sort()) {
                     // imports
                     if (dep.imports != null) {
                         xml.imports() {
@@ -535,7 +535,7 @@ abstract class Xsd {
      * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writeArtifacts(final JBossModule jmodule, final MarkupBuilder xml) {
-        if (!(jmodule.ver in [V_1_5, V_1_6])) {
+        if (!(jmodule.ver in [V_1_5, V_1_6, V_1_7])) {
             // do nothing
             return
         }
@@ -544,72 +544,55 @@ abstract class Xsd {
             ((it instanceof Map) && (it.type in ['artifact', 'native-artifact']))
         }).each() { res ->
             // URI that points to the maven artifact "group:artifact:version[:classifier]"
-            if ('artifact' == res.type) {
-                if (res.filter == null) {
-                    xml.artifact(name: res.name)
-                } else {
-                    xml.artifact(name: res.name) {
-                        xml.filter() {
-                            // include
-                            if (res.filter.include != null) {
-                                if (res.filter.include instanceof String || res.filter.include instanceof GString || res.filter.include.size() == 1) {
-                                    xml.'include'(path: res.filter.include.toString())
-                                } else if (res.filter.include.size() > 1) {
-                                    xml.'include-set'() {
-                                        res.filter.include.each() {
-                                            xml.'path'(name: it)
-                                        }
-                                    }
+            addArtifact(xml, (Map) res)
+        }
+    }
+
+    /**
+     * For adding either 'artifact' or 'native-artifact'.
+     * @param xml
+     * @param map
+     */
+    static void addArtifact(final MarkupBuilder xml, final Map map){
+        xml."${map.type}"(name: map.name) {
+            if (map.filter != null) {
+                xml.filter() {
+                    // include
+                    if (map.filter.include != null) {
+                        if (map.filter.include instanceof String || map.filter.include instanceof GString || map.filter.include.size() == 1) {
+                            xml.'include'(path: map.filter.include.toString())
+                        } else if (map.filter.include.size() > 1) {
+                            xml.'include-set'() {
+                                map.filter.include.each() {
+                                    xml.'path'(name: it)
                                 }
                             }
+                        }
+                    }
 
-                            //exclude
-                            if (res.filter.exclude != null) {
-                                if (res.filter.exclude instanceof String || res.filter.exclude instanceof GString || res.filter.exclude.size() == 1) {
-                                    xml.'exclude'(path: res.filter.exclude.toString())
-                                } else if (res.filter.exclude.size() > 1) {
-                                    xml.'exclude-set'() {
-                                        res.filter.exclude.each() {
-                                            xml.'path'(name: it)
-                                        }
-                                    }
+                    //exclude
+                    if (map.filter.exclude != null) {
+                        if (map.filter.exclude instanceof String || map.filter.exclude instanceof GString || map.filter.exclude.size() == 1) {
+                            xml.'exclude'(path: map.filter.exclude.toString())
+                        } else if (map.filter.exclude.size() > 1) {
+                            xml.'exclude-set'() {
+                                map.filter.exclude.each() {
+                                    xml.'path'(name: it)
                                 }
                             }
                         }
                     }
                 }
-            } else if ('native-artifact' == res.type) {
-                if (res.filter == null) {
-                    xml.'native-artifact'(name: res.name)
-                } else {
-                    xml.'native-artifact'(name: res.name) {
-                        xml.filter() {
-                            // include
-                            if (res.filter.include != null) {
-                                if (res.filter.include instanceof String || res.filter.include instanceof GString || res.filter.include.size() == 1) {
-                                    xml.'include'(path: res.filter.include.toString())
-                                } else if (res.filter.include.size() > 1) {
-                                    xml.'include-set'() {
-                                        res.filter.include.each() {
-                                            xml.'path'(name: it)
-                                        }
-                                    }
-                                }
-                            }
+            }
 
-                            //exclude
-                            if (res.filter.exclude != null) {
-                                if (res.filter.exclude instanceof String || res.filter.exclude instanceof GString || res.filter.exclude.size() == 1) {
-                                    xml.'exclude'(path: res.filter.exclude.toString())
-                                } else if (res.filter.exclude.size() > 1) {
-                                    xml.'exclude-set'() {
-                                        res.filter.exclude.each() {
-                                            xml.'path'(name: it)
-                                        }
-                                    }
-                                }
-                            }
-                        }
+            if (map.conditions != null) {
+                // TODO: is it possible to have a list of conditions?
+                xml.'conditions'() {
+                    if (map.conditions.'property-equal' != null) {
+                        xml.'property-equal'(name: map.conditions.'property-equal'.name.toString(), value: map.conditions.'property-equal'.value.toString())
+                    }
+                    if (map.conditions.'property-not-equal' != null) {
+                        xml.'property-not-equal'(name: map.conditions.'property-not-equal'.name.toString(), value: map.conditions.'property-not-equal'.value.toString())
                     }
                 }
             }

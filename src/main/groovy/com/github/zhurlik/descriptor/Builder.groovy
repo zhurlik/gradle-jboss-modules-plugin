@@ -3,6 +3,7 @@ package com.github.zhurlik.descriptor
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 import groovy.util.slurpersupport.GPathResult
+import groovy.util.slurpersupport.NodeChild
 
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
@@ -103,59 +104,7 @@ abstract class Builder<T extends JBossModule> extends Xsd {
                 jbModule.resources.add(complexEl)
             }
 
-            it.artifact.each {
-                def complexEl = [:]
-                complexEl.type = 'artifact'
-                it.attributes().each {
-                    complexEl.put(it.key, it.value)
-                }
-
-                it.filter.each() { f ->
-                    def filter = [:]
-                    f.include.each() {
-                        filter.include = f.include.@path.text()
-                    }
-                    f.exclude.each() {
-                        filter.exclude = f.exclude.@path.text()
-                    }
-                    if (f.'exclude-set'.children().size() > 0) {
-                        filter.exclude = f.'exclude-set'.path.collect() { it.@name.text() }
-                    }
-                    if (f.'include-set'.children().size() > 0) {
-                        filter.include = f.'include-set'.path.collect() { it.@name.text() }
-                    }
-                    complexEl.filter = filter
-                }
-
-                jbModule.resources.add(complexEl)
-            }
-
-            it.'native-artifact'.each {
-                def complexEl = [:]
-                complexEl.type = 'native-artifact'
-                it.attributes().each {
-                    complexEl.put(it.key, it.value)
-                }
-
-                it.filter.each() { f ->
-                    def filter = [:]
-                    f.include.each() {
-                        filter.include = f.include.@path.text()
-                    }
-                    f.exclude.each() {
-                        filter.exclude = f.exclude.@path.text()
-                    }
-                    if (f.'exclude-set'.children().size() > 0) {
-                        filter.exclude = f.'exclude-set'.path.collect() { it.@name.text() }
-                    }
-                    if (f.'include-set'.children().size() > 0) {
-                        filter.include = f.'include-set'.path.collect() { it.@name.text() }
-                    }
-                    complexEl.filter = filter
-                }
-
-                jbModule.resources.add(complexEl)
-            }
+            makeArtifacts((NodeChild) it, jbModule)
         }
 
         // exports
@@ -195,6 +144,47 @@ abstract class Builder<T extends JBossModule> extends Xsd {
 
         log.debug '>> Module: \'{}\' has been created', jbModule.name
         return jbModule
+    }
+
+    def void makeArtifacts(final NodeChild tag, final JBossModule jbModule) {
+        ['artifact', 'native-artifact'].each {name ->
+            tag."${name}".each {
+                def complexEl = [:]
+                complexEl.type = name
+                it.attributes().each {
+                    complexEl.put(it.key, it.value)
+                }
+
+                it.filter.each() { f ->
+                    def filter = [:]
+                    f.include.each() {
+                        filter.include = f.include.@path.text()
+                    }
+                    f.exclude.each() {
+                        filter.exclude = f.exclude.@path.text()
+                    }
+                    if (f.'exclude-set'.children().size() > 0) {
+                        filter.exclude = f.'exclude-set'.path.collect() { it.@name.text() }
+                    }
+                    if (f.'include-set'.children().size() > 0) {
+                        filter.include = f.'include-set'.path.collect() { it.@name.text() }
+                    }
+                    complexEl.filter = filter
+                }
+
+                it.conditions.each { c ->
+                    ['property-equal', 'property-not-equal'].each { n ->
+                        final String attr = c."$n".@name.text()
+                        if (!(attr in ['', null])) {
+                            complexEl.conditions = [:]
+                            complexEl.conditions[n] = [name: attr, value: c."$n".@value.text()]
+                        }
+                    }
+                }
+
+                jbModule.resources.add(complexEl)
+            }
+        }
     }
 
     /**

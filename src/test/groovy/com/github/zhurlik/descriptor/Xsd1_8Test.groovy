@@ -13,16 +13,16 @@ import static org.junit.Assert.assertEquals
  */
 class Xsd1_8Test {
 
-    def Builder<JBossModule> builder
+    Builder<JBossModule> builder
 
     @Before
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         builder = V_1_8.builder
         assert builder instanceof Xsd1_8
     }
 
     @Test
-    public void testGenerate() throws Exception {
+    void testGenerate() throws Exception {
         try {
             builder.getXmlDescriptor(null)
             assert false
@@ -77,7 +77,7 @@ class Xsd1_8Test {
     }
 
     @Test
-    public void testValidate() throws Exception {
+    void testValidate() throws Exception {
         def module = new JBossModule('test')
         module.ver = V_1_8
         module.moduleName = 'test.module'

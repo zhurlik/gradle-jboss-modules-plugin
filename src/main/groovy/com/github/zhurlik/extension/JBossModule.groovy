@@ -30,6 +30,7 @@ class JBossModule {
     // A defined loader. More than one loader may be defined.
     def loaders = []
     def permissions = []
+    def provides = []
 
     // a list of server names for which this module will be available, empty - for all
     def servers = []

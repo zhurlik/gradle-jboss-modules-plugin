@@ -1,6 +1,8 @@
 package com.github.zhurlik.descriptor
 
+import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
+import com.sun.org.apache.xerces.internal.dom.ChildNode
 import groovy.util.logging.Slf4j
 import groovy.util.slurpersupport.GPathResult
 import groovy.util.slurpersupport.NodeChild
@@ -134,20 +136,51 @@ abstract class Builder<T extends JBossModule> extends Xsd {
             }
         }
 
+        // dependencies
         xml.dependencies.each() {
             // modules
             parseModules(it, jbModule)
 
             // systems
-            parseSystems(it, jbModule)
+            if (!(version in [Ver.V_1_8])) {
+                parseSystems(it, jbModule)
+            }
+        }
+
+        xml.provides.each {
+            // services
+            parseServices(it, jbModule)
         }
 
         log.debug '>> Module: \'{}\' has been created', jbModule.name
         return jbModule
     }
 
-    def void makeArtifacts(final NodeChild tag, final JBossModule jbModule) {
-        ['artifact', 'native-artifact'].each {name ->
+    /**
+     * New feature since version 1.8
+     *
+     * @param tag xml tag
+     * @param jbModule current module
+     */
+    static void parseServices(final NodeChild tag, final JBossModule jbModule) {
+        tag.children().each {
+            // simple
+            if (it.'with-class'.size() == 0) {
+                jbModule.provides.add(it.@name.text())
+            }
+            // complex
+            if (it.'with-class'.size() > 0) {
+                def service = [:]
+                service.name = it.@name.text()
+                service['with-class'] = it.'with-class'.collect { it.@name.text() }
+
+                jbModule.provides.add(service)
+            }
+        }
+    }
+
+    static void makeArtifacts(final NodeChild tag, final JBossModule jbModule) {
+        ['artifact', 'native-artifact'].each { name ->
             tag."${name}".each {
                 def complexEl = [:]
                 complexEl.type = name
@@ -194,7 +227,7 @@ abstract class Builder<T extends JBossModule> extends Xsd {
      * @param jbModule
      * @return
      */
-    def parseSystems(def it, final JBossModule jbModule) {
+    static parseSystems(final NodeChild it, final JBossModule jbModule) {
         it.system.each() { s ->
             def system = [:]
 
@@ -243,7 +276,7 @@ abstract class Builder<T extends JBossModule> extends Xsd {
      * @param jbModule
      * @return
      */
-    def parseModules(def it, final JBossModule jbModule) {
+    static void parseModules(final NodeChild it, final JBossModule jbModule) {
         it.module.each() { d ->
             def dep = [:]
             if (d.attributes().size() == 1) {
@@ -300,7 +333,7 @@ abstract class Builder<T extends JBossModule> extends Xsd {
      * @param jbModule
      * @param xml
      */
-    private void parseModuleAliasTag(JBossModule jbModule, GPathResult xml) {
+    private static void parseModuleAliasTag(final JBossModule jbModule, final GPathResult xml) {
         jbModule.moduleAlias = true
         xml.attributes().each() {
             switch (it.key) {
@@ -321,7 +354,7 @@ abstract class Builder<T extends JBossModule> extends Xsd {
      * @param xml
      * @param jbModule
      */
-    private void parseConfigurationTag(GPathResult xml, JBossModule jbModule) {
+    private static void parseConfigurationTag(final GPathResult xml, final JBossModule jbModule) {
 
         jbModule.moduleConfiguration = true
         jbModule.defaultLoader = xml.@'default-loader'.text()
@@ -364,5 +397,3 @@ abstract class Builder<T extends JBossModule> extends Xsd {
         }
     }
 }
-
-

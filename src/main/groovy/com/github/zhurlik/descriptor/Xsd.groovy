@@ -274,7 +274,7 @@ abstract class Xsd {
                     }
                 }
             } else {
-                xml.'resource-root'(res.findAll() { it.key in ['name', 'path'] })
+                xml.'resource-root'(res.findAll() { it.key in ['path'] + (!(version in [V_1_8]) ? ['name'] : []) })
             }
         }
     }
@@ -348,7 +348,9 @@ abstract class Xsd {
                 writeModuleDependencyType(jmodule, xml)
 
                 // systems
-                writeSystemDependencyType(jmodule, xml)
+                if (!(version in [V_1_8])) {
+                    writeSystemDependencyType(jmodule, xml)
+                }
             }
         }
     }

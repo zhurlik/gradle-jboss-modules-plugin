@@ -40,6 +40,48 @@ class Xsd1_8 extends Builder<JBossModule> {
         return writer.toString()
     }
 
+    /**
+     * Writes lists items that are statically provided by this module.
+     *  <providers>
+     *    <service name=''>
+     *        <with-class name='class'/>
+     *    <service/>
+     *  </providers>
+     * <p>Lists items that are statically provided by this module.</p>
+     *
+     * See <xsd:element name="provides" type="providesType" minOccurs="0">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
+     */
+    protected void writeProvides(final JBossModule jmodule, final MarkupBuilder xml) {
+        if (!jmodule.provides.isEmpty()) {
+            xml.provides {
+                jmodule.provides.each {s ->
+                    // simple
+                    if (s instanceof String || s instanceof GString) {
+                        service(name: s.toString())
+                    }
+
+                    // complex
+                    if (s instanceof Map) {
+                        service(name: s.name) {
+                            def withClass = s['with-class']
+                            if (withClass instanceof String || s instanceof GString) {
+                                'with-class'(name: withClass.toString())
+                            }
+                            if (withClass instanceof Collection) {
+                                withClass.each {
+                                    'with-class'(name: it)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     StreamSource getXsd() {
         return new StreamSource(getClass().classLoader.getResourceAsStream(getVersion().xsd))
@@ -67,6 +109,7 @@ class Xsd1_8 extends Builder<JBossModule> {
             writeResourcesType(jmodule, xml)
             writeDependenciesType(jmodule, xml)
             writePermissionsType(jmodule, xml)
+            writeProvides(jmodule, xml)
         }
     }
 }

@@ -27,21 +27,21 @@ abstract class BasicJBossModuleTest {
     protected String prefix = ""
 
     @Before
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         if (!projectDir.exists()) {
             assert projectDir.mkdir()
         }
     }
 
     @After
-    public void tearDown() throws Exception {
+    void tearDown() throws Exception {
         if (projectDir.exists() && projectDir.isDirectory()) {
             assert projectDir.deleteDir()
         }
     }
 
     @Test
-    public void testValidation() throws Exception {
+    void testValidation() throws Exception {
         try {
             module  = new JBossModule("wrong")
             module.slot = '~#?!'
@@ -76,7 +76,7 @@ abstract class BasicJBossModuleTest {
     }
 
     @Test
-    public void testResources() throws Exception {
+    void testResources() throws Exception {
         // 1
         module = new JBossModule('testModule')
         module.ver = getVersion()
@@ -134,7 +134,7 @@ abstract class BasicJBossModuleTest {
     }
 
     @Test
-    public void testExports() throws Exception {
+    void testExports() throws Exception {
         // 1
         module = new JBossModule('testModule')
         module.ver = getVersion()
@@ -186,7 +186,7 @@ abstract class BasicJBossModuleTest {
     }
 
     @Test
-    public void testPermissionsTag() throws Exception {
+    void testPermissionsTag() throws Exception {
         // 1
         module = new JBossModule('testModule')
         module.ver = getVersion()
@@ -213,7 +213,7 @@ abstract class BasicJBossModuleTest {
 
 
     @Test
-    public void testConfigurationTag() throws Exception {
+    void testConfigurationTag() throws Exception {
         // 1
         try {
             module = new JBossModule('testModule')
@@ -282,7 +282,7 @@ abstract class BasicJBossModuleTest {
     /**
      * Test for downloading a resource and saving a jboss module
      */
-    public void testMake() throws Exception {
+    void testMake() throws Exception {
         log.debug '>> Test for making a module and saving locally...'
         // 1
         module = new JBossModule('log4j')
@@ -341,7 +341,7 @@ abstract class BasicJBossModuleTest {
     }
 
     @Test
-    public void testModuleAliasTag() throws Exception {
+    void testModuleAliasTag() throws Exception {
         // 1
         module = new JBossModule('testModule')
         module.ver = getVersion()
@@ -357,7 +357,7 @@ abstract class BasicJBossModuleTest {
     }
 
     @Test
-    public void testDependencies() throws Exception {
+    void testDependencies() throws Exception {
         //1
         module = new JBossModule('testModule')
         module.ver = getVersion()

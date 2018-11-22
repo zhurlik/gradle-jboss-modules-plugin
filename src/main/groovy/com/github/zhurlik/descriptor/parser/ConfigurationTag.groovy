@@ -1,5 +1,6 @@
 package com.github.zhurlik.descriptor.parser
 
+import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.slurpersupport.GPathResult
 
@@ -28,7 +29,14 @@ class ConfigurationTag {
      * @return a function Consumer<JBossModule>
      */
     static Consumer<JBossModule> apply(final GPathResult xml) {
+        final String version = xml.namespaceURI().split(':').last()
+        final String[] supported = [Ver.V_1_0, Ver.V_1_1].collect { it.number }
+
         return { jbModule ->
+            if (!(version in supported)) {
+                // unsupported since 1.2
+                return
+            }
             jbModule.moduleConfiguration = true
             jbModule.defaultLoader = xml.@'default-loader'.text()
 

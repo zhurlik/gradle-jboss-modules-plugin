@@ -6,6 +6,7 @@ import groovy.util.slurpersupport.GPathResult
 import org.junit.Test
 
 import static junit.framework.Assert.assertEquals
+import static org.mockito.Mockito.never
 import static org.mockito.Mockito.spy
 import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
@@ -16,7 +17,7 @@ class ConfigurationTagTest {
 
     @Test
     void testSingleLoader() {
-        Ver.values().each { version ->
+        [Ver.V_1_0, Ver.V_1_1].each { version ->
             // init data
             jBossModule = spy(new JBossModule('test-module'))
             final String txt = "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -37,7 +38,7 @@ class ConfigurationTagTest {
 
     @Test
     void testTwoLoaders() {
-        Ver.values().each { version ->
+        [Ver.V_1_0, Ver.V_1_1].each { version ->
             // init data
             jBossModule = spy(new JBossModule('test-module'))
             final String txt = "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -59,7 +60,7 @@ class ConfigurationTagTest {
 
     @Test
     void testComplexLoaders() {
-        Ver.values().each { version ->
+        [Ver.V_1_0, Ver.V_1_1].each { version ->
             // init data
             jBossModule = spy(new JBossModule('test-module'))
             final String txt = "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -83,6 +84,23 @@ class ConfigurationTagTest {
             verify(jBossModule, times(1)).setDefaultLoader('_test-default1')
             assertEquals('[[name:_test-default1], [name:loader2], [name:loader3, import:test-import], [name:loader4, module-path:test-path]]',
                     jBossModule.loaders.toString())
+        }
+    }
+
+    @Test
+    void testUnsupported() {
+        (Ver.values() - [Ver.V_1_0, Ver.V_1_1]).each { version ->
+            // init data
+            jBossModule = spy(new JBossModule('test-module'))
+            final String txt = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                    "<configuration xmlns='urn:jboss:module:" + version.number + "' default-loader='test-default1'/>"
+            final GPathResult xml = new XmlSlurper().parseText(txt)
+
+            // call
+            ConfigurationTag.apply(xml).accept(jBossModule)
+
+            // verify
+            verify(jBossModule, never()).setModuleConfiguration(true)
         }
     }
 }

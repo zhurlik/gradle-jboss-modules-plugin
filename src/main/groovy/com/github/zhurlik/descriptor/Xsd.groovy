@@ -59,7 +59,7 @@ abstract class Xsd {
         assert jmodule.targetName != null, 'Target Name is null'
 
         def attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName]
-        attrs += (jmodule.slot in [null, ''] || version in [V_1_7]) ? [:] : [slot: jmodule.slot]
+        attrs += (jmodule.slot in [null, ''] || version in [V_1_7, V_1_8]) ? [:] : [slot: jmodule.slot]
         attrs.put('target-name', jmodule.targetName)
         xml.'module-alias'(attrs)
     }
@@ -307,7 +307,7 @@ abstract class Xsd {
                 // <resource-root>
                 writeResourceType(jmodule, xml)
 
-                if (jmodule.ver in [V_1_3, V_1_5, V_1_6, V_1_7]) {
+                if (jmodule.ver in [V_1_3, V_1_5, V_1_6, V_1_7, V_1_8]) {
                     // either <artifact> or <native-artifact>
                     writeArtifacts(jmodule, xml)
                 }
@@ -398,7 +398,7 @@ abstract class Xsd {
             if (dep.exports == null && dep.imports == null) {
                 xml.module(dep.sort())
             } else {
-                xml.module(dep.findAll() { el -> el.key in ['name', 'export', 'optional', 'services'] + (!(version in [V_1_7]) ? ['slot'] : [])}.sort()) {
+                xml.module(dep.findAll() { el -> el.key in ['name', 'export', 'optional', 'services'] + (!(version in [V_1_7, V_1_8]) ? ['slot'] : [])}.sort()) {
                     // imports
                     if (dep.imports != null) {
                         xml.imports() {
@@ -535,7 +535,7 @@ abstract class Xsd {
      * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writeArtifacts(final JBossModule jmodule, final MarkupBuilder xml) {
-        if (!(jmodule.ver in [V_1_5, V_1_6, V_1_7])) {
+        if (!(jmodule.ver in [V_1_5, V_1_6, V_1_7, V_1_8])) {
             // do nothing
             return
         }

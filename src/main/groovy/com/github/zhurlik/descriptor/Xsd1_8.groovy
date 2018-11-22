@@ -47,7 +47,7 @@ class Xsd1_8 extends Builder<JBossModule> {
 
     @Override
     String getPath(JBossModule jbModule) {
-        return ['modules', 'system', 'layers', 'base', jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join(separator)
+        return ['modules', 'system', 'layers', 'base', jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.version in [null, '']) ? 'main' : jbModule.version)].join(separator)
     }
 
     @Override

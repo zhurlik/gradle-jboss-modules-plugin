@@ -2,7 +2,6 @@ package com.github.zhurlik.descriptor
 
 import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
-import com.sun.org.apache.xerces.internal.dom.ChildNode
 import groovy.util.logging.Slf4j
 import groovy.util.slurpersupport.GPathResult
 import groovy.util.slurpersupport.NodeChild
@@ -321,6 +320,15 @@ abstract class Builder<T extends JBossModule> extends Xsd {
                     map.include = it.'include-set'.path.collect() { it.@name.text() }
                 }
                 dep.exports = map
+            }
+
+            // properties since 1.9
+            if (jbModule.ver == Ver.V_1_9 && !d.properties.isEmpty()) {
+                def props = [:]
+                d.properties.property.each {
+                    props.put(it.@name.text(), it.@value.text())
+                }
+                dep.properties = props
             }
 
             jbModule.dependencies.add(dep)

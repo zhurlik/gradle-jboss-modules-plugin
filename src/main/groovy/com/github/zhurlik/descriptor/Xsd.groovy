@@ -4,7 +4,12 @@ import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
 import groovy.xml.MarkupBuilder
 
-import static com.github.zhurlik.Ver.*
+import static com.github.zhurlik.Ver.V_1_3
+import static com.github.zhurlik.Ver.V_1_5
+import static com.github.zhurlik.Ver.V_1_6
+import static com.github.zhurlik.Ver.V_1_7
+import static com.github.zhurlik.Ver.V_1_8
+import static com.github.zhurlik.Ver.V_1_9
 
 /**
  * This class contains main methods to generate and to write tags of a xml descriptor using different xsd files.
@@ -59,7 +64,7 @@ abstract class Xsd {
         assert jmodule.targetName != null, 'Target Name is null'
 
         def attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName]
-        attrs += (jmodule.slot in [null, ''] || version in [V_1_7, V_1_8]) ? [:] : [slot: jmodule.slot]
+        attrs += (jmodule.slot in [null, ''] || version in [V_1_7, V_1_8, V_1_9]) ? [:] : [slot: jmodule.slot]
         attrs.put('target-name', jmodule.targetName)
         xml.'module-alias'(attrs)
     }
@@ -274,7 +279,9 @@ abstract class Xsd {
                     }
                 }
             } else {
-                xml.'resource-root'(res.findAll() { it.key in ['path'] + (!(version in [V_1_8]) ? ['name'] : []) })
+                xml.'resource-root'(res.findAll() {
+                    it.key in ['path'] + (!(version in [V_1_8, V_1_9]) ? ['name'] : [])
+                })
             }
         }
     }
@@ -307,7 +314,7 @@ abstract class Xsd {
                 // <resource-root>
                 writeResourceType(jmodule, xml)
 
-                if (jmodule.ver in [V_1_3, V_1_5, V_1_6, V_1_7, V_1_8]) {
+                if (jmodule.ver in [V_1_3, V_1_5, V_1_6, V_1_7, V_1_8, V_1_9]) {
                     // either <artifact> or <native-artifact>
                     writeArtifacts(jmodule, xml)
                 }
@@ -348,7 +355,7 @@ abstract class Xsd {
                 writeModuleDependencyType(jmodule, xml)
 
                 // systems
-                if (!(version in [V_1_8])) {
+                if (!(version in [V_1_8, V_1_9])) {
                     writeSystemDependencyType(jmodule, xml)
                 }
             }
@@ -397,10 +404,10 @@ abstract class Xsd {
                 assert dep.optional.toString() in ['true', 'false']
             }
 
-            if (dep.exports == null && dep.imports == null) {
+            if (dep.exports == null && dep.imports == null && dep.properties == null) {
                 xml.module(dep.sort())
             } else {
-                xml.module(dep.findAll() { el -> el.key in ['name', 'export', 'optional', 'services'] + (!(version in [V_1_7, V_1_8]) ? ['slot'] : [])}.sort()) {
+                xml.module(dep.findAll() { el -> el.key in ['name', 'export', 'optional', 'services'] + (!(version in [V_1_7, V_1_8, V_1_9]) ? ['slot'] : []) }.sort()) {
                     // imports
                     if (dep.imports != null) {
                         xml.imports() {
@@ -451,6 +458,17 @@ abstract class Xsd {
                                         dep.exports.exclude.each() { xml.'path'(name: it) }
                                     }
                                 }
+                            }
+                        }
+                    }
+
+                    // properties since 1.9
+                    if (dep.properties != null && version == V_1_9) {
+                        xml.properties() {
+                            dep.properties.findAll() {
+                                !(it.key in [null, '']) && !(it.value in [null, ''])
+                            }.each { p ->
+                                xml.property(name: p.key, value: p.value)
                             }
                         }
                     }
@@ -537,7 +555,7 @@ abstract class Xsd {
      * @param xml MarkupBuilder to have a reference to xml
      */
     protected void writeArtifacts(final JBossModule jmodule, final MarkupBuilder xml) {
-        if (!(jmodule.ver in [V_1_5, V_1_6, V_1_7, V_1_8])) {
+        if (!(jmodule.ver in [V_1_5, V_1_6, V_1_7, V_1_8, V_1_9])) {
             // do nothing
             return
         }

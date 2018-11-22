@@ -20,7 +20,7 @@ import static java.io.File.separator
 class Xsd1_8 extends Builder<JBossModule> {
 
     @Override
-    String getXmlDescriptor(JBossModule jmodule) {
+    String getXmlDescriptor(final JBossModule jmodule) {
         assert jmodule != null, 'JBossModule is null'
         assert jmodule.moduleName != null, 'Module name is null'
 
@@ -54,7 +54,7 @@ class Xsd1_8 extends Builder<JBossModule> {
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
      */
-    protected void writeProvides(final JBossModule jmodule, final MarkupBuilder xml) {
+    static void writeProvides(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!jmodule.provides.isEmpty()) {
             xml.provides {
                 jmodule.provides.each {s ->
@@ -88,7 +88,7 @@ class Xsd1_8 extends Builder<JBossModule> {
     }
 
     @Override
-    String getPath(JBossModule jbModule) {
+    String getPath(final JBossModule jbModule) {
         return ['modules', 'system', 'layers', 'base', jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.version in [null, '']) ? 'main' : jbModule.version)].join(separator)
     }
 
@@ -98,7 +98,7 @@ class Xsd1_8 extends Builder<JBossModule> {
     }
 
     @Override
-    protected void writeModuleType(JBossModule jmodule, MarkupBuilder xml) {
+    protected void writeModuleType(final JBossModule jmodule, final MarkupBuilder xml) {
         // <module xmlns="urn:jboss:module:1.8" name="org.jboss.msc">
         final attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] +
                 ((jmodule.version in [null, '']) ? [:] : [version: jmodule.version])

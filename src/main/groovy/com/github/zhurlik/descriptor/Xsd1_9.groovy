@@ -8,6 +8,7 @@ import groovy.xml.MarkupBuilder
 import javax.xml.transform.stream.StreamSource
 
 import static com.github.zhurlik.Ver.V_1_9
+import static com.github.zhurlik.descriptor.Xsd1_8.writeProvides
 import static java.io.File.separator
 
 /**
@@ -46,8 +47,8 @@ class Xsd1_9 extends Builder<JBossModule> {
     }
 
     @Override
-    String getPath(JBossModule jbModule) {
-        return ['modules', 'system', 'layers', 'base', jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join(separator)
+    String getPath(final JBossModule jbModule) {
+        return ['modules', 'system', 'layers', 'base', jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.version in [null, '']) ? 'main' : jbModule.version)].join(separator)
     }
 
     @Override
@@ -56,7 +57,7 @@ class Xsd1_9 extends Builder<JBossModule> {
     }
 
     @Override
-    protected void writeModuleType(JBossModule jmodule, MarkupBuilder xml) {
+    protected void writeModuleType(final JBossModule jmodule, final MarkupBuilder xml) {
         // <module xmlns="urn:jboss:module:1.9" name="org.jboss.msc">
         final attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] +
                 ((jmodule.version in [null, '']) ? [:] : [version: jmodule.version])
@@ -67,6 +68,7 @@ class Xsd1_9 extends Builder<JBossModule> {
             writeResourcesType(jmodule, xml)
             writeDependenciesType(jmodule, xml)
             writePermissionsType(jmodule, xml)
+            writeProvides(jmodule, xml)
         }
     }
 }

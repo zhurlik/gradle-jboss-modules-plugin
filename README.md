@@ -7,8 +7,7 @@ The standard plugin 'distribution' generates archives for every servers which we
 ***
 The main idea is to have an ability to make [JBoss Modules](https://docs.jboss.org/author/display/MODULES/Defining+a+module)   
 ## Supported versions
-All available xsd schemes you can find [on github](https://github.com/jboss-modules/jboss-modules)  
-This plugin covers the following:
+All available xsd schemes you can find [on github](https://github.com/jboss-modules/jboss-modules). This plugin covers the following:  
 * 1.0
 * 1.1
 * 1.2

@@ -21,7 +21,7 @@ import java.util.function.Consumer
  * @author zhurlik@gmail.com
  */
 class ConfigurationTag {
-
+    private static final String[] SUPPORTED = [Ver.V_1_0, Ver.V_1_1].collect { it.number }
     /**
      *  Returns a function to update JBossModule.
      *
@@ -29,14 +29,16 @@ class ConfigurationTag {
      * @return a function Consumer<JBossModule>
      */
     static Consumer<JBossModule> apply(final GPathResult xml) {
+        // xmlns='urn:jboss:module:x.y' -> x.y
         final String version = xml.namespaceURI().split(':').last()
-        final String[] supported = [Ver.V_1_0, Ver.V_1_1].collect { it.number }
 
         return { jbModule ->
-            if (!(version in supported)) {
+
+            if (!(version in SUPPORTED)) {
                 // unsupported since 1.2
                 return
             }
+
             jbModule.moduleConfiguration = true
             jbModule.defaultLoader = xml.@'default-loader'.text()
 

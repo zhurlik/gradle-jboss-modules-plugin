@@ -267,4 +267,9 @@ class JBossModule1_0Test extends BasicJBossModuleTest {
     protected Ver getVersion() {
         return V_1_0
     }
+
+    @Override
+    protected boolean isSlotSupported() {
+        return true
+    }
 }

@@ -146,7 +146,7 @@ abstract class BasicJBossModuleTest {
         ]
 
         String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0'>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module'${isSlotSupported() ? ' slot=\'1.0\'' : ''}>\n" +
                 "  <exports>\n" +
                 "    <include path='all' />\n" +
                 "    <exclude-set>\n" +
@@ -171,7 +171,7 @@ abstract class BasicJBossModuleTest {
         ]
 
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module1' slot='1.1'>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module1'${isSlotSupported() ? ' slot=\'1.1\'' : ''}>\n" +
                 "  <exports>\n" +
                 "    <include-set>\n" +
                 "      <path name='all' />\n" +
@@ -199,7 +199,7 @@ abstract class BasicJBossModuleTest {
         ]
 
         String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0'>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module'${isSlotSupported() ? ' slot=\'1.0\'' : ''}>\n" +
                 "  <permissions>\n" +
                 "    <grant permission='permission0' />\n" +
                 "    <grant permission='permission1' />\n" +
@@ -350,7 +350,7 @@ abstract class BasicJBossModuleTest {
         module.targetName = 'testTarget'
         module.setModuleAlias(true)
         String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module-alias xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0' target-name='testTarget' />"
+                "<module-alias xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' ${isSlotSupported() ? 'slot=\'1.0\' ' : ''}target-name='testTarget' />"
         assertEquals 'Case1:', xml, module.moduleDescriptor
         assert module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
@@ -391,11 +391,11 @@ abstract class BasicJBossModuleTest {
         ]
         module.slot = '1.0'
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0'>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module'${isSlotSupported() ? ' slot=\'1.0\'' : ''}>\n" +
                 "  <dependencies>\n" +
                 "    <module name='module1' />\n" +
                 "    <module name='module2' />\n" +
-                "    <module export='false' name='module3' optional='true' services='none' slot='1.3'>\n" +
+                "    <module export='false' name='module3' optional='true' services='none'${isSlotSupported() ? ' slot=\'1.3\'' : ''}>\n" +
                 "      <imports>\n" +
                 "        <include path='**' />\n" +
                 "        <exclude-set>\n" +
@@ -467,4 +467,6 @@ abstract class BasicJBossModuleTest {
     }
 
     abstract protected Ver getVersion()
+
+    abstract protected boolean isSlotSupported()
 }

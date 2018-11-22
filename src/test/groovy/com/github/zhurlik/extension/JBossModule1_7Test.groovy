@@ -7,9 +7,11 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
 import org.junit.Test
 
-import static com.github.zhurlik.Ver.V_1_3
+import static com.github.zhurlik.Ver.V_1_7
 import static java.io.File.separator
-import static org.junit.Assert.*
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertNotNull
+import static org.junit.Assert.assertTrue
 
 /**
  * Unit test to check all cases to create JBoss Module.
@@ -17,7 +19,7 @@ import static org.junit.Assert.*
  * @author zhurlik@gmail.com
  */
 @Slf4j
-class JBossModule1_3Test extends BasicJBossModuleTest {
+class JBossModule1_7Test extends BasicJBossModuleTest {
     @Before
     public void init() throws Exception {
         super.setUp();
@@ -36,7 +38,20 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         module.mainClass = ''
         module.slot = '1.0'
         String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0' />"
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' />"
+        assertEquals 'Case1:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        // 1.0
+        module = new JBossModule('testModule')
+        module.ver = getVersion()
+        module.moduleName = 'my.module'
+        module.mainClass = ''
+        module.slot = '1.0'
+        module.version = '1-0'
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' version='1-0' />"
         assertEquals 'Case1:', xml, module.moduleDescriptor
         assert module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
@@ -49,7 +64,7 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         module.exports = [exclude: ['exclude1', 'exclude2'], include: '**/impl/*']
         module.slot = '1.0'
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0'>\n" +
+                "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module'>\n" +
                 "  <exports>\n" +
                 "    <include path='**/impl/*' />\n" +
                 "    <exclude-set>\n" +
@@ -61,7 +76,6 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         assertEquals 'Case1.1:', xml, module.moduleDescriptor
         assert module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
-
 
         // 2
         module = new JBossModule('spring-core')
@@ -143,11 +157,12 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         // 6
         module = new JBossModule('test-module-6')
         module.ver = getVersion()
+        String t = "**"
         module.moduleName = 'test.module.6'
         module.dependencies = ['module1', 'module2',
                                [name   : 'module3', slot: '1.3', services: 'none', optional: true, export: 'false',
                                 imports: [exclude: ['exclude1', 'exclude2']],
-                                exports: [include: '**']
+                                exports: [include: "$t"]
                                ]
         ]
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -155,7 +170,7 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
                 "  <dependencies>\n" +
                 "    <module name='module1' />\n" +
                 "    <module name='module2' />\n" +
-                "    <module export='false' name='module3' optional='true' services='none' slot='1.3'>\n" +
+                "    <module export='false' name='module3' optional='true' services='none'>\n" +
                 "      <imports>\n" +
                 "        <exclude-set>\n" +
                 "          <path name='exclude1' />\n" +
@@ -175,7 +190,7 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
                 "  <dependencies>\n" +
                 "    <module name='module1' />\n" +
                 "    <module name='module2' />\n" +
-                "    <module export='false' name='module3' optional='true' services='none' slot='1.3'>\n" +
+                "    <module export='false' name='module3' optional='true' services='none'>\n" +
                 "      <imports>\n" +
                 "        <exclude-set>\n" +
                 "          <path name='exclude1' />\n" +
@@ -211,6 +226,149 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         assertEquals 'Case1:', xml, module.moduleDescriptor
         assert module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        //2
+        module = new JBossModule('testModule-2')
+        module.ver = getVersion()
+        module.moduleName = 'my.module'
+        String t = "*"
+        module.resources = [
+                [type: 'artifact', name: 'group:module:1.0', filter: [include: "incl$t", exclude: ['exclude1', 'exclude2']]],
+                [type: 'artifact', name: 'group:module:1.1', filter: [include: ['include A', 'include B'], exclude: "all$t**"]],
+                [type: 'native-artifact', name: 'group:module:1.1', filter: [include: ['include1', 'include2'], exclude: "excl$t"]],
+                [type: 'native-artifact', name: 'group:module:1.2', filter: [include: "$t", exclude: ['exclude 1', 'exclude 2']]]
+        ]
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:1.7' name='my.module'>\n" +
+                "  <resources>\n" +
+                "    <artifact name='group:module:1.0'>\n" +
+                "      <filter>\n" +
+                "        <include path='incl*' />\n" +
+                "        <exclude-set>\n" +
+                "          <path name='exclude1' />\n" +
+                "          <path name='exclude2' />\n" +
+                "        </exclude-set>\n" +
+                "      </filter>\n" +
+                "    </artifact>\n" +
+                "    <artifact name='group:module:1.1'>\n" +
+                "      <filter>\n" +
+                "        <include-set>\n" +
+                "          <path name='include A' />\n" +
+                "          <path name='include B' />\n" +
+                "        </include-set>\n" +
+                "        <exclude path='all***' />\n" +
+                "      </filter>\n" +
+                "    </artifact>\n" +
+                "    <native-artifact name='group:module:1.1'>\n" +
+                "      <filter>\n" +
+                "        <include-set>\n" +
+                "          <path name='include1' />\n" +
+                "          <path name='include2' />\n" +
+                "        </include-set>\n" +
+                "        <exclude path='excl*' />\n" +
+                "      </filter>\n" +
+                "    </native-artifact>\n" +
+                "    <native-artifact name='group:module:1.2'>\n" +
+                "      <filter>\n" +
+                "        <include path='*' />\n" +
+                "        <exclude-set>\n" +
+                "          <path name='exclude 1' />\n" +
+                "          <path name='exclude 2' />\n" +
+                "        </exclude-set>\n" +
+                "      </filter>\n" +
+                "    </native-artifact>\n" +
+                "  </resources>\n" +
+                "</module>"
+        assertEquals 'Case2:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
+
+        //3
+        module = new JBossModule('testModule-3')
+        module.ver = getVersion()
+        module.moduleName = 'my.module'
+        module.resources = [
+                [
+                        type: 'artifact',
+                        name: 'group:module:1.0',
+                        filter: [include: "incl$t", exclude: ['exclude1', 'exclude2']],
+                        conditions: ['property-equal': [name: 'test-name', value: "${1+1}"]]
+                ],
+                [
+                        type: 'artifact',
+                        name: 'group:module:1.1',
+                        filter: [include: ['include A', 'include B'], exclude: "all$t**"],
+                        conditions: ['property-not-equal': [name: "${'test'+'-name'}", value: 'test-value']]
+                ],
+                [
+                        type: 'native-artifact',
+                        name: 'group:module:1.1',
+                        filter: [include: ['include1', 'include2'], exclude: "excl$t"],
+                        conditions: ['property-not-equal': [name: "${'test'+'-name'}", value: 'test-value']]
+                ],
+                [
+                        type: 'native-artifact',
+                        name: 'group:module:1.2',
+                        filter: [include: "$t", exclude: ['exclude 1', 'exclude 2']],
+                        conditions: ['property-equal': [name: 'test-name', value: "${1+1}"]]
+                ]
+        ]
+        xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<module xmlns='urn:jboss:module:1.7' name='my.module'>\n" +
+                "  <resources>\n" +
+                "    <artifact name='group:module:1.0'>\n" +
+                "      <filter>\n" +
+                "        <include path='incl*' />\n" +
+                "        <exclude-set>\n" +
+                "          <path name='exclude1' />\n" +
+                "          <path name='exclude2' />\n" +
+                "        </exclude-set>\n" +
+                "      </filter>\n" +
+                "      <conditions>\n" +
+                "        <property-equal name='test-name' value='2' />\n" +
+                "      </conditions>\n" +
+                "    </artifact>\n" +
+                "    <artifact name='group:module:1.1'>\n" +
+                "      <filter>\n" +
+                "        <include-set>\n" +
+                "          <path name='include A' />\n" +
+                "          <path name='include B' />\n" +
+                "        </include-set>\n" +
+                "        <exclude path='all***' />\n" +
+                "      </filter>\n" +
+                "      <conditions>\n" +
+                "        <property-not-equal name='test-name' value='test-value' />\n" +
+                "      </conditions>\n" +
+                "    </artifact>\n" +
+                "    <native-artifact name='group:module:1.1'>\n" +
+                "      <filter>\n" +
+                "        <include-set>\n" +
+                "          <path name='include1' />\n" +
+                "          <path name='include2' />\n" +
+                "        </include-set>\n" +
+                "        <exclude path='excl*' />\n" +
+                "      </filter>\n" +
+                "      <conditions>\n" +
+                "        <property-not-equal name='test-name' value='test-value' />\n" +
+                "      </conditions>\n" +
+                "    </native-artifact>\n" +
+                "    <native-artifact name='group:module:1.2'>\n" +
+                "      <filter>\n" +
+                "        <include path='*' />\n" +
+                "        <exclude-set>\n" +
+                "          <path name='exclude 1' />\n" +
+                "          <path name='exclude 2' />\n" +
+                "        </exclude-set>\n" +
+                "      </filter>\n" +
+                "      <conditions>\n" +
+                "        <property-equal name='test-name' value='2' />\n" +
+                "      </conditions>\n" +
+                "    </native-artifact>\n" +
+                "  </resources>\n" +
+                "</module>"
+        assertEquals 'Case3:', xml, module.moduleDescriptor
+        assert module.valid
+        assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
 
     @Test
@@ -237,7 +395,7 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         // describe a module via gradle
         project.modules {
             slf4j {
-                ver = V_1_3
+                ver = V_1_7
                 moduleName = 'org.slf4j'
                 resources = ['slf4j-api-.*\\.jar']
                 dependencies = ['org.slf4j.impl']
@@ -248,7 +406,7 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
         project.jbossrepos {
             testServer {
                 home = projectDir.path + separator + "testServer"
-                version = V_1_3
+                version = V_1_7
             }
         }
 
@@ -294,11 +452,11 @@ class JBossModule1_3Test extends BasicJBossModuleTest {
 
     @Override
     protected Ver getVersion() {
-        return V_1_3
+        return V_1_7
     }
 
     @Override
     protected boolean isSlotSupported() {
-        return true
+        return false
     }
 }

@@ -27,7 +27,7 @@ class ConfigurationTagTest {
             final GPathResult xml = new XmlSlurper().parseText(txt)
 
             // call
-            ConfigurationTag.apply(xml).accept(jBossModule)
+            ConfigurationTag.parse(xml).accept(jBossModule)
 
             // verify
             verify(jBossModule, times(1)).setModuleConfiguration(true)
@@ -49,7 +49,7 @@ class ConfigurationTagTest {
             final GPathResult xml = new XmlSlurper().parseText(txt)
 
             // call
-            ConfigurationTag.apply(xml).accept(jBossModule)
+            ConfigurationTag.parse(xml).accept(jBossModule)
 
             // verify
             verify(jBossModule, times(1)).setModuleConfiguration(true)
@@ -77,7 +77,7 @@ class ConfigurationTagTest {
             final GPathResult xml = new XmlSlurper().parseText(txt)
 
             // call
-            ConfigurationTag.apply(xml).accept(jBossModule)
+            ConfigurationTag.parse(xml).accept(jBossModule)
 
             // verify
             verify(jBossModule, times(1)).setModuleConfiguration(true)
@@ -97,7 +97,7 @@ class ConfigurationTagTest {
             final GPathResult xml = new XmlSlurper().parseText(txt)
 
             // call
-            ConfigurationTag.apply(xml).accept(jBossModule)
+            ConfigurationTag.parse(xml).accept(jBossModule)
 
             // verify
             verify(jBossModule, never()).setModuleConfiguration(true)

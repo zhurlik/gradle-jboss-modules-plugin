@@ -22,13 +22,14 @@ import java.util.function.Consumer
  */
 class ConfigurationTag {
     private static final String[] SUPPORTED = [Ver.V_1_0, Ver.V_1_1].collect { it.number }
+
     /**
      *  Returns a function to update JBossModule.
      *
      * @param xml see configurationType in the xsd
      * @return a function Consumer<JBossModule>
      */
-    static Consumer<JBossModule> apply(final GPathResult xml) {
+    static Consumer<JBossModule> parse(final GPathResult xml) {
         // xmlns='urn:jboss:module:x.y' -> x.y
         final String version = xml.namespaceURI().split(':').last()
 

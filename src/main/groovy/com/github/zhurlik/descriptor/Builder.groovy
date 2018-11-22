@@ -2,6 +2,7 @@ package com.github.zhurlik.descriptor
 
 import com.github.zhurlik.Ver
 import com.github.zhurlik.descriptor.parser.ConfigurationTag
+import com.github.zhurlik.descriptor.parser.ModuleAliasTag
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 import groovy.util.slurpersupport.GPathResult
@@ -41,14 +42,13 @@ abstract class Builder<T extends JBossModule> extends Xsd {
         final GPathResult xml = new XmlSlurper().parseText(txt)
 
         if ('configuration' == xml.name()) {
-            ConfigurationTag.apply(xml).accept(jbModule)
+            ConfigurationTag.parse(xml).accept(jbModule)
             log.debug '>> Module: \'{}\' has been created', jbModule.name
             return jbModule
         }
 
         if ('module-alias' == xml.name()) {
-            parseModuleAliasTag(jbModule, xml)
-
+            ModuleAliasTag.parse(xml).accept(jbModule)
             log.debug '>> Module: \'{}\' has been created', jbModule.name
             return jbModule
         }
@@ -332,27 +332,6 @@ abstract class Builder<T extends JBossModule> extends Xsd {
             }
 
             jbModule.dependencies.add(dep)
-        }
-    }
-
-    /**
-     * To parse a root element for a module alias declaration.
-     *
-     * @param jbModule
-     * @param xml
-     */
-    private static void parseModuleAliasTag(final JBossModule jbModule, final GPathResult xml) {
-        jbModule.moduleAlias = true
-        xml.attributes().each() {
-            switch (it.key) {
-                case 'slot': jbModule.slot = it.value
-                    break
-                case 'name': jbModule.moduleName = it.value
-                    jbModule.name = it.value
-                    break
-                case 'target-name': jbModule.targetName = it.value
-                    break
-            }
         }
     }
 

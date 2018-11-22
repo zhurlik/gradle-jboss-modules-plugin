@@ -15,7 +15,9 @@ import static java.io.File.separator
  */
 @Slf4j
 class JBossModule {
-    def String name, moduleName, slot, mainClass, targetName, version
+    @Deprecated
+    def slot
+    def String name, moduleName, mainClass, targetName, version
     def properties = [:]
     def resources = []
     def dependencies = []

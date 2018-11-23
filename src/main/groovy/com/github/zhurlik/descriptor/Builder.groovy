@@ -6,7 +6,6 @@ import com.github.zhurlik.descriptor.parser.ModuleTag
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 
-import javax.xml.transform.stream.StreamSource
 import java.util.function.Supplier
 import java.util.stream.Stream
 

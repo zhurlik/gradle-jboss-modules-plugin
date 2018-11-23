@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertNull
+import static org.junit.Assert.assertTrue
 
 /**
  * To check {@link JBossServer}
@@ -19,7 +20,7 @@ class JBossServerTest {
     private JBossServer server
 
     @Test
-    public void testCreation() throws Exception {
+    void testCreation() throws Exception {
         log.debug '>> JBossServer...'
 
         log.debug '>> Case1:'
@@ -41,11 +42,11 @@ class JBossServerTest {
         JBossModule m = server.getModule('javax.xml.bind.api')
         log.debug('>> Generated:\n{}', m.moduleDescriptor)
         log.debug('>> From file:\n{}', server.getMainXml('javax.xml.bind.api'))
-        assert m.isValid()
+        assertTrue m.isValid()
     }
 
     @Test
-    public void testUndeploy() throws Exception {
+    void testUndeploy() throws Exception {
         log.debug '>> Testing undeploying process...'
         server = new JBossServer('jboss-test-7.1.1')
         server.home = this.class.classLoader.getResource('./install/7.1.1/').toURI().path

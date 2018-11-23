@@ -19,16 +19,16 @@ import static org.junit.Assert.*
 @Slf4j
 class JBossModule1_6Test extends BasicJBossModuleTest {
     @Before
-    public void init() throws Exception {
+    void init() throws Exception {
         super.setUp();
         prefix = 'system/layers/base/'
     }
 
     @Test
-    public void testConfigurationTag() throws Exception {}
+    void testConfigurationTag() throws Exception {}
 
     @Test
-    public void testModuleTag() throws Exception {
+    void testModuleTag() throws Exception {
         // 1
         module = new JBossModule('testModule')
         module.ver = getVersion()
@@ -38,7 +38,7 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
         String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0' />"
         assertEquals 'Case1:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         // 1.0
@@ -51,7 +51,7 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
         xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0' version='1-0' />"
         assertEquals 'Case1:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         // 1.1
@@ -72,7 +72,7 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
                 "  </exports>\n" +
                 "</module>"
         assertEquals 'Case1.1:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         // 2
@@ -95,7 +95,7 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
                 "  </dependencies>\n" +
                 "</module>"
         assertEquals 'Case2:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         // 3
@@ -108,7 +108,7 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
                 "  <main-class name='test.MainClass' />\n" +
                 "</module>"
         assertEquals 'Case3:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         // 4
@@ -124,7 +124,7 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
                 "  </properties>\n" +
                 "</module>"
         assertEquals 'Case4:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         // 5
@@ -149,7 +149,7 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
                 "  </resources>\n" +
                 "</module>"
         assertEquals 'Case5:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         // 6
@@ -182,7 +182,7 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
                 "  </dependencies>\n" +
                 "</module>"
         assertEquals 'Case6:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='test.module.6'>\n" +
                 "  <dependencies>\n" +
@@ -204,7 +204,7 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
     }
 
     @Test
-    public void testResources() throws Exception {
+    void testResources() throws Exception {
         //1
         module = new JBossModule('testModule')
         module.ver = getVersion()
@@ -222,7 +222,7 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
                 "  </resources>\n" +
                 "</module>"
         assertEquals 'Case1:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         //2
@@ -278,13 +278,13 @@ class JBossModule1_6Test extends BasicJBossModuleTest {
                 "  </resources>\n" +
                 "</module>"
         assertEquals 'Case2:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
     }
 
     @Test
-    public void testDeploy() throws Exception {
+    void testDeploy() throws Exception {
         log.debug '>> A test for deployment process...'
 
         // empty project with all needed

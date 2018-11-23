@@ -29,14 +29,14 @@ abstract class BasicJBossModuleTest {
     @Before
     void setUp() throws Exception {
         if (!projectDir.exists()) {
-            assert projectDir.mkdir()
+            assertTrue projectDir.mkdir()
         }
     }
 
     @After
     void tearDown() throws Exception {
         if (projectDir.exists() && projectDir.isDirectory()) {
-            assert projectDir.deleteDir()
+            assertTrue projectDir.deleteDir()
         }
     }
 
@@ -98,7 +98,7 @@ abstract class BasicJBossModuleTest {
                 "  </resources>\n" +
                 "</module>"
         assertEquals 'Case1:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         // 2
@@ -128,7 +128,7 @@ abstract class BasicJBossModuleTest {
                 "  </resources>\n" +
                 "</module>"
         assertEquals 'Case2:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
     }
@@ -156,7 +156,7 @@ abstract class BasicJBossModuleTest {
                 "  </exports>\n" +
                 "</module>"
         assertEquals 'Case1:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         // 2
@@ -181,7 +181,7 @@ abstract class BasicJBossModuleTest {
                 "  </exports>\n" +
                 "</module>"
         assertEquals 'Case2:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
 
@@ -207,7 +207,7 @@ abstract class BasicJBossModuleTest {
                 "  </permissions>\n" +
                 "</module>"
         assertEquals 'Case1:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
 
@@ -220,7 +220,7 @@ abstract class BasicJBossModuleTest {
             module.ver = getVersion()
             module.moduleName = 'my.module'
             module.moduleConfiguration = true
-            assert false
+            assertTrue false
         } catch (AssertionError ex) {
             assertTrue 'Case1:', true
         }
@@ -236,7 +236,7 @@ abstract class BasicJBossModuleTest {
                 "  <loader name='test-default1' />\n" +
                 "</configuration>"
         assertEquals 'Case2:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         //3
@@ -252,7 +252,7 @@ abstract class BasicJBossModuleTest {
                 "  <loader name='loader2' />\n" +
                 "</configuration>"
         assertEquals 'Case3:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
 
         //4
@@ -274,7 +274,7 @@ abstract class BasicJBossModuleTest {
                 "  </loader>\n" +
                 "</configuration>"
         assertEquals 'Case4:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
 
@@ -352,7 +352,7 @@ abstract class BasicJBossModuleTest {
         String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-alias xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' ${isSlotSupported() ? 'slot=\'1.0\' ' : ''}target-name='testTarget' />"
         assertEquals 'Case1:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
 
@@ -370,7 +370,7 @@ abstract class BasicJBossModuleTest {
                 "  </dependencies>\n" +
                 "</module>"
         assertEquals 'Case1:', xml, module.moduleDescriptor
-        assert !module.valid
+        assertTrue !module.valid
 
         // 2
         module = new JBossModule('testModule')
@@ -462,7 +462,7 @@ abstract class BasicJBossModuleTest {
                 "  </dependencies>\n" +
                 "</module>"
         assertEquals 'Case2:', xml, module.moduleDescriptor
-        assert module.valid
+        assertTrue module.valid
         assertEquals 'Reverse:', xml, builder.makeModule(xml).moduleDescriptor
     }
 

@@ -5,7 +5,9 @@ import org.junit.Before
 import org.junit.Test
 
 import static com.github.zhurlik.Ver.V_1_0
-import static org.junit.Assert.*
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
+import static org.junit.Assert.assertTrue
 
 /**
  *
@@ -13,18 +15,16 @@ import static org.junit.Assert.*
  */
 class Xsd1_0Test {
 
-    def Builder<JBossModule> builder
+    private Builder<JBossModule> builder
 
     @Before
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         builder = V_1_0.builder
         assertTrue builder instanceof Xsd1_0
     }
 
     @Test
-    public void testGenerate() throws Exception {
-        assertNotNull builder.getXsd()
-
+    void testGenerate() throws Exception {
         try {
             builder.getXmlDescriptor(null)
             assertFalse false
@@ -56,18 +56,18 @@ class Xsd1_0Test {
                 "  <loader name='test_loader1' />\n" +
                 "</configuration>", builder.getXmlDescriptor(module)
         assertEquals 'modules/test/module/main', builder.getPath(module)
-        assertTrue 'Valid:', builder.isValid(module.moduleDescriptor)
+        assertTrue 'Valid:', builder.getVersion().isValid(module.moduleDescriptor)
     }
 
     @Test
-    public void testValidate() throws Exception {
-        def module = new JBossModule('test')
+    void testValidate() throws Exception {
+        final JBossModule module = new JBossModule('test')
         module.moduleName = 'test.module'
 
-        assert builder.isValid(module.moduleDescriptor)
+        assertTrue builder.getVersion().isValid(module.moduleDescriptor)
 
         // not valid
-        assert !builder.isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
+        assertTrue !builder.getVersion().isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.0' name1='test.module' />")
     }
 }

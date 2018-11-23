@@ -6,6 +6,7 @@ import org.junit.Test
 
 import static com.github.zhurlik.Ver.V_1_8
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 
 /**
  *
@@ -13,21 +14,21 @@ import static org.junit.Assert.assertEquals
  */
 class Xsd1_8Test {
 
-    Builder<JBossModule> builder
+    private Builder<JBossModule> builder
 
     @Before
     void setUp() throws Exception {
         builder = V_1_8.builder
-        assert builder instanceof Xsd1_8
+        assertTrue builder instanceof Xsd1_8
     }
 
     @Test
     void testGenerate() throws Exception {
         try {
             builder.getXmlDescriptor(null)
-            assert false
+            assertTrue false
         } catch (AssertionError ex) {
-            assert true
+            assertTrue true
         }
 
         try {
@@ -36,9 +37,9 @@ class Xsd1_8Test {
             m.setVer(V_1_8)
             m.setSlot("deprecated")
             builder.getXmlDescriptor()
-            assert false
+            assertTrue false
         } catch (AssertionError ex) {
-            assert true
+            assertTrue true
         }
 
         def module = new JBossModule('test')
@@ -82,10 +83,10 @@ class Xsd1_8Test {
         module.ver = V_1_8
         module.moduleName = 'test.module'
 
-        assert builder.isValid(module.moduleDescriptor)
+        assertTrue builder.getVersion().isValid(module.moduleDescriptor)
 
         // not valid
-        assert !builder.isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
+        assertTrue !builder.getVersion().isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.8' name1='test.module' />")
 
         module = new JBossModule('test')
@@ -94,10 +95,10 @@ class Xsd1_8Test {
         module.moduleAlias = true
         module.targetName = 'target.name'
 
-        assert builder.isValid(module.getModuleDescriptor())
+        assertTrue builder.getVersion().isValid(module.getModuleDescriptor())
 
         // not valid
-        assert !builder.isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
+        assertTrue !builder.getVersion().isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-alias xmlns='urn:jboss:module:1.8' name='test.module'/>")
     }
 }

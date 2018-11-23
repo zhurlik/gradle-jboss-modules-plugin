@@ -4,8 +4,6 @@ import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
 import groovy.xml.MarkupBuilder
 
-import javax.xml.transform.stream.StreamSource
-
 import static com.github.zhurlik.Ver.V_1_0
 
 /**
@@ -39,11 +37,6 @@ class Xsd1_0 extends Builder<JBossModule> {
     JBossModule makeModule(String txt) {
 
         return super.makeModule(txt)
-    }
-
-    @Override
-    StreamSource getXsd() {
-        return new StreamSource(getClass().classLoader.getResourceAsStream(getVersion().xsd))
     }
 
     @Override

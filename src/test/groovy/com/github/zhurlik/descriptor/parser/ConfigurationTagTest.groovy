@@ -2,37 +2,35 @@ package com.github.zhurlik.descriptor.parser
 
 import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
-import groovy.util.slurpersupport.GPathResult
 import org.junit.Test
 
-import static junit.framework.Assert.assertEquals
-import static org.mockito.Mockito.never
-import static org.mockito.Mockito.spy
-import static org.mockito.Mockito.times
-import static org.mockito.Mockito.verify
+import java.util.function.Supplier
 
+import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
+import static org.junit.Assert.assertTrue
 
 class ConfigurationTagTest {
-    private JBossModule jBossModule
 
     @Test
     void testSingleLoader() {
         [Ver.V_1_0, Ver.V_1_1].each { version ->
             // init data
-            jBossModule = spy(new JBossModule('test-module'))
             final String txt = "<?xml version='1.0' encoding='utf-8'?>\n" +
                     "<configuration xmlns='urn:jboss:module:" + version.number + "' default-loader='test-default1'>\n" +
                     "  <loader name='test-default1' />\n" +
                     "</configuration>"
-            final GPathResult xml = new XmlSlurper().parseText(txt)
 
             // call
-            ConfigurationTag.parse(xml).accept(jBossModule)
-
-            // verify
-            verify(jBossModule, times(1)).setModuleConfiguration(true)
-            verify(jBossModule, times(1)).setDefaultLoader('test-default1')
-            assertEquals('[[name:test-default1]]', jBossModule.loaders.toString())
+            ConfigurationTag.parse(txt)
+                    .ifPresent({ final Supplier<JBossModule> supplier ->
+                final JBossModule jBossModule = supplier.get()
+                // verify
+                assertTrue(jBossModule.isModuleConfiguration())
+                assertEquals('test-default1', jBossModule.getDefaultLoader())
+                assertEquals('[[name:test-default1]]', jBossModule.loaders.toString())
+            }
+            )
         }
     }
 
@@ -40,21 +38,22 @@ class ConfigurationTagTest {
     void testTwoLoaders() {
         [Ver.V_1_0, Ver.V_1_1].each { version ->
             // init data
-            jBossModule = spy(new JBossModule('test-module'))
             final String txt = "<?xml version='1.0' encoding='utf-8'?>\n" +
                     "<configuration xmlns='urn:jboss:module:" + version.number + "' default-loader='_test-default1'>\n" +
                     "  <loader name='_test-default1' />\n" +
                     "  <loader name='loader2' />\n" +
                     "</configuration>"
-            final GPathResult xml = new XmlSlurper().parseText(txt)
 
             // call
-            ConfigurationTag.parse(xml).accept(jBossModule)
-
-            // verify
-            verify(jBossModule, times(1)).setModuleConfiguration(true)
-            verify(jBossModule, times(1)).setDefaultLoader('_test-default1')
-            assertEquals('[[name:_test-default1], [name:loader2]]', jBossModule.loaders.toString())
+            ConfigurationTag.parse(txt)
+                    .ifPresent({ final Supplier<JBossModule> supplier ->
+                final JBossModule jBossModule = supplier.get()
+                // verify
+                assertTrue(jBossModule.isModuleConfiguration())
+                assertEquals('_test-default1', jBossModule.getDefaultLoader())
+                assertEquals('[[name:_test-default1], [name:loader2]]', jBossModule.loaders.toString())
+            }
+            )
         }
     }
 
@@ -62,7 +61,6 @@ class ConfigurationTagTest {
     void testComplexLoaders() {
         [Ver.V_1_0, Ver.V_1_1].each { version ->
             // init data
-            jBossModule = spy(new JBossModule('test-module'))
             final String txt = "<?xml version='1.0' encoding='utf-8'?>\n" +
                     "<configuration xmlns='urn:jboss:module:" + version.number + "' default-loader='_test-default1'>\n" +
                     "  <loader name='_test-default1' />\n" +
@@ -74,16 +72,18 @@ class ConfigurationTagTest {
                     "    <module-path name='test-path' />\n" +
                     "  </loader>\n" +
                     "</configuration>"
-            final GPathResult xml = new XmlSlurper().parseText(txt)
 
             // call
-            ConfigurationTag.parse(xml).accept(jBossModule)
+            ConfigurationTag.parse(txt).ifPresent({ final Supplier<JBossModule> supplier ->
+                final JBossModule jBossModule = supplier.get()
 
-            // verify
-            verify(jBossModule, times(1)).setModuleConfiguration(true)
-            verify(jBossModule, times(1)).setDefaultLoader('_test-default1')
-            assertEquals('[[name:_test-default1], [name:loader2], [name:loader3, import:test-import], [name:loader4, module-path:test-path]]',
-                    jBossModule.loaders.toString())
+                // verify
+                assertTrue(jBossModule.isModuleConfiguration())
+                assertEquals('_test-default1', jBossModule.getDefaultLoader())
+                assertEquals('[[name:_test-default1], [name:loader2], [name:loader3, import:test-import], [name:loader4, module-path:test-path]]',
+                        jBossModule.loaders.toString())
+            }
+            )
         }
     }
 
@@ -91,16 +91,11 @@ class ConfigurationTagTest {
     void testUnsupported() {
         (Ver.values() - [Ver.V_1_0, Ver.V_1_1]).each { version ->
             // init data
-            jBossModule = spy(new JBossModule('test-module'))
             final String txt = "<?xml version='1.0' encoding='utf-8'?>\n" +
                     "<configuration xmlns='urn:jboss:module:" + version.number + "' default-loader='test-default1'/>"
-            final GPathResult xml = new XmlSlurper().parseText(txt)
 
-            // call
-            ConfigurationTag.parse(xml).accept(jBossModule)
-
-            // verify
-            verify(jBossModule, never()).setModuleConfiguration(true)
+            // call, verify
+            assertFalse(ConfigurationTag.parse(txt).isPresent())
         }
     }
 }

@@ -2,9 +2,10 @@ package com.github.zhurlik.descriptor.parser
 
 import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
+import groovy.util.logging.Slf4j
 import groovy.util.slurpersupport.GPathResult
 
-import java.util.function.Consumer
+import java.util.function.Supplier
 
 /**
  * This class implements a logic to parse configurationType tag.
@@ -20,47 +21,53 @@ import java.util.function.Consumer
  *
  * @author zhurlik@gmail.com
  */
+@Slf4j
 class ConfigurationTag {
-    private static final String[] SUPPORTED = [Ver.V_1_0, Ver.V_1_1].collect { it.number }
 
     /**
-     *  Returns a function to update JBossModule.
+     *  Returns a function to make JBossModule.
      *
-     * @param xml see configurationType in the xsd
-     * @return a function Consumer<JBossModule>
+     * @param txt see configurationType in the xsd
+     * @return a function Supplier<JBossModule>
      */
-    static Consumer<JBossModule> parse(final GPathResult xml) {
+    static Optional<Supplier<JBossModule>> parse(final String txt) {
+        final GPathResult xml = new XmlSlurper().parseText(txt)
         // xmlns='urn:jboss:module:x.y' -> x.y
-        final String version = xml.namespaceURI().split(':').last()
+        final String xsdVersion = xml.namespaceURI().split(':').last()
+        final Ver version = Ver.values().find { it.number.equals(xsdVersion) }
 
-        return { jbModule ->
+        if (version.isValid(txt) && 'configuration'.equals(xml.name())) {
+            return Optional.of({
+                //result
+                final JBossModule jbModule = new JBossModule('empty')
+                jbModule.ver = version
+                jbModule.moduleConfiguration = true
+                jbModule.defaultLoader = xml.@'default-loader'.text()
 
-            if (!(version in SUPPORTED)) {
-                // unsupported since 1.2
-                return
-            }
+                xml.loader.each { l ->
+                    def el = [:]
+                    el.name = l.@name.text()
 
-            jbModule.moduleConfiguration = true
-            jbModule.defaultLoader = xml.@'default-loader'.text()
+                    l.import.each {
+                        el.import = it.text()
+                    }
 
-            xml.loader.each { l ->
-                def el = [:]
-                el.name = l.@name.text()
+                    l.'module-path'.each {
+                        el['module-path'] = it.@name.text()
+                    }
 
-                l.import.each {
-                    el.import = it.text()
+                    jbModule.loaders.add(el)
                 }
 
-                l.'module-path'.each {
-                    el['module-path'] = it.@name.text()
+                if (jbModule.loaders.empty) {
+                    jbModule.loaders.add(xml.@'default-loader'.text())
                 }
 
-                jbModule.loaders.add(el)
-            }
-
-            if (jbModule.loaders.empty) {
-                jbModule.loaders.add(xml.@'default-loader'.text())
-            }
+                log.debug '>> Module: \'{}\' has been created', jbModule.name
+                return jbModule
+            })
+        } else {
+            Optional.empty()
         }
     }
 }

@@ -2,9 +2,10 @@ package com.github.zhurlik.descriptor.parser
 
 import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
+import groovy.util.logging.Slf4j
 import groovy.util.slurpersupport.GPathResult
 
-import java.util.function.Consumer
+import java.util.function.Supplier
 
 /**
  * This class implements a logic to parse moduleAliasType tag.
@@ -20,43 +21,52 @@ import java.util.function.Consumer
  *
  * @author zhurlik@gmail.com
  */
+@Slf4j
 class ModuleAliasTag {
 
     /**
      *  Returns a function to update JBossModule.
      *
-     * @param xml see moduleAliasType in the xsd
-     * @return a function Consumer<JBossModule>
+     * @param txt see moduleAliasType in the xsd
+     * @return a function Supplier<JBossModule>
      */
-    static Consumer<JBossModule> parse(final GPathResult xml) {
+    static Optional<Supplier<JBossModule>> parse(final String txt) {
+        final GPathResult xml = new XmlSlurper().parseText(txt)
         // xmlns='urn:jboss:module:x.y' -> x.y
-        final String version = xml.namespaceURI().split(':').last()
-        final boolean isSlotSupported = version in [Ver.V_1_1, Ver.V_1_2, Ver.V_1_3, Ver.V_1_5, Ver.V_1_6].collect {
-            it.number
-        }
+        final String xsdVersion = xml.namespaceURI().split(':').last()
+        final Ver version = Ver.values().find { it.number.equals(xsdVersion) }
+        final boolean isSlotSupported = version in [Ver.V_1_1, Ver.V_1_2, Ver.V_1_3, Ver.V_1_5, Ver.V_1_6]
 
-        return { jbModule ->
+        if (version.isValid(txt) && 'module-alias'.equals(xml.name())) {
+            return Optional.of(new Supplier<JBossModule>(){
 
-            if (Ver.V_1_0.number.equals(version)) {
-                // supported since 1.1
-                return
-            }
-
-            jbModule.moduleAlias = true
-            xml.attributes().each() {
-                switch (it.key) {
-                    case 'slot':
-                        if (isSlotSupported) {
-                            jbModule.slot = it.value
+                @Override
+                JBossModule get() {
+                    //result
+                    final JBossModule jbModule = new JBossModule('empty')
+                    jbModule.ver = version
+                    jbModule.moduleAlias = true
+                    xml.attributes().each() {
+                        switch (it.key) {
+                            case 'slot':
+                                if (isSlotSupported) {
+                                    jbModule.slot = it.value
+                                }
+                                break
+                            case 'name': jbModule.moduleName = it.value
+                                jbModule.name = it.value
+                                break
+                            case 'target-name': jbModule.targetName = it.value
+                                break
                         }
-                        break
-                    case 'name': jbModule.moduleName = it.value
-                        jbModule.name = it.value
-                        break
-                    case 'target-name': jbModule.targetName = it.value
-                        break
+                    }
+
+                    log.debug '>> Module: \'{}\' has been created', jbModule.name
+                    return jbModule
                 }
-            }
+            })
+        } else {
+            return Optional.empty()
         }
     }
 }

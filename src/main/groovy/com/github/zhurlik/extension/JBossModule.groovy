@@ -121,7 +121,7 @@ class JBossModule {
     }
 
     boolean isValid() {
-        return this.ver.builder.isValid(this.ver.builder.getXmlDescriptor(this))
+        return this.ver.isValid(this.ver.builder.getXmlDescriptor(this))
     }
 
     /**
@@ -133,7 +133,7 @@ class JBossModule {
         this.ver.builder.getPath(this)
     }
 
-    public void deployToJBoss(final JBossServer server, final Project project) {
+    void deployToJBoss(final JBossServer server, final Project project) {
         log.debug '>> Deploying the module:{} to JBoss Server:{}', this.moduleName, server.name
 
         // to have full path for ${project}/${build}/install/{server}/modules/module/name/dir/{main|slot}
@@ -148,7 +148,7 @@ class JBossModule {
     /**
      * To save main.xml and all resources to Project's folder.
      */
-    public void makeLocally(final Project project) {
+    void makeLocally(final Project project) {
         log.debug '>> Module:' + this.name
         def configuration = this.configuration ?: project.configurations.jbossmodules
 

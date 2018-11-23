@@ -11,13 +11,22 @@ import com.github.zhurlik.descriptor.Xsd1_7
 import com.github.zhurlik.descriptor.Xsd1_8
 import com.github.zhurlik.descriptor.Xsd1_9
 import com.github.zhurlik.extension.JBossModule
+import groovy.util.logging.Slf4j
+import groovy.util.slurpersupport.GPathResult
+
+import javax.xml.transform.stream.StreamSource
+import javax.xml.validation.Schema
+import javax.xml.validation.SchemaFactory
+import javax.xml.validation.Validator
+
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI
 
 /**
  * Supported versions of JBoss Server
  *
  * @author zhurlik@gmail.com
  */
-public enum Ver {
+enum Ver {
     V_1_0('1.0', 'xsd/module-1_0.xsd', Xsd1_0),
     V_1_1('1.1', 'xsd/module-1_1.xsd', Xsd1_1),
     V_1_2('1.2', 'xsd/module-1_2.xsd', Xsd1_2),
@@ -27,6 +36,8 @@ public enum Ver {
     V_1_7('1.7', 'xsd/module-1_7.xsd', Xsd1_7),
     V_1_8('1.8', 'xsd/module-1_8.xsd', Xsd1_8),
     V_1_9('1.9', 'xsd/module-1_9.xsd', Xsd1_9);
+
+    static final FACTORY = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
 
     private String number
     private String xsd
@@ -48,5 +59,23 @@ public enum Ver {
 
     Builder<JBossModule> getBuilder() {
         return builder
+    }
+
+    /**
+     * To validate a xml files.
+     *
+     * @param xml descriptor
+     * @return true if valid
+     */
+    boolean isValid(final String xml) {
+
+        try {
+            final Schema schema = FACTORY.newSchema(new StreamSource(getClass().classLoader.getResourceAsStream(xsd)))
+            final Validator validator = schema.newValidator()
+            validator.validate(new StreamSource(new StringReader(xml)))
+            return true
+        } catch (all) {
+            return false
+        }
     }
 }

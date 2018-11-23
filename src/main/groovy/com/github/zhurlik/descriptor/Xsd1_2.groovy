@@ -4,8 +4,6 @@ import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
 import groovy.xml.MarkupBuilder
 
-import javax.xml.transform.stream.StreamSource
-
 import static com.github.zhurlik.Ver.V_1_2
 import static java.io.File.separator
 
@@ -36,11 +34,6 @@ class Xsd1_2 extends Builder<JBossModule> {
         }
 
         return writer.toString()
-    }
-
-    @Override
-    StreamSource getXsd() {
-        return new StreamSource(getClass().classLoader.getResourceAsStream(getVersion().xsd))
     }
 
     @Override

@@ -12,7 +12,6 @@ import com.github.zhurlik.descriptor.Xsd1_8
 import com.github.zhurlik.descriptor.Xsd1_9
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
-import groovy.util.slurpersupport.GPathResult
 
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.Schema
@@ -26,6 +25,7 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI
  *
  * @author zhurlik@gmail.com
  */
+@Slf4j
 enum Ver {
     V_1_0('1.0', 'xsd/module-1_0.xsd', Xsd1_0),
     V_1_1('1.1', 'xsd/module-1_1.xsd', Xsd1_1),
@@ -68,13 +68,13 @@ enum Ver {
      * @return true if valid
      */
     boolean isValid(final String xml) {
-
         try {
             final Schema schema = FACTORY.newSchema(new StreamSource(getClass().classLoader.getResourceAsStream(xsd)))
             final Validator validator = schema.newValidator()
             validator.validate(new StreamSource(new StringReader(xml)))
             return true
         } catch (all) {
+            log.error('>> Validation Error:', all)
             return false
         }
     }

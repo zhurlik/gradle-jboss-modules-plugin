@@ -4,8 +4,14 @@ import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 import groovy.util.slurpersupport.GPathResult
+import groovy.xml.MarkupBuilder
 
+import java.util.function.Consumer
 import java.util.function.Supplier
+
+import static com.github.zhurlik.Ver.V_1_7
+import static com.github.zhurlik.Ver.V_1_8
+import static com.github.zhurlik.Ver.V_1_9
 
 /**
  * This class implements a logic to parse moduleAliasType tag.
@@ -67,6 +73,27 @@ class ModuleAliasTag {
             })
         } else {
             return Optional.empty()
+        }
+    }
+
+    /**
+     * Writes a module alias type, which defines the target for a module alias.
+     * <p>Root element for a module alias declaration.</p>
+     * See <xsd:element name="module-alias" type="moduleAliasType">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
+     */
+    static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
+        return { final MarkupBuilder xml ->
+            // <module-alias xmlns="urn:jboss:module:1.{1|3}" name="javax.json.api" target-name="org.glassfish.javax.json"/>
+            assert jmodule.targetName != null, 'Target Name is null'
+
+            final Ver version = jmodule.getVer()
+            def attrs = [xmlns: 'urn:jboss:module:' + version.number, name: jmodule.moduleName]
+            attrs += (jmodule.slot in [null, ''] || version in [V_1_7, V_1_8, V_1_9]) ? [:] : [slot: jmodule.slot]
+            attrs.put('target-name', jmodule.targetName)
+            xml.'module-alias'(attrs)
         }
     }
 }

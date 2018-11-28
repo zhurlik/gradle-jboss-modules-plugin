@@ -2,6 +2,7 @@ package com.github.zhurlik.descriptor.parser
 
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.slurpersupport.GPathResult
+import groovy.xml.MarkupBuilder
 
 import java.util.function.Consumer
 
@@ -42,6 +43,53 @@ class ExportsTag {
                     map.include = it.'include-set'.path.collect() { it.@name.text() }
                 }
                 jbModule.exports = map
+            }
+        }
+    }
+
+    /**
+     * Writes
+     *  <exports>
+     *      <exclude path="..."/>
+     *  </exports>
+     * <p>
+     *   Lists filter expressions to apply to the export filter of the local resources of this module
+     *   (optional). By default, everything is exported. If filter expressions are provided, the default
+     *   action is to accept all paths if no filters match.
+     * </p>
+     * See <xsd:element name="exports" type="filterType" minOccurs="0">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
+     */
+    static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
+        return { final MarkupBuilder xml ->
+            // exports
+            if (!jmodule.exports.empty) {
+                xml.'exports'() {
+
+                    // include
+                    if (jmodule.exports.include != null) {
+                        if (jmodule.exports.include instanceof String || jmodule.exports.include instanceof GString || jmodule.exports.include.size() == 1) {
+                            xml.'include'(path: jmodule.exports.include.toString())
+                        } else if (jmodule.exports.include.size() > 1) {
+                            xml.'include-set'() {
+                                jmodule.exports.include.each() { xml.'path'(name: it) }
+                            }
+                        }
+                    }
+
+                    // exclude
+                    if (jmodule.exports.exclude != null) {
+                        if (jmodule.exports.exclude instanceof String || jmodule.exports.exclude instanceof GString || jmodule.exports.exclude.size() == 1) {
+                            xml.'exclude'(path: jmodule.exports.exclude.toString())
+                        } else if (jmodule.exports.exclude.size() > 1) {
+                            xml.'exclude-set'() {
+                                jmodule.exports.exclude.each() { xml.'path'(name: it) }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -43,33 +43,6 @@ abstract class Xsd {
     abstract protected void writeModuleType(final JBossModule jmodule, final MarkupBuilder xml)
 
     /**
-     * Writes <?xml version="1.0" encoding="UTF-8"?>
-     *
-     * @param xml MarkupBuilder to have a reference to xml
-     */
-    protected void writeXmlDeclaration(final MarkupBuilder xml) {
-        xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
-    }
-
-    /**
-     * Writes a module alias type, which defines the target for a module alias.
-     * <p>Root element for a module alias declaration.</p>
-     * See <xsd:element name="module-alias" type="moduleAliasType">
-     *
-     * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference to xml
-     */
-    protected void writeModuleAliasType(final JBossModule jmodule, final MarkupBuilder xml) {
-        // <module-alias xmlns="urn:jboss:module:1.{1|3}" name="javax.json.api" target-name="org.glassfish.javax.json"/>
-        assert jmodule.targetName != null, 'Target Name is null'
-
-        def attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName]
-        attrs += (jmodule.slot in [null, ''] || version in [V_1_7, V_1_8, V_1_9]) ? [:] : [slot: jmodule.slot]
-        attrs.put('target-name', jmodule.targetName)
-        xml.'module-alias'(attrs)
-    }
-
-    /**
      * Writes an explicitly absent module.
      * <p>Root element for an absent module.</p>
      * See <xsd:element name="module-absent" type="moduleAbsentType">
@@ -97,51 +70,6 @@ abstract class Xsd {
     protected void writeMainClass(final JBossModule jmodule, final MarkupBuilder xml) {
         if (!(jmodule.mainClass in [null, ''])) {
             xml.'main-class'(name: jmodule.mainClass)
-        }
-    }
-
-    /**
-     * Writes
-     *  <exports>
-     *      <exclude path="..."/>
-     *  </exports>
-     * <p>
-     *   Lists filter expressions to apply to the export filter of the local resources of this module
-     *   (optional). By default, everything is exported. If filter expressions are provided, the default
-     *   action is to accept all paths if no filters match.
-     * </p>
-     * See <xsd:element name="exports" type="filterType" minOccurs="0">
-     *
-     * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference to xml
-     */
-    protected void writeExports(final JBossModule jmodule, final MarkupBuilder xml) {
-        // exports
-        if (!jmodule.exports.empty) {
-            xml.'exports'() {
-
-                // include
-                if (jmodule.exports.include != null) {
-                    if (jmodule.exports.include instanceof String || jmodule.exports.include instanceof GString || jmodule.exports.include.size() == 1) {
-                        xml.'include'(path: jmodule.exports.include.toString())
-                    } else if (jmodule.exports.include.size() > 1) {
-                        xml.'include-set'() {
-                            jmodule.exports.include.each() { xml.'path'(name: it) }
-                        }
-                    }
-                }
-
-                // exclude
-                if (jmodule.exports.exclude != null) {
-                    if (jmodule.exports.exclude instanceof String || jmodule.exports.exclude instanceof GString || jmodule.exports.exclude.size() == 1) {
-                        xml.'exclude'(path: jmodule.exports.exclude.toString())
-                    } else if (jmodule.exports.exclude.size() > 1) {
-                        xml.'exclude-set'() {
-                            jmodule.exports.exclude.each() { xml.'path'(name: it) }
-                        }
-                    }
-                }
-            }
         }
     }
 

@@ -1,6 +1,9 @@
 package com.github.zhurlik.descriptor
 
 import com.github.zhurlik.Ver
+import com.github.zhurlik.descriptor.parser.ExportsTag
+import com.github.zhurlik.descriptor.parser.ModuleAliasTag
+import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
@@ -25,10 +28,10 @@ class Xsd1_7 extends Builder<JBossModule> {
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
 
-        writeXmlDeclaration(xml)
+        XmlDeclarationTag.write().accept(xml)
 
         if (jmodule.isModuleAlias()) {
-            writeModuleAliasType(jmodule, xml)
+            ModuleAliasTag.write(jmodule).accept(xml)
         } else if (jmodule.isModuleAbsent()) {
             writeModuleAbsentType(jmodule, xml)
         } else {
@@ -54,7 +57,7 @@ class Xsd1_7 extends Builder<JBossModule> {
         final attrs = [xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] +
                 ((jmodule.version in [null, '']) ? [:] : [version: jmodule.version])
         xml.module(attrs) {
-            writeExports(jmodule, xml)
+            ExportsTag.write(jmodule).accept(xml)
             writeMainClass(jmodule, xml)
             writeProperties(jmodule, xml)
             writeResourcesType(jmodule, xml)

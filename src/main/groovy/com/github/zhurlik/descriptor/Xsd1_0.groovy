@@ -1,6 +1,8 @@
 package com.github.zhurlik.descriptor
 
 import com.github.zhurlik.Ver
+import com.github.zhurlik.descriptor.parser.ExportsTag
+import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
 import com.github.zhurlik.extension.JBossModule
 import groovy.xml.MarkupBuilder
 
@@ -22,7 +24,7 @@ class Xsd1_0 extends Builder<JBossModule> {
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
 
-        writeXmlDeclaration(xml)
+        XmlDeclarationTag.write().accept(xml)
 
         if (jmodule.isModuleConfiguration()) {
             writeConfigurationType(jmodule, xml)
@@ -53,7 +55,7 @@ class Xsd1_0 extends Builder<JBossModule> {
     protected void writeModuleType(JBossModule jmodule, MarkupBuilder xml) {
         // <module xmlns="urn:jboss:module:1.0" name="org.jboss.msc">
         xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
-            writeExports(jmodule, xml)
+            ExportsTag.write(jmodule).accept(xml)
             writeMainClass(jmodule, xml)
             writeResourcesType(jmodule, xml)
             writeDependenciesType(jmodule, xml)

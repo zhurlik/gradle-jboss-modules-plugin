@@ -1,6 +1,7 @@
 package com.github.zhurlik.descriptor
 
 import com.github.zhurlik.Ver
+import com.github.zhurlik.descriptor.parser.ConfigurationTag
 import com.github.zhurlik.descriptor.parser.DependenciesTag
 import com.github.zhurlik.descriptor.parser.ExportsTag
 import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
@@ -28,7 +29,7 @@ class Xsd1_0 extends Builder<JBossModule> {
         XmlDeclarationTag.write().accept(xml)
 
         if (jmodule.isModuleConfiguration()) {
-            writeConfigurationType(jmodule, xml)
+            ConfigurationTag.write(jmodule).accept(xml)
         } else {
             writeModuleType(jmodule, xml)
         }

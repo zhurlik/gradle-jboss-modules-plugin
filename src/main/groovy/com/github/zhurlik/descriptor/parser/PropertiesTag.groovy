@@ -2,6 +2,7 @@ package com.github.zhurlik.descriptor.parser
 
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.slurpersupport.GPathResult
+import groovy.xml.MarkupBuilder
 
 import java.util.function.Consumer
 
@@ -27,6 +28,30 @@ class PropertiesTag {
             xml.properties.each() {
                 it.property.each() { p ->
                     jbModule.properties.put(p.@name.toString(), p.@value.toString())
+                }
+            }
+        }
+    }
+
+    /**
+     * Writes lists the user-defined properties to be associated with this module (optional).
+     *  <properties>
+     *     <property name="my.property" value="foo"/>
+     *  </properties>
+     *
+     *  <br/>
+     *  See <xsd:element name="properties" type="propertyListType" minOccurs="0">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
+     */
+    static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
+        return { final MarkupBuilder xml ->
+            if (!jmodule.properties.isEmpty()) {
+                xml.properties {
+                    jmodule.properties.findAll() { !(it.key in [null, '']) && !(it.value in [null, '']) }.each() {
+                        xml.property(name: it.key, value: it.value)
+                    }
                 }
             }
         }

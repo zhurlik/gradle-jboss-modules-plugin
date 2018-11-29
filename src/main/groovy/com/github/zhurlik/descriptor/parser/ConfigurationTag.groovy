@@ -4,7 +4,9 @@ import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 import groovy.util.slurpersupport.GPathResult
+import groovy.xml.MarkupBuilder
 
+import java.util.function.Consumer
 import java.util.function.Supplier
 
 /**
@@ -68,6 +70,45 @@ class ConfigurationTag {
             })
         } else {
             Optional.empty()
+        }
+    }
+
+    /**
+     * Writes a configuration for the default module loader.
+     * <p>Root element for a filesystem module loader configuration.</p>
+     * See <xsd:element name="configuration" type="configurationType">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
+     */
+    static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
+        final Ver version = jmodule.getVer()
+        return { final MarkupBuilder xml ->
+            if (jmodule.isModuleConfiguration()) {
+                assert jmodule.defaultLoader != null, 'Default-Loader is null'
+
+                xml.configuration([xmlns: 'urn:jboss:module:' + version.number, 'default-loader': jmodule.defaultLoader]) {
+                    if (jmodule.loaders.empty) {
+                        loader([name: jmodule.defaultLoader])
+                    }
+
+                    jmodule.loaders.each { l ->
+                        if (l instanceof String) {
+                            loader([name: l])
+                        } else {
+                            loader([name: l.name]) {
+                                if (l['import'] != null) {
+                                    'import'(l['import'])
+                                }
+
+                                if (l['module-path'] != null) {
+                                    'module-path'([name: l['module-path']])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

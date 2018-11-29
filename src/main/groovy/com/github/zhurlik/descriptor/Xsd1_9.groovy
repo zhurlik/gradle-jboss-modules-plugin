@@ -4,6 +4,8 @@ import com.github.zhurlik.Ver
 import com.github.zhurlik.descriptor.parser.DependenciesTag
 import com.github.zhurlik.descriptor.parser.ExportsTag
 import com.github.zhurlik.descriptor.parser.ModuleAliasTag
+import com.github.zhurlik.descriptor.parser.PermissionsTag
+import com.github.zhurlik.descriptor.parser.PropertiesTag
 import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
@@ -61,10 +63,10 @@ class Xsd1_9 extends Builder<JBossModule> {
         xml.module(attrs) {
             ExportsTag.write(jmodule).accept(xml)
             writeMainClass(jmodule, xml)
-            writeProperties(jmodule, xml)
+            PropertiesTag.write(jmodule).accept(xml)
             writeResourcesType(jmodule, xml)
             DependenciesTag.write(jmodule).accept(xml)
-            writePermissionsType(jmodule, xml)
+            PermissionsTag.write(jmodule).accept(xml)
             writeProvides(jmodule, xml)
         }
     }

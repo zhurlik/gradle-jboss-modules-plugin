@@ -2,6 +2,7 @@ package com.github.zhurlik.descriptor.parser
 
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.slurpersupport.GPathResult
+import groovy.xml.MarkupBuilder
 
 import java.util.function.Consumer
 
@@ -29,6 +30,34 @@ class PermissionsTag {
                     def g = [:]
                     it.attributes().each({ g.putAt(it.key, it.value) })
                     jbModule.permissions.add(g)
+                }
+            }
+        }
+    }
+
+    /**
+     * Writes a list of permissions that this module requires.
+     *  <permissions>
+     *    <grant .../>
+     *  </permissions>
+     * <p>Lists the requested permission set for this module. If the requested permissions cannot be assigned, the module cannot be loaded.</p>
+     *
+     * See <xsd:element name="permissions" type="permissionsType" minOccurs="0">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
+     */
+    static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
+        return { final MarkupBuilder xml ->
+            if (!jmodule.permissions.isEmpty()) {
+                xml.permissions {
+                    jmodule.permissions.each {
+                        if (it instanceof String) {
+                            grant([permission: it])
+                        } else {
+                            grant(it.sort())
+                        }
+                    }
                 }
             }
         }

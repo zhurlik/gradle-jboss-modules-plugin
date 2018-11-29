@@ -1,6 +1,7 @@
 package com.github.zhurlik.descriptor
 
 import com.github.zhurlik.Ver
+import com.github.zhurlik.descriptor.parser.DependenciesTag
 import com.github.zhurlik.descriptor.parser.ExportsTag
 import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
 import com.github.zhurlik.extension.JBossModule
@@ -58,7 +59,7 @@ class Xsd1_0 extends Builder<JBossModule> {
             ExportsTag.write(jmodule).accept(xml)
             writeMainClass(jmodule, xml)
             writeResourcesType(jmodule, xml)
-            writeDependenciesType(jmodule, xml)
+            DependenciesTag.write(jmodule).accept(xml)
         }
     }
 }

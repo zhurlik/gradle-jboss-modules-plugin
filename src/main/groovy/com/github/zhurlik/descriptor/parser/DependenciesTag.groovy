@@ -3,9 +3,12 @@ package com.github.zhurlik.descriptor.parser
 import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.slurpersupport.GPathResult
-import groovy.util.slurpersupport.NodeChild
+import groovy.xml.MarkupBuilder
 
 import java.util.function.Consumer
+
+import static com.github.zhurlik.Ver.V_1_8
+import static com.github.zhurlik.Ver.V_1_9
 
 /**
  *            <xsd:element name="dependencies" type="dependenciesType" minOccurs="0">
@@ -31,11 +34,11 @@ class DependenciesTag {
         return { jbModule ->
             xml.dependencies.each() {
                 // modules
-                parseModules(it, jbModule)
+                ModuleDependencyTag.parse(it).accept(jbModule)
 
                 // systems
                 if (!(version in [Ver.V_1_8.number])) {
-                    parseSystems(it, jbModule)
+                    SystemDependencyTag.parse(it).accept(jbModule)
                 }
             }
 
@@ -43,118 +46,45 @@ class DependenciesTag {
     }
 
     /**
-     * To parse <xsd:complexType name="systemDependencyType">
+     * Writes a list of zero or more module dependencies.
      *
-     * @param it a little bit of xml
-     * @param jbModule
-     * @return
-     */
-    private static parseSystems(final NodeChild it, final JBossModule jbModule) {
-        it.system.each() { s ->
-            def system = [:]
-
-            if (s.@export.toBoolean() == true) {
-                system.export = true
-            }
-
-            // paths
-            def paths = []
-            system.type = 'system'
-
-            s.paths.each {
-                paths += it.path.collect({ it.@name.text() })
-            }
-
-            if (!paths.empty) {
-                system.paths = paths
-            }
-
-            // exports
-            s.exports.each() {
-                def map = [:]
-                it.include.each() {
-                    map.include = it.@path.text()
-                }
-                it.exclude.each() {
-                    map.exclude = it.@path.text()
-                }
-                if (it.'exclude-set'.children().size() > 0) {
-                    map.exclude = it.'exclude-set'.path.collect() { it.@name.text() }
-                }
-                if (it.'include-set'.children().size() > 0) {
-                    map.include = it.'include-set'.path.collect() { it.@name.text() }
-                }
-                system.exports = map
-            }
-
-            jbModule.dependencies.add(system)
-        }
-    }
-
-    /**
-     * To parse <xsd:complexType name="moduleDependencyType">
+     *  <dependencies>
+     *      <module name="javax.api"/>
+     *      <module name="org.jboss.logging"/>
+     *      <module name="org.jboss.modules"/>
+     *      <!-- Optional deps -->
+     *      <module name="javax.inject.api" optional="true"/>
+     *      <module name="org.jboss.example">
+     *         <imports>
+     *            <exclude-set>
+     *               <path name="org.jboss.example.tests"/>
+     *            </exclude-set>
+     *         </imports>
+     *      </module>
+     *      <system>
+     *          ...
+     *      </system>
+     *  </dependencies>
+     *  <p>Lists the dependencies of this module (optional).</p>
+     *  See <xsd:element name="dependencies" type="dependenciesType" minOccurs="0">
      *
-     * @param it a little bit of xml
-     * @param jbModule
-     * @return
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
      */
-    private static void parseModules(final NodeChild it, final JBossModule jbModule) {
-        it.module.each() { d ->
-            def dep = [:]
-            if (d.attributes().size() == 1) {
-                dep.name = d.@name.toString()
-            } else {
-                d.attributes().each() {
-                    dep[it.key] = it.value
+    static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
+        return { final MarkupBuilder xml ->
+            final Ver version = jmodule.getVer()
+            if (!jmodule.dependencies.isEmpty()) {
+                xml.dependencies {
+                    // modules
+                    ModuleDependencyTag.write(jmodule).accept(xml)
+
+                    // systems
+                    if (!(version in [V_1_8, V_1_9])) {
+                        SystemDependencyTag.write(jmodule).accept(xml)
+                    }
                 }
             }
-
-            // imports
-            d.imports.each() {
-                def map = [:]
-                it.include.each() {
-                    map.include = it.@path.text()
-                }
-                it.exclude.each() {
-                    map.exclude = it.@path.text()
-                }
-                if (it.'exclude-set'.children().size() > 0) {
-                    map.exclude = it.'exclude-set'.path.collect() { it.@name.text() }
-                }
-                if (it.'include-set'.children().size() > 0) {
-                    map.include = it.'include-set'.path.collect() { it.@name.text() }
-                }
-                dep.imports = map
-            }
-
-            // exports
-            d.exports.each() {
-                def map = [:]
-                it.include.each() {
-                    map.include = it.@path.text()
-                }
-                it.exclude.each() {
-                    map.exclude = it.@path.text()
-                }
-                if (it.'exclude-set'.children().size() > 0) {
-                    map.exclude = it.'exclude-set'.path.collect() { it.@name.text() }
-                }
-                if (it.'include-set'.children().size() > 0) {
-                    map.include = it.'include-set'.path.collect() { it.@name.text() }
-                }
-                dep.exports = map
-            }
-
-            // properties since 1.9
-            if (jbModule.ver == Ver.V_1_9 && !d.properties.isEmpty()) {
-                def props = [:]
-                d.properties.property.each {
-                    props.put(it.@name.text(), it.@value.text())
-                }
-                dep.properties = props
-            }
-
-            jbModule.dependencies.add(dep)
         }
     }
 }

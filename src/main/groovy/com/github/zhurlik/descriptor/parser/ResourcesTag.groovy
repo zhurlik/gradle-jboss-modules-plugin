@@ -2,9 +2,16 @@ package com.github.zhurlik.descriptor.parser
 
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.slurpersupport.GPathResult
-import groovy.util.slurpersupport.NodeChild
+import groovy.xml.MarkupBuilder
 
 import java.util.function.Consumer
+
+import static com.github.zhurlik.Ver.V_1_3
+import static com.github.zhurlik.Ver.V_1_5
+import static com.github.zhurlik.Ver.V_1_6
+import static com.github.zhurlik.Ver.V_1_7
+import static com.github.zhurlik.Ver.V_1_8
+import static com.github.zhurlik.Ver.V_1_9
 
 /**
  *
@@ -27,79 +34,46 @@ class ResourcesTag {
     static Consumer<JBossModule> parse(final GPathResult xml) {
         return { jbModule ->
             xml.resources.each() {
-                it.'resource-root'.each() { r ->
-
-                    def complexEl = [:]
-
-                    if (r.attributes().size() == 1) {
-                        complexEl.path = r.@path.text()
-                    } else {
-                        complexEl.name = r.@name.text()
-                        complexEl.path = r.@path.text()
-                    }
-
-                    r.filter.each() { f ->
-                        def filter = [:]
-                        f.include.each() {
-                            filter.include = f.include.@path.text()
-                        }
-                        f.exclude.each() {
-                            filter.exclude = f.exclude.@path.text()
-                        }
-                        if (f.'exclude-set'.children().size() > 0) {
-                            filter.exclude = f.'exclude-set'.path.collect() { it.@name.text() }
-                        }
-                        if (f.'include-set'.children().size() > 0) {
-                            filter.include = f.'include-set'.path.collect() { it.@name.text() }
-                        }
-                        complexEl.filter = filter
-                    }
-
-                    jbModule.resources.add(complexEl)
-                }
-
-                makeArtifacts((NodeChild) it, jbModule)
+                ResourceRootTag.parse(it).accept(jbModule)
+                ArtifactTag.parse(it).accept(jbModule)
             }
         }
     }
 
-    private static void makeArtifacts(final NodeChild tag, final JBossModule jbModule) {
-        ['artifact', 'native-artifact'].each { name ->
-            tag."${name}".each {
-                def complexEl = [:]
-                complexEl.type = name
-                it.attributes().each {
-                    complexEl.put(it.key, it.value)
-                }
+    /**
+     * Writes a list of zero or more resource roots for this deployment.
+     *  <resources>
+     *      <resource-root path="jboss-msc-1.0.1.GA.jar" name="bla-bla">
+     *          <filter>
+     *              <include path=''/>
+     *              ...
+     *              <exclude-set>
+     *              ...
+     *              <exclude-set/>
+     *          <filter>
+     *      <resource-root/>
+     *      <artifact .../>
+     *      <native-artifact .../>
+     *  </resources>
+     *  <p>Lists the resource roots of this module (optional).</p>
+     *
+     *  See <xsd:element name="resources" type="resourcesType" minOccurs="0">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
+     */
+    static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
+        return { final MarkupBuilder xml ->
+            if (!jmodule.resources.isEmpty()) {
+                xml.resources {
+                    // <resource-root>
+                    ResourceRootTag.write(jmodule).accept(xml)
 
-                it.filter.each() { f ->
-                    def filter = [:]
-                    f.include.each() {
-                        filter.include = f.include.@path.text()
-                    }
-                    f.exclude.each() {
-                        filter.exclude = f.exclude.@path.text()
-                    }
-                    if (f.'exclude-set'.children().size() > 0) {
-                        filter.exclude = f.'exclude-set'.path.collect() { it.@name.text() }
-                    }
-                    if (f.'include-set'.children().size() > 0) {
-                        filter.include = f.'include-set'.path.collect() { it.@name.text() }
-                    }
-                    complexEl.filter = filter
-                }
-
-                it.conditions.each { c ->
-                    ['property-equal', 'property-not-equal'].each { n ->
-                        final String attr = c."$n".@name.text()
-                        if (!(attr in ['', null])) {
-                            complexEl.conditions = [:]
-                            complexEl.conditions[n] = [name: attr, value: c."$n".@value.text()]
-                        }
+                    if (jmodule.ver in [V_1_3, V_1_5, V_1_6, V_1_7, V_1_8, V_1_9]) {
+                        // either <artifact> or <native-artifact>
+                        ArtifactTag.write(jmodule).accept(xml)
                     }
                 }
-
-                jbModule.resources.add(complexEl)
             }
         }
     }

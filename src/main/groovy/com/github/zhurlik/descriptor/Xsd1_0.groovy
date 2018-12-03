@@ -4,6 +4,7 @@ import com.github.zhurlik.Ver
 import com.github.zhurlik.descriptor.parser.ConfigurationTag
 import com.github.zhurlik.descriptor.parser.DependenciesTag
 import com.github.zhurlik.descriptor.parser.ExportsTag
+import com.github.zhurlik.descriptor.parser.ResourcesTag
 import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
 import com.github.zhurlik.extension.JBossModule
 import groovy.xml.MarkupBuilder
@@ -59,7 +60,7 @@ class Xsd1_0 extends Builder<JBossModule> {
         xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
             ExportsTag.write(jmodule).accept(xml)
             writeMainClass(jmodule, xml)
-            writeResourcesType(jmodule, xml)
+            ResourcesTag.write(jmodule).accept(xml)
             DependenciesTag.write(jmodule).accept(xml)
         }
     }

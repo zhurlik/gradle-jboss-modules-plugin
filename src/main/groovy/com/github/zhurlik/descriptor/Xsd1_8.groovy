@@ -6,6 +6,7 @@ import com.github.zhurlik.descriptor.parser.ExportsTag
 import com.github.zhurlik.descriptor.parser.ModuleAliasTag
 import com.github.zhurlik.descriptor.parser.PermissionsTag
 import com.github.zhurlik.descriptor.parser.PropertiesTag
+import com.github.zhurlik.descriptor.parser.ProvidesTag
 import com.github.zhurlik.descriptor.parser.ResourcesTag
 import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
 import com.github.zhurlik.extension.JBossModule
@@ -45,47 +46,6 @@ class Xsd1_8 extends Builder<JBossModule> {
         return writer.toString()
     }
 
-    /**
-     * Writes lists items that are statically provided by this module.
-     *  <providers>
-     *    <service name=''>
-     *        <with-class name='class'/>
-     *    <service/>
-     *  </providers>
-     * <p>Lists items that are statically provided by this module.</p>
-     *
-     * See <xsd:element name="provides" type="providesType" minOccurs="0">
-     *
-     * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference to xml
-     */
-    static void writeProvides(final JBossModule jmodule, final MarkupBuilder xml) {
-        if (!jmodule.provides.isEmpty()) {
-            xml.provides {
-                jmodule.provides.each {s ->
-                    // simple
-                    if (s instanceof String || s instanceof GString) {
-                        service(name: s.toString())
-                    }
-
-                    // complex
-                    if (s instanceof Map) {
-                        service(name: s.name) {
-                            def withClass = s['with-class']
-                            if (withClass instanceof String || s instanceof GString) {
-                                'with-class'(name: withClass.toString())
-                            }
-                            if (withClass instanceof Collection) {
-                                withClass.each {
-                                    'with-class'(name: it)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     @Override
     String getPath(final JBossModule jbModule) {
@@ -109,7 +69,7 @@ class Xsd1_8 extends Builder<JBossModule> {
             ResourcesTag.write(jmodule).accept(xml)
             DependenciesTag.write(jmodule).accept(xml)
             PermissionsTag.write(jmodule).accept(xml)
-            writeProvides(jmodule, xml)
+            ProvidesTag.write(jmodule).accept(xml)
         }
     }
 }

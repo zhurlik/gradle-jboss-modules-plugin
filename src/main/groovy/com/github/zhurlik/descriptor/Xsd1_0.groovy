@@ -39,12 +39,6 @@ class Xsd1_0 extends Builder<JBossModule> {
     }
 
     @Override
-    JBossModule makeModule(String txt) {
-
-        return super.makeModule(txt)
-    }
-
-    @Override
     String getPath(final JBossModule jbModule) {
         return ['modules', jbModule.moduleName.replaceAll('\\.', "/"), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join("/")
     }

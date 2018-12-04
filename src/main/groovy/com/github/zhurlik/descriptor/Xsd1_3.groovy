@@ -68,29 +68,4 @@ class Xsd1_3 extends Builder<JBossModule> {
             PermissionsTag.write(jmodule).accept(xml)
         }
     }
-
-    /**
-     *  Writes a maven artifact within this deployment.
-     *
-     *  <p>A maven native artifact within this deployment. This is a jar that contains a lib/ directory
-     *  with corresponding platform directories and binaries. This element will cause the jar to
-     *  be unzipped within the artifact's local repository directory.</p>
-     *
-     *  See either <xsd:element name="artifact" type="artifactType"> or <xsd:element name="native-artifact" type="artifactType">
-     *
-     * @param jmodule current module
-     * @param xml MarkupBuilder to have a reference to xml
-     */
-    protected void writeArtifacts(final JBossModule jmodule, final MarkupBuilder xml) {
-        jmodule.resources.findAll({
-            ((it instanceof Map) && (it.type in ['artifact', 'native-artifact']))
-        }).each() { res ->
-            // URI that points to the maven artifact "group:artifact:version[:classifier]"
-            if ('artifact' == res.type) {
-                xml.artifact(name: res.name)
-            } else if ('native-artifact' == res.type) {
-                xml.'native-artifact'(name: res.name)
-            }
-        }
-    }
 }

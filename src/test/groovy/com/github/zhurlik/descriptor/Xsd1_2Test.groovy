@@ -6,7 +6,6 @@ import org.junit.Test
 
 import static com.github.zhurlik.Ver.V_1_2
 import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
 /**
@@ -15,7 +14,7 @@ import static org.junit.Assert.assertTrue
  */
 class Xsd1_2Test {
 
-    private Builder<JBossModule> builder
+    private Builder builder
 
     @Before
     void setUp() throws Exception {

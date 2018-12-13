@@ -23,7 +23,7 @@ import static java.io.File.separator
  * @author zhurlik@gmail.com
  */
 @Slf4j
-class Xsd1_1 extends Builder<JBossModule> {
+class Xsd1_1 extends Builder {
 
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {

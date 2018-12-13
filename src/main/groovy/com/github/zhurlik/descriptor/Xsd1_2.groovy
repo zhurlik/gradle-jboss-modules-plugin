@@ -22,7 +22,7 @@ import static java.io.File.separator
  *
  * @author zhurlik@gmail.com
  */
-class Xsd1_2 extends Builder<JBossModule> {
+class Xsd1_2 extends Builder {
 
     @Override
     String getXmlDescriptor(JBossModule jmodule) {

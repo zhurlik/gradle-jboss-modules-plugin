@@ -10,7 +10,6 @@ import com.github.zhurlik.descriptor.Xsd1_6
 import com.github.zhurlik.descriptor.Xsd1_7
 import com.github.zhurlik.descriptor.Xsd1_8
 import com.github.zhurlik.descriptor.Xsd1_9
-import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 
 import javax.xml.transform.stream.StreamSource
@@ -41,9 +40,9 @@ enum Ver {
 
     private String number
     private String xsd
-    private Builder<JBossModule> builder
+    private Builder builder
 
-    Ver(final String ver, final String xsd, Class<Builder<JBossModule>> clazz) {
+    Ver(final String ver, final String xsd, Class<Builder> clazz) {
         this.number = ver
         this.xsd = xsd
         this.builder = clazz.newInstance()
@@ -57,7 +56,7 @@ enum Ver {
         return xsd
     }
 
-    Builder<JBossModule> getBuilder() {
+    Builder getBuilder() {
         return builder
     }
 

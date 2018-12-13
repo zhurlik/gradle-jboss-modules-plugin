@@ -18,7 +18,7 @@ import static com.github.zhurlik.Ver.V_1_0
  *
  * @author zhurlik@gmail.com
  */
-class Xsd1_0 extends Builder<JBossModule> {
+class Xsd1_0 extends Builder {
 
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {

@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue
  */
 class Xsd1_1Test {
 
-    private Builder<JBossModule> builder
+    private Builder builder
 
     @Before
     void setUp() throws Exception {

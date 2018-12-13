@@ -15,9 +15,9 @@ import java.util.stream.Stream
  * @author zhurlik@gmail.com
  */
 @Slf4j
-abstract class Builder<T extends JBossModule> {
+abstract class Builder {
 
-    abstract String getXmlDescriptor(final T module)
+    abstract String getXmlDescriptor(final JBossModule module)
 
     /**
      * Returns a path where will be stored JBoss Module under server.

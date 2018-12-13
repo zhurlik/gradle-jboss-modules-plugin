@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue
 @Slf4j
 abstract class BasicJBossModuleTest {
     protected JBossModule module
-    protected Builder<JBossModule> builder = getVersion().builder
+    protected Builder builder = getVersion().builder
     protected
     final File projectDir = new File(getClass().getClassLoader().getResource('').toURI().path + separator + 'projectTest')
     protected String prefix = ""

@@ -71,7 +71,7 @@ class JBossServer implements Server {
         JBossModule jbModule = new JBossModule(name)
 
         if (modules.containsKey(name) && modules[name].exists()) {
-            final Builder<JBossModule> builder = version.builder
+            final Builder builder = version.builder
             jbModule = builder.makeModule(modules[name].getText('UTF-8'))
 
             log.debug '>> Module: \'{}\' has been loaded', name

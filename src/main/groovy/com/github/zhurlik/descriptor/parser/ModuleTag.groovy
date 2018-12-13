@@ -4,7 +4,9 @@ import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 import groovy.util.slurpersupport.GPathResult
+import groovy.xml.MarkupBuilder
 
+import java.util.function.Consumer
 import java.util.function.Supplier
 
 /**
@@ -64,6 +66,22 @@ class ModuleTag {
             })
         } else {
             return Optional.empty()
+        }
+    }
+
+    /**
+     *  Specifies the main class of this module; used to run the module from the command-line (optional).
+     *  <br/>
+     *  See <xsd:element name="main-class" type="classNameType" minOccurs="0">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
+     */
+    static Consumer<MarkupBuilder> writeMainClass(final JBossModule jmodule) {
+        return { final MarkupBuilder xml ->
+            if (!(jmodule.mainClass in [null, ''])) {
+                xml.'main-class'(name: jmodule.mainClass)
+            }
         }
     }
 }

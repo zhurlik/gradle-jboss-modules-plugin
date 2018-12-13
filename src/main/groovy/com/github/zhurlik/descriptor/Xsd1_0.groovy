@@ -4,6 +4,7 @@ import com.github.zhurlik.Ver
 import com.github.zhurlik.descriptor.parser.ConfigurationTag
 import com.github.zhurlik.descriptor.parser.DependenciesTag
 import com.github.zhurlik.descriptor.parser.ExportsTag
+import com.github.zhurlik.descriptor.parser.ModuleTag
 import com.github.zhurlik.descriptor.parser.ResourcesTag
 import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
 import com.github.zhurlik.extension.JBossModule
@@ -43,17 +44,25 @@ class Xsd1_0 extends Builder<JBossModule> {
         return ['modules', jbModule.moduleName.replaceAll('\\.', "/"), ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot)].join("/")
     }
 
-    @Override
     protected Ver getVersion() {
         return V_1_0
     }
 
-    @Override
+    /**
+     * Writes the module declaration type; contains dependencies, resources, and the main class specification.
+     * <p>
+     * Root element for a module declaration.
+     * </p>
+     * See <xsd:element name="module" type="moduleType">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
+     */
     protected void writeModuleType(JBossModule jmodule, MarkupBuilder xml) {
         // <module xmlns="urn:jboss:module:1.0" name="org.jboss.msc">
         xml.module([xmlns: 'urn:jboss:module:' + getVersion().number, name: jmodule.moduleName] + ((jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot])) {
             ExportsTag.write(jmodule).accept(xml)
-            writeMainClass(jmodule, xml)
+            ModuleTag.writeMainClass(jmodule).accept(xml)
             ResourcesTag.write(jmodule).accept(xml)
             DependenciesTag.write(jmodule).accept(xml)
         }

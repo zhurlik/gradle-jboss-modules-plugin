@@ -23,7 +23,7 @@ import static java.io.File.separator
  * @author zhurlik@gmail.com
  */
 @Slf4j
-class Xsd1_1 extends Builder {
+class Xsd1_1 extends Xsd {
 
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {
@@ -60,7 +60,7 @@ class Xsd1_1 extends Builder {
      * <p>
      * Root element for a module declaration.
      * </p>
-     * See <xsd:element name="module" type="moduleType">
+     * See <path:element name="module" type="moduleType">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml

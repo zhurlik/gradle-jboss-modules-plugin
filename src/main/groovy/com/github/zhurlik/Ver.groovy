@@ -1,6 +1,6 @@
 package com.github.zhurlik
 
-import com.github.zhurlik.descriptor.Builder
+import com.github.zhurlik.descriptor.Xsd
 import com.github.zhurlik.descriptor.Xsd1_0
 import com.github.zhurlik.descriptor.Xsd1_1
 import com.github.zhurlik.descriptor.Xsd1_2
@@ -39,25 +39,21 @@ enum Ver {
     static final FACTORY = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
 
     private String number
-    private String xsd
-    private Builder builder
+    private String path
+    private Xsd xsd
 
-    Ver(final String ver, final String xsd, Class<Builder> clazz) {
+    Ver(final String ver, final String path, Class<Xsd> clazz) {
         this.number = ver
-        this.xsd = xsd
-        this.builder = clazz.newInstance()
+        this.path = path
+        this.xsd = clazz.getDeclaredConstructor().newInstance()
     }
 
     String getNumber() {
         return number
     }
 
-    String getXsd() {
+    Xsd getXsd() {
         return xsd
-    }
-
-    Builder getBuilder() {
-        return builder
     }
 
     /**
@@ -68,7 +64,7 @@ enum Ver {
      */
     boolean isValid(final String xml) {
         try {
-            final Schema schema = FACTORY.newSchema(new StreamSource(getClass().classLoader.getResourceAsStream(xsd)))
+            final Schema schema = FACTORY.newSchema(new StreamSource(getClass().classLoader.getResourceAsStream(path)))
             final Validator validator = schema.newValidator()
             validator.validate(new StreamSource(new StringReader(xml)))
             return true

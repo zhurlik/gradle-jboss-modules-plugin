@@ -14,18 +14,18 @@ import static org.junit.Assert.assertTrue
  */
 class Xsd1_7Test {
 
-    private Builder builder
+    private Xsd xsd
 
     @Before
     void setUp() throws Exception {
-        builder = V_1_7.builder
-        assertTrue builder instanceof Xsd1_7
+        xsd = V_1_7.xsd
+        assertTrue xsd instanceof Xsd1_7
     }
 
     @Test
     void testGenerate() throws Exception {
         try {
-            builder.getXmlDescriptor(null)
+            xsd.getXmlDescriptor(null)
             assertTrue false
         } catch (AssertionError ex) {
             assertTrue true
@@ -36,7 +36,7 @@ class Xsd1_7Test {
             final JBossModule m = new JBossModule('test')
             m.setVer(V_1_7)
             m.setSlot("deprecated")
-            builder.getXmlDescriptor()
+            xsd.getXmlDescriptor()
             assertTrue false
         } catch (AssertionError ex) {
             assertTrue true
@@ -48,8 +48,8 @@ class Xsd1_7Test {
         module.moduleName = 'test.module'
         module.version =  '123-456.789'
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module xmlns='urn:jboss:module:1.7' name='test.module' version='123-456.789' />", builder.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/123-456.789', builder.getPath(module)
+                "<module xmlns='urn:jboss:module:1.7' name='test.module' version='123-456.789' />", xsd.getXmlDescriptor(module)
+        assertEquals 'modules/system/layers/base/test/module/123-456.789', xsd.getPath(module)
 
         module = new JBossModule('test')
         module.ver = V_1_7
@@ -57,24 +57,24 @@ class Xsd1_7Test {
         module.moduleAlias = true
         module.targetName = 'target.name'
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module-alias xmlns='urn:jboss:module:1.7' name='test.module' target-name='target.name' />", builder.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/main', builder.getPath(module)
+                "<module-alias xmlns='urn:jboss:module:1.7' name='test.module' target-name='target.name' />", xsd.getXmlDescriptor(module)
+        assertEquals 'modules/system/layers/base/test/module/main', xsd.getPath(module)
 
         module = new JBossModule('test')
         module.ver = V_1_7
         module.moduleName = 'test.module'
         module.moduleAbsent = true
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module-absent xmlns='urn:jboss:module:1.7' name='test.module' />", builder.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/main', builder.getPath(module)
+                "<module-absent xmlns='urn:jboss:module:1.7' name='test.module' />", xsd.getXmlDescriptor(module)
+        assertEquals 'modules/system/layers/base/test/module/main', xsd.getPath(module)
 
         module = new JBossModule('test')
         module.ver = V_1_7
         module.moduleName = 'test.module'
         module.moduleAbsent = true
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module-absent xmlns='urn:jboss:module:1.7' name='test.module' />", builder.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/main', builder.getPath(module)
+                "<module-absent xmlns='urn:jboss:module:1.7' name='test.module' />", xsd.getXmlDescriptor(module)
+        assertEquals 'modules/system/layers/base/test/module/main', xsd.getPath(module)
     }
 
     @Test
@@ -83,10 +83,10 @@ class Xsd1_7Test {
         module.ver = V_1_7
         module.moduleName = 'test.module'
 
-        assertTrue builder.getVersion().isValid(module.moduleDescriptor)
+        assertTrue xsd.getVersion().isValid(module.moduleDescriptor)
 
         // not valid
-        assertTrue !builder.getVersion().isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
+        assertTrue !xsd.getVersion().isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.7' name1='test.module' />")
 
         module = new JBossModule('test')
@@ -95,10 +95,10 @@ class Xsd1_7Test {
         module.moduleAlias = true
         module.targetName = 'target.name'
 
-        assertTrue builder.getVersion().isValid(module.getModuleDescriptor())
+        assertTrue xsd.getVersion().isValid(module.getModuleDescriptor())
 
         // not valid
-        assertTrue !builder.getVersion().isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
+        assertTrue !xsd.getVersion().isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-alias xmlns='urn:jboss:module:1.7' name='test.module'/>")
     }
 }

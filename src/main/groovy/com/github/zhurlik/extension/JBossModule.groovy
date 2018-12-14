@@ -117,11 +117,11 @@ class JBossModule {
      * @return a xml as string
      */
     String getModuleDescriptor() {
-        return this.ver.builder.getXmlDescriptor(this)
+        return this.ver.xsd.getXmlDescriptor(this)
     }
 
     boolean isValid() {
-        return this.ver.isValid(this.ver.builder.getXmlDescriptor(this))
+        return this.ver.isValid(this.ver.xsd.getXmlDescriptor(this))
     }
 
     /**
@@ -130,7 +130,7 @@ class JBossModule {
      * @return string like 'module/name/dir/{main|slot}'
      */
     String getPath() {
-        this.ver.builder.getPath(this)
+        this.ver.xsd.getPath(this)
     }
 
     void deployToJBoss(final JBossServer server, final Project project) {

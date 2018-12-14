@@ -18,7 +18,7 @@ import static com.github.zhurlik.Ver.V_1_0
  *
  * @author zhurlik@gmail.com
  */
-class Xsd1_0 extends Builder {
+class Xsd1_0 extends Xsd {
 
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {
@@ -53,7 +53,7 @@ class Xsd1_0 extends Builder {
      * <p>
      * Root element for a module declaration.
      * </p>
-     * See <xsd:element name="module" type="moduleType">
+     * See <path:element name="module" type="moduleType">
      *
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml

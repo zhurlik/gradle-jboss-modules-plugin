@@ -15,7 +15,7 @@ import java.util.stream.Stream
  * @author zhurlik@gmail.com
  */
 @Slf4j
-abstract class Builder {
+abstract class Xsd {
 
     abstract String getXmlDescriptor(final JBossModule module)
 

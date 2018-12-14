@@ -1,7 +1,7 @@
 package com.github.zhurlik.extension
 
 import com.github.zhurlik.Ver
-import com.github.zhurlik.descriptor.Builder
+import com.github.zhurlik.descriptor.Xsd
 import com.github.zhurlik.repository.Server
 import groovy.util.logging.Slf4j
 
@@ -71,8 +71,8 @@ class JBossServer implements Server {
         JBossModule jbModule = new JBossModule(name)
 
         if (modules.containsKey(name) && modules[name].exists()) {
-            final Builder builder = version.builder
-            jbModule = builder.makeModule(modules[name].getText('UTF-8'))
+            final Xsd xsd = version.xsd
+            jbModule = xsd.makeModule(modules[name].getText('UTF-8'))
 
             log.debug '>> Module: \'{}\' has been loaded', name
             return jbModule

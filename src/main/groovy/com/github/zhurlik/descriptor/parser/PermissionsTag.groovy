@@ -6,6 +6,8 @@ import groovy.xml.MarkupBuilder
 
 import java.util.function.Consumer
 
+import static com.github.zhurlik.Ver.V_1_1
+
 /**
  *             <xsd:element name="permissions" type="permissionsType" minOccurs="0">
  *                 <annotation xmlns="http://www.w3.org/2001/XMLSchema">
@@ -49,7 +51,7 @@ class PermissionsTag {
      */
     static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
         return { final MarkupBuilder xml ->
-            if (!jmodule.permissions.isEmpty()) {
+            if (!(jmodule.ver in [V_1_1]) && !jmodule.permissions.isEmpty()) {
                 xml.permissions {
                     jmodule.permissions.each {
                         if (it instanceof String) {

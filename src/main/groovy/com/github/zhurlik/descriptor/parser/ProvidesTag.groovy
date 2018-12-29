@@ -7,6 +7,9 @@ import groovy.xml.MarkupBuilder
 
 import java.util.function.Consumer
 
+import static com.github.zhurlik.Ver.V_1_8
+import static com.github.zhurlik.Ver.V_1_9
+
 /**
  *            <xsd:element name="provides" type="providesType" minOccurs="0">
  *                 <xsd:annotation>
@@ -74,6 +77,11 @@ class ProvidesTag {
      */
     static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
         return { final MarkupBuilder xml ->
+            // supported in 1.8 and 1.9
+            if (!(jmodule.ver in [V_1_8, V_1_9])) {
+                return
+            }
+
             if (!jmodule.provides.isEmpty()) {
                 xml.provides {
                     jmodule.provides.each { s ->

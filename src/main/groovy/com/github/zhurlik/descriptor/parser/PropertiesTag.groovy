@@ -6,6 +6,8 @@ import groovy.xml.MarkupBuilder
 
 import java.util.function.Consumer
 
+import static com.github.zhurlik.Ver.V_1_0
+
 /**
  *  <xsd:element name="properties" type="propertyListType" minOccurs="0">
  *      <annotation xmlns="http://www.w3.org/2001/XMLSchema">
@@ -47,7 +49,7 @@ class PropertiesTag {
      */
     static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
         return { final MarkupBuilder xml ->
-            if (!jmodule.properties.isEmpty()) {
+            if (!(jmodule.ver in V_1_0) && !jmodule.properties.isEmpty()) {
                 xml.properties {
                     jmodule.properties.findAll() { !(it.key in [null, '']) && !(it.value in [null, '']) }.each() {
                         xml.property(name: it.key, value: it.value)

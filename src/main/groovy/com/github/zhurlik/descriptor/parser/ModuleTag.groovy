@@ -9,6 +9,10 @@ import groovy.xml.MarkupBuilder
 import java.util.function.Consumer
 import java.util.function.Supplier
 
+import static com.github.zhurlik.Ver.V_1_7
+import static com.github.zhurlik.Ver.V_1_8
+import static com.github.zhurlik.Ver.V_1_9
+
 /**
  *   <xsd:complexType name="moduleType">
  *         <xsd:annotation>
@@ -77,11 +81,55 @@ class ModuleTag {
      * @param jmodule current module
      * @param xml MarkupBuilder to have a reference to xml
      */
-    static Consumer<MarkupBuilder> writeMainClass(final JBossModule jmodule) {
+    private static Consumer<MarkupBuilder> writeMainClass(final JBossModule jmodule) {
         return { final MarkupBuilder xml ->
             if (!(jmodule.mainClass in [null, ''])) {
                 xml.'main-class'(name: jmodule.mainClass)
             }
         }
+    }
+
+    /**
+     * Writes the module declaration type; contains dependencies, resources, and the main class specification.
+     * <p>
+     * Root element for a module declaration.
+     * </p>
+     * See <xsd:element name="module" type="moduleType">
+     *
+     * @param jmodule current module
+     * @param xml MarkupBuilder to have a reference to xml
+     */
+    static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
+        return { final MarkupBuilder xml ->
+            // <module xmlns="urn:jboss:module:1.9" name="org.jboss.msc"...>
+            xml.module(defineAttributes(jmodule)) {
+                ExportsTag.write(jmodule).accept(xml)
+                writeMainClass(jmodule).accept(xml)
+                PropertiesTag.write(jmodule).accept(xml)
+                ResourcesTag.write(jmodule).accept(xml)
+                DependenciesTag.write(jmodule).accept(xml)
+                PermissionsTag.write(jmodule).accept(xml)
+                ProvidesTag.write(jmodule).accept(xml)
+            }
+        }
+    }
+
+    private static Map<String, String> defineAttributes(final JBossModule jmodule) {
+        final Map<String, String> attrs = new HashMap<>()
+        // xsd version
+        attrs.put('xmlns', 'urn:jboss:module:' + jmodule.ver.number)
+        attrs.put('name', jmodule.moduleName)
+
+        // slot
+        if (!(jmodule.ver in [V_1_7, V_1_8, V_1_9]) && !(jmodule.slot in [null, ''])) {
+            attrs.put('slot', jmodule.slot)
+        }
+
+        // module version
+        if (!(jmodule.version in [null, ''])) {
+            attrs.put('version', jmodule.version)
+        }
+
+        return attrs
     }
 }

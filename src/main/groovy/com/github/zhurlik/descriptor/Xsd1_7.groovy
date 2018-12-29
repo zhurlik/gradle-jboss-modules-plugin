@@ -5,7 +5,6 @@ import com.github.zhurlik.descriptor.parser.ModuleAliasTag
 import com.github.zhurlik.descriptor.parser.ModuleTag
 import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
 import com.github.zhurlik.extension.JBossModule
-import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
 
 import static java.io.File.separator
@@ -16,7 +15,6 @@ import static java.io.File.separator
  *
  * @author zhurlik@gmail.com
  */
-@Slf4j
 class Xsd1_7 extends Xsd {
 
     @Override

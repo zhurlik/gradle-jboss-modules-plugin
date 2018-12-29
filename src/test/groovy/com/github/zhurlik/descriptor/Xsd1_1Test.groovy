@@ -6,7 +6,6 @@ import org.junit.Test
 
 import static com.github.zhurlik.Ver.V_1_1
 import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
 /**
@@ -27,16 +26,14 @@ class Xsd1_1Test {
     void testGenerate() throws Exception {
         try {
             xsd.getXmlDescriptor(null)
-            assertTrue false
-        } catch (AssertionError ex) {
-            assertTrue true
+        } catch (NullPointerException ex) {
+            assertEquals('JBossModule is null', ex.getMessage())
         }
 
         try {
             xsd.getXmlDescriptor(new JBossModule('test'))
-            assertFalse false
-        } catch (AssertionError ex) {
-            assertTrue true
+        } catch (NullPointerException ex) {
+            assertEquals('Module name is null', ex.getMessage())
         }
 
         def module = new JBossModule('test')
@@ -74,10 +71,10 @@ class Xsd1_1Test {
         final JBossModule module = new JBossModule('test')
         module.moduleName = 'test.module'
         module.ver = V_1_1
-        assert V_1_1.isValid(module.moduleDescriptor)
+        assertTrue V_1_1.isValid(module.moduleDescriptor)
 
         // not valid
-        assert !V_1_1.isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
+        assertTrue !V_1_1.isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.1' name1='test.module' />")
     }
 }

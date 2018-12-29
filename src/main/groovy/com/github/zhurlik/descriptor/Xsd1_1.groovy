@@ -21,8 +21,7 @@ class Xsd1_1 extends Xsd {
 
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {
-        assert jmodule != null, 'JBossModule is null'
-        assert (jmodule.moduleName != null || jmodule.moduleConfiguration), 'Module name is null'
+        Objects.requireNonNull(jmodule, 'JBossModule is null')
 
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
@@ -30,10 +29,12 @@ class Xsd1_1 extends Xsd {
         XmlDeclarationTag.write().accept(xml)
 
         if (jmodule.isModuleAlias()) {
+            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
             ModuleAliasTag.write(jmodule).accept(xml)
         } else if (jmodule.isModuleConfiguration()) {
             ConfigurationTag.write(jmodule).accept(xml)
         } else {
+            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
             ModuleTag.write(jmodule).accept(xml)
         }
 

@@ -21,8 +21,8 @@ class Xsd1_8 extends Xsd {
 
     @Override
     String getXmlDescriptor(final JBossModule jmodule) {
-        assert jmodule != null, 'JBossModule is null'
-        assert jmodule.moduleName != null, 'Module name is null'
+        Objects.requireNonNull(jmodule, 'JBossModule is null')
+        Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
 
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)

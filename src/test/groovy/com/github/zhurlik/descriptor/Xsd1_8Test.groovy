@@ -83,10 +83,10 @@ class Xsd1_8Test {
         module.ver = V_1_8
         module.moduleName = 'test.module'
 
-        assertTrue xsd.getVersion().isValid(module.moduleDescriptor)
+        assertTrue V_1_8.isValid(module.moduleDescriptor)
 
         // not valid
-        assertTrue !xsd.getVersion().isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
+        assertTrue !V_1_8.isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.8' name1='test.module' />")
 
         module = new JBossModule('test')
@@ -95,10 +95,10 @@ class Xsd1_8Test {
         module.moduleAlias = true
         module.targetName = 'target.name'
 
-        assertTrue xsd.getVersion().isValid(module.getModuleDescriptor())
+        assertTrue V_1_8.isValid(module.getModuleDescriptor())
 
         // not valid
-        assertTrue !xsd.getVersion().isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
+        assertTrue !V_1_8.isValid("<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-alias xmlns='urn:jboss:module:1.8' name='test.module'/>")
     }
 }

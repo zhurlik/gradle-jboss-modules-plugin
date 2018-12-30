@@ -121,7 +121,7 @@ class JBossModule {
     }
 
     boolean isValid() {
-        return this.ver.isValid(this.ver.getXmlDescriptor(this))
+        return this.ver.isValid(getModuleDescriptor())
     }
 
     /**

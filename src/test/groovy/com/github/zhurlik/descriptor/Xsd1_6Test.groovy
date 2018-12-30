@@ -44,7 +44,7 @@ class Xsd1_6Test {
         module.version =  '123-456.789'
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.6' name='test.module' version='123-456.789' />", xsd.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/main', xsd.getPath(module)
+        assertEquals 'modules/system/layers/base/test/module/main', V_1_6.getModulePath(module).toString()
 
         module = new JBossModule('test')
         module.ver = V_1_6
@@ -53,7 +53,7 @@ class Xsd1_6Test {
         module.targetName = 'target.name'
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-alias xmlns='urn:jboss:module:1.6' name='test.module' target-name='target.name' />", xsd.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/main', xsd.getPath(module)
+        assertEquals 'modules/system/layers/base/test/module/main', V_1_6.getModulePath(module).toString()
 
         module = new JBossModule('test')
         module.ver = V_1_6
@@ -61,7 +61,7 @@ class Xsd1_6Test {
         module.moduleAbsent = true
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-absent xmlns='urn:jboss:module:1.6' name='test.module' />", xsd.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/main', xsd.getPath(module)
+        assertEquals 'modules/system/layers/base/test/module/main', V_1_6.getModulePath(module).toString()
 
         module = new JBossModule('test')
         module.ver = V_1_6
@@ -69,7 +69,7 @@ class Xsd1_6Test {
         module.moduleAbsent = true
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-absent xmlns='urn:jboss:module:1.6' name='test.module' />", xsd.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/main', xsd.getPath(module)
+        assertEquals 'modules/system/layers/base/test/module/main', V_1_6.getModulePath(module).toString()
     }
 
     @Test

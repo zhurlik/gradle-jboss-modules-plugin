@@ -19,13 +19,6 @@ abstract class Xsd {
 
     abstract String getXmlDescriptor(final JBossModule module)
 
-    /**
-     * Returns a path where will be stored JBoss Module under server.
-     *
-     * @return string like org/apache/log4j
-     */
-    abstract String getPath(final JBossModule module)
-
     JBossModule makeModule(final String txt) {
         Stream.of(
                 ConfigurationTag.parse(txt),

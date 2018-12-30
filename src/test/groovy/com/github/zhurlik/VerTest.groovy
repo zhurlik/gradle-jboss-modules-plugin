@@ -21,38 +21,38 @@ class VerTest {
 
         assertTrue(Ver.V_1_0.xsd instanceof Xsd1_0)
         assertEquals('1.0', Ver.V_1_0.number)
-        assertEquals('xsd/module-1_0.xsd', Ver.V_1_0.path)
+        assertEquals('xsd/module-1_0.xsd', Ver.V_1_0.xsdPath)
 
         assertTrue(Ver.V_1_1.xsd instanceof Xsd1_1)
         assertEquals('1.1', Ver.V_1_1.number)
-        assertEquals('xsd/module-1_1.xsd', Ver.V_1_1.path)
+        assertEquals('xsd/module-1_1.xsd', Ver.V_1_1.xsdPath)
 
         assertTrue(Ver.V_1_2.xsd instanceof Xsd1_2)
         assertEquals('1.2', Ver.V_1_2.number)
-        assertEquals('xsd/module-1_2.xsd', Ver.V_1_2.path)
+        assertEquals('xsd/module-1_2.xsd', Ver.V_1_2.xsdPath)
 
         assertTrue(Ver.V_1_3.xsd instanceof Xsd1_3)
         assertEquals('1.3', Ver.V_1_3.number)
-        assertEquals('xsd/module-1_3.xsd', Ver.V_1_3.path)
+        assertEquals('xsd/module-1_3.xsd', Ver.V_1_3.xsdPath)
 
         assertTrue(Ver.V_1_5.xsd instanceof Xsd1_5)
         assertEquals('1.5', Ver.V_1_5.number)
-        assertEquals('xsd/module-1_5.xsd', Ver.V_1_5.path)
+        assertEquals('xsd/module-1_5.xsd', Ver.V_1_5.xsdPath)
 
         assertTrue(Ver.V_1_6.xsd instanceof Xsd1_6)
         assertEquals('1.6', Ver.V_1_6.number)
-        assertEquals('xsd/module-1_6.xsd', Ver.V_1_6.path)
+        assertEquals('xsd/module-1_6.xsd', Ver.V_1_6.xsdPath)
 
         assertTrue(Ver.V_1_7.xsd instanceof Xsd1_7)
         assertEquals('1.7', Ver.V_1_7.number)
-        assertEquals('xsd/module-1_7.xsd', Ver.V_1_7.path)
+        assertEquals('xsd/module-1_7.xsd', Ver.V_1_7.xsdPath)
 
         assertTrue(Ver.V_1_8.xsd instanceof Xsd1_8)
         assertEquals('1.8', Ver.V_1_8.number)
-        assertEquals('xsd/module-1_8.xsd', Ver.V_1_8.path)
+        assertEquals('xsd/module-1_8.xsd', Ver.V_1_8.xsdPath)
 
         assertTrue(Ver.V_1_9.xsd instanceof Xsd1_9)
         assertEquals('1.9', Ver.V_1_9.number)
-        assertEquals('xsd/module-1_9.xsd', Ver.V_1_9.path)
+        assertEquals('xsd/module-1_9.xsd', Ver.V_1_9.xsdPath)
     }
 }

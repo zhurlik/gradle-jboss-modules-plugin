@@ -46,7 +46,7 @@ class Xsd1_8Test {
         module.version =  '123-456.789'
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.8' name='test.module' version='123-456.789' />", xsd.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/123-456.789', xsd.getPath(module)
+        assertEquals 'modules/system/layers/base/test/module/123-456.789', V_1_8.getModulePath(module).toString()
 
         module = new JBossModule('test')
         module.ver = V_1_8
@@ -55,7 +55,7 @@ class Xsd1_8Test {
         module.targetName = 'target.name'
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-alias xmlns='urn:jboss:module:1.8' name='test.module' target-name='target.name' />", xsd.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/main', xsd.getPath(module)
+        assertEquals 'modules/system/layers/base/test/module/main', V_1_8.getModulePath(module).toString()
 
         module = new JBossModule('test')
         module.ver = V_1_8
@@ -63,7 +63,7 @@ class Xsd1_8Test {
         module.moduleAbsent = true
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-absent xmlns='urn:jboss:module:1.8' name='test.module' />", xsd.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/main', xsd.getPath(module)
+        assertEquals 'modules/system/layers/base/test/module/main', V_1_8.getModulePath(module).toString()
 
         module = new JBossModule('test')
         module.ver = V_1_8
@@ -71,7 +71,7 @@ class Xsd1_8Test {
         module.moduleAbsent = true
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-absent xmlns='urn:jboss:module:1.8' name='test.module' />", xsd.getXmlDescriptor(module)
-        assertEquals 'modules/system/layers/base/test/module/main', xsd.getPath(module)
+        assertEquals 'modules/system/layers/base/test/module/main', V_1_8.getModulePath(module).toString()
     }
 
     @Test

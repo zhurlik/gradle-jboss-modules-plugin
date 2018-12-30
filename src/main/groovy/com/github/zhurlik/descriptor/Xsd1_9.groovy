@@ -7,8 +7,6 @@ import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
 import com.github.zhurlik.extension.JBossModule
 import groovy.xml.MarkupBuilder
 
-import static java.io.File.separator
-
 /**
  * Generates a xml descriptor for JBoss Module ver.1.9
  * https://github.com/jboss-modules/jboss-modules/tree/1.x/src/main/resources/schema
@@ -37,10 +35,5 @@ class Xsd1_9 extends Xsd {
         }
 
         return writer.toString()
-    }
-
-    @Override
-    String getPath(final JBossModule jbModule) {
-        return ['modules', 'system', 'layers', 'base', jbModule.moduleName.replaceAll('\\.', separator), ((jbModule.version in [null, '']) ? 'main' : jbModule.version)].join(separator)
     }
 }

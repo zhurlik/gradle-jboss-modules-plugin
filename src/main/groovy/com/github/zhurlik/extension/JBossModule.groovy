@@ -130,7 +130,7 @@ class JBossModule {
      * @return string like 'module/name/dir/{main|slot}'
      */
     String getPath() {
-        this.ver.xsd.getPath(this)
+        this.ver.getModulePath(this).toString()
     }
 
     void deployToJBoss(final JBossServer server, final Project project) {

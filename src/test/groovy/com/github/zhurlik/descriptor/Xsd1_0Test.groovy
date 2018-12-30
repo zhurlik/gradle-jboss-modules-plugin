@@ -43,7 +43,7 @@ class Xsd1_0Test {
         module.ver = V_1_0
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.0' name='test.module' />", xsd.getXmlDescriptor(module)
-        assertEquals 'modules/test/module/main', xsd.getPath(module)
+        assertEquals 'modules/test/module/main', V_1_0.getModulePath(module).toString()
 
         module = new JBossModule('test')
         module.moduleName = 'test.module'
@@ -54,7 +54,7 @@ class Xsd1_0Test {
                 "<configuration xmlns='urn:jboss:module:1.0' default-loader='test_loader1'>\n" +
                 "  <loader name='test_loader1' />\n" +
                 "</configuration>", xsd.getXmlDescriptor(module)
-        assertEquals 'modules/test/module/main', xsd.getPath(module)
+        assertEquals 'modules/test/module/main', V_1_0.getModulePath(module).toString()
         assertTrue 'Valid:', V_1_0.isValid(module.moduleDescriptor)
     }
 

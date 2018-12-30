@@ -1,11 +1,11 @@
 package com.github.zhurlik
 
-import com.github.zhurlik.descriptor.parser.ConfigurationTag
-import com.github.zhurlik.descriptor.parser.ModuleAbsentTag
-import com.github.zhurlik.descriptor.parser.ModuleAliasTag
-import com.github.zhurlik.descriptor.parser.ModuleTag
-import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
 import com.github.zhurlik.extension.JBossModule
+import com.github.zhurlik.tag.ConfigurationTag
+import com.github.zhurlik.tag.ModuleAbsentTag
+import com.github.zhurlik.tag.ModuleAliasTag
+import com.github.zhurlik.tag.ModuleTag
+import com.github.zhurlik.tag.XmlDeclarationTag
 import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
 

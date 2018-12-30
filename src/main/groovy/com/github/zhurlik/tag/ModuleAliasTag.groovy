@@ -1,4 +1,4 @@
-package com.github.zhurlik.descriptor.parser
+package com.github.zhurlik.tag
 
 import com.github.zhurlik.Ver
 import com.github.zhurlik.extension.JBossModule

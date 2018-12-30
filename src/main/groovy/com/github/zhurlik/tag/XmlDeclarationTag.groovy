@@ -1,4 +1,4 @@
-package com.github.zhurlik.descriptor.parser
+package com.github.zhurlik.tag
 
 import groovy.xml.MarkupBuilder
 

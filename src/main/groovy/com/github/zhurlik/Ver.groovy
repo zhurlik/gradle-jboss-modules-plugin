@@ -25,6 +25,8 @@ import javax.xml.validation.SchemaFactory
 import javax.xml.validation.Validator
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.function.Supplier
+import java.util.stream.Stream
 
 import static java.io.File.separator
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI
@@ -217,6 +219,24 @@ enum Ver {
 
     String getXsdPath() {
         return xsdPath
+    }
+
+    /**
+     * Makes JBoss Module from xml file.
+     *
+     * @param xml
+     * @return new instance of JBossModule
+     */
+    JBossModule makeModule(final String xml) {
+        Stream.of(
+                ConfigurationTag.parse(xml),
+                ModuleAliasTag.parse(xml),
+                ModuleTag.parse(xml))
+                .filter({ final Optional it -> it.isPresent() })
+                .findFirst()
+                .map({ final Optional it -> it.get() })
+                .map({ final Supplier<JBossModule> it -> it.get() })
+                .orElseThrow { new IllegalArgumentException("There is a problem with parsing") }
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.github.zhurlik.descriptor
 
 import com.github.zhurlik.extension.JBossModule
-import org.junit.Before
 import org.junit.Test
 
 import static com.github.zhurlik.Ver.V_1_7
@@ -13,14 +12,6 @@ import static org.junit.Assert.assertTrue
  * @author zhurlik@gmail.com
  */
 class Xsd1_7Test {
-
-    private Xsd xsd
-
-    @Before
-    void setUp() throws Exception {
-        xsd = V_1_7.xsd
-        assertTrue xsd instanceof Xsd1_7
-    }
 
     @Test
     void testGenerate() throws Exception {

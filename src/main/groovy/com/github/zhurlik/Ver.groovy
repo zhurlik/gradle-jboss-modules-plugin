@@ -1,15 +1,5 @@
 package com.github.zhurlik
 
-import com.github.zhurlik.descriptor.Xsd
-import com.github.zhurlik.descriptor.Xsd1_0
-import com.github.zhurlik.descriptor.Xsd1_1
-import com.github.zhurlik.descriptor.Xsd1_2
-import com.github.zhurlik.descriptor.Xsd1_3
-import com.github.zhurlik.descriptor.Xsd1_5
-import com.github.zhurlik.descriptor.Xsd1_6
-import com.github.zhurlik.descriptor.Xsd1_7
-import com.github.zhurlik.descriptor.Xsd1_8
-import com.github.zhurlik.descriptor.Xsd1_9
 import com.github.zhurlik.descriptor.parser.ConfigurationTag
 import com.github.zhurlik.descriptor.parser.ModuleAbsentTag
 import com.github.zhurlik.descriptor.parser.ModuleAliasTag
@@ -38,7 +28,7 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI
  */
 @Slf4j
 enum Ver {
-    V_1_0('1.0', 'xsd/module-1_0.xsd', Xsd1_0){
+    V_1_0('1.0', 'xsd/module-1_0.xsd'){
         @Override
         Path getModulePath(final JBossModule jbModule) {
             return Paths.get('modules',
@@ -65,7 +55,7 @@ enum Ver {
             return writer.toString()
         }
     },
-    V_1_1('1.1', 'xsd/module-1_1.xsd', Xsd1_1){
+    V_1_1('1.1', 'xsd/module-1_1.xsd'){
         @Override
         Path getModulePath(final JBossModule jbModule) {
             return Paths.get('modules',
@@ -95,7 +85,7 @@ enum Ver {
             return writer.toString()
         }
     },
-    V_1_2('1.2', 'xsd/module-1_2.xsd', Xsd1_2){
+    V_1_2('1.2', 'xsd/module-1_2.xsd'){
         @Override
         Path getModulePath(final JBossModule jbModule) {
             return Paths.get('modules', 'system', 'layers', 'base',
@@ -124,7 +114,7 @@ enum Ver {
             return writer.toString()
         }
     },
-    V_1_3('1.3', 'xsd/module-1_3.xsd', Xsd1_3){
+    V_1_3('1.3', 'xsd/module-1_3.xsd'){
         @Override
         Path getModulePath(final JBossModule jbModule) {
             return V_1_2.getModulePath(jbModule)
@@ -135,7 +125,7 @@ enum Ver {
             return V_1_2.getXmlDescriptor(jmodule)
         }
     },
-    V_1_5('1.5', 'xsd/module-1_5.xsd', Xsd1_5){
+    V_1_5('1.5', 'xsd/module-1_5.xsd'){
         @Override
         Path getModulePath(final JBossModule jbModule) {
             return V_1_2.getModulePath(jbModule)
@@ -146,7 +136,7 @@ enum Ver {
             return V_1_2.getXmlDescriptor(jmodule)
         }
     },
-    V_1_6('1.6', 'xsd/module-1_6.xsd', Xsd1_6){
+    V_1_6('1.6', 'xsd/module-1_6.xsd'){
         @Override
         Path getModulePath(final JBossModule jbModule) {
             return V_1_2.getModulePath(jbModule)
@@ -157,7 +147,7 @@ enum Ver {
             return V_1_2.getXmlDescriptor(jmodule)
         }
     },
-    V_1_7('1.7', 'xsd/module-1_7.xsd', Xsd1_7){
+    V_1_7('1.7', 'xsd/module-1_7.xsd'){
         @Override
         Path getModulePath(final JBossModule jbModule) {
             return Paths.get('modules', 'system', 'layers', 'base',
@@ -170,7 +160,7 @@ enum Ver {
             return V_1_2.getXmlDescriptor(jmodule)
         }
     },
-    V_1_8('1.8', 'xsd/module-1_8.xsd', Xsd1_8){
+    V_1_8('1.8', 'xsd/module-1_8.xsd'){
         @Override
         Path getModulePath(final JBossModule jbModule) {
             return V_1_7.getModulePath(jbModule)
@@ -181,7 +171,7 @@ enum Ver {
             return V_1_2.getXmlDescriptor(jmodule)
         }
     },
-    V_1_9('1.9', 'xsd/module-1_9.xsd', Xsd1_9){
+    V_1_9('1.9', 'xsd/module-1_9.xsd'){
         @Override
         Path getModulePath(final JBossModule jbModule) {
             return V_1_7.getModulePath(jbModule)
@@ -201,20 +191,14 @@ enum Ver {
 
     private String number
     private String xsdPath
-    private Xsd xsd
 
-    Ver(final String ver, final String xsdPath, Class<Xsd> clazz) {
+    Ver(final String ver, final String xsdPath) {
         this.number = ver
         this.xsdPath = xsdPath
-        this.xsd = clazz.getDeclaredConstructor().newInstance()
     }
 
     String getNumber() {
         return number
-    }
-
-    Xsd getXsd() {
-        return xsd
     }
 
     String getXsdPath() {
@@ -227,7 +211,7 @@ enum Ver {
      * @param xml
      * @return new instance of JBossModule
      */
-    JBossModule makeModule(final String xml) {
+    static JBossModule makeModule(final String xml) {
         Stream.of(
                 ConfigurationTag.parse(xml),
                 ModuleAliasTag.parse(xml),

@@ -41,7 +41,7 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='my.module' slot='1.0' />"
         assertEquals 'Case1:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, getVersion().makeModule(xml).moduleDescriptor
+        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
 
         // 1.1
         module = new JBossModule('testModule')
@@ -62,7 +62,7 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
                 "</module>"
         assertEquals 'Case1.1:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, getVersion().makeModule(xml).moduleDescriptor
+        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
 
 
         // 2
@@ -86,7 +86,7 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
                 "</module>"
         assertEquals 'Case2:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, getVersion().makeModule(xml).moduleDescriptor
+        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
 
         // 3
         module = new JBossModule('test-module-3')
@@ -99,7 +99,7 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
                 "</module>"
         assertEquals 'Case3:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, getVersion().makeModule(xml).moduleDescriptor
+        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
 
         // 4
         module = new JBossModule('test-module-4')
@@ -115,7 +115,7 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
                 "</module>"
         assertEquals 'Case4:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, getVersion().makeModule(xml).moduleDescriptor
+        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
 
         // 5
         module = new JBossModule('test-module-5')
@@ -140,7 +140,7 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
                 "</module>"
         assertEquals 'Case5:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, getVersion().makeModule(xml).moduleDescriptor
+        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
 
         // 6
         module = new JBossModule('test-module-6')
@@ -189,7 +189,7 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
                 "      </exports>\n" +
                 "    </module>\n" +
                 "  </dependencies>\n" +
-                "</module>", getVersion().makeModule(xml).moduleDescriptor
+                "</module>", Ver.makeModule(xml).moduleDescriptor
     }
 
     @Test
@@ -212,7 +212,7 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
                 "</module>"
         assertEquals 'Case1:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, getVersion().makeModule(xml).moduleDescriptor
+        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
 
         //2
         module = new JBossModule('testModule-2')
@@ -257,7 +257,7 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
                 "</module>"
         assertEquals 'Case2:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, getVersion().makeModule(xml).moduleDescriptor
+        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
 
         //3
         module = new JBossModule('testModule-3')
@@ -293,7 +293,7 @@ class JBossModule1_5Test extends BasicJBossModuleTest {
                 "</module>"
         assertEquals 'Case3:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, getVersion().makeModule(xml).moduleDescriptor
+        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
     }
 
     @Test

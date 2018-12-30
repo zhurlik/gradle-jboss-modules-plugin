@@ -25,7 +25,7 @@ class Xsd1_7Test {
     @Test
     void testGenerate() throws Exception {
         try {
-            xsd.getXmlDescriptor(null)
+            V_1_7.getXmlDescriptor(null)
         } catch (NullPointerException ex) {
             assertEquals('JBossModule is null', ex.getMessage())
         }
@@ -34,7 +34,7 @@ class Xsd1_7Test {
         try {
             module.setVer(V_1_7)
             module.setSlot('deprecated')
-            xsd.getXmlDescriptor(module)
+            V_1_7.getXmlDescriptor(module)
         } catch (NullPointerException ex) {
             assertEquals('Module name is null', ex.getMessage())
         }
@@ -45,7 +45,7 @@ class Xsd1_7Test {
         module.moduleName = 'test.module'
         module.version =  '123-456.789'
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module xmlns='urn:jboss:module:1.7' name='test.module' version='123-456.789' />", xsd.getXmlDescriptor(module)
+                "<module xmlns='urn:jboss:module:1.7' name='test.module' version='123-456.789' />", V_1_7.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/123-456.789', V_1_7.getModulePath(module).toString()
 
         module = new JBossModule('test')
@@ -54,7 +54,7 @@ class Xsd1_7Test {
         module.moduleAlias = true
         module.targetName = 'target.name'
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module-alias xmlns='urn:jboss:module:1.7' name='test.module' target-name='target.name' />", xsd.getXmlDescriptor(module)
+                "<module-alias xmlns='urn:jboss:module:1.7' name='test.module' target-name='target.name' />", V_1_7.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_7.getModulePath(module).toString()
 
         module = new JBossModule('test')
@@ -62,7 +62,7 @@ class Xsd1_7Test {
         module.moduleName = 'test.module'
         module.moduleAbsent = true
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module-absent xmlns='urn:jboss:module:1.7' name='test.module' />", xsd.getXmlDescriptor(module)
+                "<module-absent xmlns='urn:jboss:module:1.7' name='test.module' />", V_1_7.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_7.getModulePath(module).toString()
 
         module = new JBossModule('test')
@@ -70,7 +70,7 @@ class Xsd1_7Test {
         module.moduleName = 'test.module'
         module.moduleAbsent = true
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module-absent xmlns='urn:jboss:module:1.7' name='test.module' />", xsd.getXmlDescriptor(module)
+                "<module-absent xmlns='urn:jboss:module:1.7' name='test.module' />", V_1_7.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_7.getModulePath(module).toString()
     }
 

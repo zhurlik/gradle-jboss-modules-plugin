@@ -117,11 +117,11 @@ class JBossModule {
      * @return a xml as string
      */
     String getModuleDescriptor() {
-        return this.ver.xsd.getXmlDescriptor(this)
+        return this.ver.getXmlDescriptor(this)
     }
 
     boolean isValid() {
-        return this.ver.isValid(this.ver.xsd.getXmlDescriptor(this))
+        return this.ver.isValid(this.ver.getXmlDescriptor(this))
     }
 
     /**

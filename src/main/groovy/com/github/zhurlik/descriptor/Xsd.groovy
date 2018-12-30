@@ -17,8 +17,6 @@ import java.util.stream.Stream
 @Slf4j
 abstract class Xsd {
 
-    abstract String getXmlDescriptor(final JBossModule module)
-
     JBossModule makeModule(final String txt) {
         Stream.of(
                 ConfigurationTag.parse(txt),

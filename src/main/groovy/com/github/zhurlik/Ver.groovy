@@ -10,8 +10,14 @@ import com.github.zhurlik.descriptor.Xsd1_6
 import com.github.zhurlik.descriptor.Xsd1_7
 import com.github.zhurlik.descriptor.Xsd1_8
 import com.github.zhurlik.descriptor.Xsd1_9
+import com.github.zhurlik.descriptor.parser.ConfigurationTag
+import com.github.zhurlik.descriptor.parser.ModuleAbsentTag
+import com.github.zhurlik.descriptor.parser.ModuleAliasTag
+import com.github.zhurlik.descriptor.parser.ModuleTag
+import com.github.zhurlik.descriptor.parser.XmlDeclarationTag
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
+import groovy.xml.MarkupBuilder
 
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.Schema
@@ -37,6 +43,25 @@ enum Ver {
                     jbModule.moduleName.split('\\.').join(separator),
                     ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot))
         }
+
+        @Override
+        String getXmlDescriptor(JBossModule jmodule) {
+            Objects.requireNonNull(jmodule, 'JBossModule is null')
+
+            def writer = new StringWriter()
+            def xml = new MarkupBuilder(writer)
+
+            XmlDeclarationTag.write().accept(xml)
+
+            if (jmodule.isModuleConfiguration()) {
+                ConfigurationTag.write(jmodule).accept(xml)
+            } else {
+                Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
+                ModuleTag.write(jmodule).accept(xml)
+            }
+
+            return writer.toString()
+        }
     },
     V_1_1('1.1', 'xsd/module-1_1.xsd', Xsd1_1){
         @Override
@@ -44,6 +69,28 @@ enum Ver {
             return Paths.get('modules',
                     jbModule.moduleName.split('\\.').join(separator),
                     ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot))
+        }
+
+        @Override
+        String getXmlDescriptor(JBossModule jmodule) {
+            Objects.requireNonNull(jmodule, 'JBossModule is null')
+
+            def writer = new StringWriter()
+            def xml = new MarkupBuilder(writer)
+
+            XmlDeclarationTag.write().accept(xml)
+
+            if (jmodule.isModuleAlias()) {
+                Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
+                ModuleAliasTag.write(jmodule).accept(xml)
+            } else if (jmodule.isModuleConfiguration()) {
+                ConfigurationTag.write(jmodule).accept(xml)
+            } else {
+                Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
+                ModuleTag.write(jmodule).accept(xml)
+            }
+
+            return writer.toString()
         }
     },
     V_1_2('1.2', 'xsd/module-1_2.xsd', Xsd1_2){
@@ -53,6 +100,27 @@ enum Ver {
                     jbModule.moduleName.split('\\.').join(separator),
                     ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot))
         }
+
+        @Override
+        String getXmlDescriptor(JBossModule jmodule) {
+            Objects.requireNonNull(jmodule, 'JBossModule is null')
+            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
+
+            def writer = new StringWriter()
+            def xml = new MarkupBuilder(writer)
+
+            XmlDeclarationTag.write().accept(xml)
+
+            if (jmodule.isModuleAlias()) {
+                ModuleAliasTag.write(jmodule).accept(xml)
+            } else if (jmodule.isModuleAbsent()) {
+                ModuleAbsentTag.write(jmodule).accept(xml)
+            } else {
+                ModuleTag.write(jmodule).accept(xml)
+            }
+
+            return writer.toString()
+        }
     },
     V_1_3('1.3', 'xsd/module-1_3.xsd', Xsd1_3){
         @Override
@@ -60,6 +128,27 @@ enum Ver {
             return Paths.get('modules', 'system', 'layers', 'base',
                     jbModule.moduleName.split('\\.').join(separator),
                     ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot))
+        }
+
+        @Override
+        String getXmlDescriptor(JBossModule jmodule) {
+            Objects.requireNonNull(jmodule, 'JBossModule is null')
+            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
+
+            def writer = new StringWriter()
+            def xml = new MarkupBuilder(writer)
+
+            XmlDeclarationTag.write().accept(xml)
+
+            if (jmodule.isModuleAlias()) {
+                ModuleAliasTag.write(jmodule).accept(xml)
+            } else if (jmodule.isModuleAbsent()) {
+                ModuleAbsentTag.write(jmodule).accept(xml)
+            } else {
+                ModuleTag.write(jmodule).accept(xml)
+            }
+
+            return writer.toString()
         }
     },
     V_1_5('1.5', 'xsd/module-1_5.xsd', Xsd1_5){
@@ -69,6 +158,27 @@ enum Ver {
                     jbModule.moduleName.split('\\.').join(separator),
                     ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot))
         }
+
+        @Override
+        String getXmlDescriptor(JBossModule jmodule) {
+            Objects.requireNonNull(jmodule, 'JBossModule is null')
+            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
+
+            def writer = new StringWriter()
+            def xml = new MarkupBuilder(writer)
+
+            XmlDeclarationTag.write().accept(xml)
+
+            if (jmodule.isModuleAlias()) {
+                ModuleAliasTag.write(jmodule).accept(xml)
+            } else if (jmodule.isModuleAbsent()) {
+                ModuleAbsentTag.write(jmodule).accept(xml)
+            } else {
+                ModuleTag.write(jmodule).accept(xml)
+            }
+
+            return writer.toString()
+        }
     },
     V_1_6('1.6', 'xsd/module-1_6.xsd', Xsd1_6){
         @Override
@@ -76,6 +186,27 @@ enum Ver {
             return Paths.get('modules', 'system', 'layers', 'base',
                     jbModule.moduleName.split('\\.').join(separator),
                     ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot))
+        }
+
+        @Override
+        String getXmlDescriptor(JBossModule jmodule) {
+            Objects.requireNonNull(jmodule, 'JBossModule is null')
+            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
+
+            def writer = new StringWriter()
+            def xml = new MarkupBuilder(writer)
+
+            XmlDeclarationTag.write().accept(xml)
+
+            if (jmodule.isModuleAlias()) {
+                ModuleAliasTag.write(jmodule).accept(xml)
+            } else if (jmodule.isModuleAbsent()) {
+                ModuleAbsentTag.write(jmodule).accept(xml)
+            } else {
+                ModuleTag.write(jmodule).accept(xml)
+            }
+
+            return writer.toString()
         }
     },
     V_1_7('1.7', 'xsd/module-1_7.xsd', Xsd1_7){
@@ -85,6 +216,27 @@ enum Ver {
                     jbModule.moduleName.split('\\.').join(separator),
                     ((jbModule.version in [null, '']) ? 'main' : jbModule.version))
         }
+
+        @Override
+        String getXmlDescriptor(JBossModule jmodule) {
+            Objects.requireNonNull(jmodule, 'JBossModule is null')
+            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
+
+            def writer = new StringWriter()
+            def xml = new MarkupBuilder(writer)
+
+            XmlDeclarationTag.write().accept(xml)
+
+            if (jmodule.isModuleAlias()) {
+                ModuleAliasTag.write(jmodule).accept(xml)
+            } else if (jmodule.isModuleAbsent()) {
+                ModuleAbsentTag.write(jmodule).accept(xml)
+            } else {
+                ModuleTag.write(jmodule).accept(xml)
+            }
+
+            return writer.toString()
+        }
     },
     V_1_8('1.8', 'xsd/module-1_8.xsd', Xsd1_8){
         @Override
@@ -92,6 +244,27 @@ enum Ver {
             return Paths.get('modules', 'system', 'layers', 'base',
                     jbModule.moduleName.split('\\.').join(separator),
                     ((jbModule.version in [null, '']) ? 'main' : jbModule.version))
+        }
+
+        @Override
+        String getXmlDescriptor(JBossModule jmodule) {
+            Objects.requireNonNull(jmodule, 'JBossModule is null')
+            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
+
+            def writer = new StringWriter()
+            def xml = new MarkupBuilder(writer)
+
+            XmlDeclarationTag.write().accept(xml)
+
+            if (jmodule.isModuleAlias()) {
+                ModuleAliasTag.write(jmodule).accept(xml)
+            } else if (jmodule.isModuleAbsent()) {
+                ModuleAbsentTag.write(jmodule).accept(xml)
+            } else {
+                ModuleTag.write(jmodule).accept(xml)
+            }
+
+            return writer.toString()
         }
     },
     V_1_9('1.9', 'xsd/module-1_9.xsd', Xsd1_9){
@@ -101,11 +274,35 @@ enum Ver {
                     jbModule.moduleName.split('\\.').join(separator),
                     ((jbModule.version in [null, '']) ? 'main' : jbModule.version))
         }
+
+        @Override
+        String getXmlDescriptor(JBossModule jmodule) {
+            Objects.requireNonNull(jmodule, 'JBossModule is null')
+            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
+
+            def writer = new StringWriter()
+            def xml = new MarkupBuilder(writer)
+
+            XmlDeclarationTag.write().accept(xml)
+
+            if (jmodule.isModuleAlias()) {
+                ModuleAliasTag.write(jmodule).accept(xml)
+            } else if (jmodule.isModuleAbsent()) {
+                ModuleAbsentTag.write(jmodule).accept(xml)
+            } else {
+
+                ModuleTag.write(jmodule).accept(xml)
+            }
+
+            return writer.toString()
+        }
     };
 
     static final FACTORY = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
 
     abstract Path getModulePath(final JBossModule jBossModule)
+
+    abstract String getXmlDescriptor(final JBossModule jBossModule)
 
     private String number
     private String xsdPath

@@ -25,13 +25,13 @@ class Xsd1_1Test {
     @Test
     void testGenerate() throws Exception {
         try {
-            xsd.getXmlDescriptor(null)
+            V_1_1.getXmlDescriptor(null)
         } catch (NullPointerException ex) {
             assertEquals('JBossModule is null', ex.getMessage())
         }
 
         try {
-            xsd.getXmlDescriptor(new JBossModule('test'))
+            V_1_1.getXmlDescriptor(new JBossModule('test'))
         } catch (NullPointerException ex) {
             assertEquals('Module name is null', ex.getMessage())
         }
@@ -40,7 +40,7 @@ class Xsd1_1Test {
         module.moduleName = 'test.module'
         module.ver = V_1_1
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module xmlns='urn:jboss:module:1.1' name='test.module' />", xsd.getXmlDescriptor(module)
+                "<module xmlns='urn:jboss:module:1.1' name='test.module' />", V_1_1.getXmlDescriptor(module)
         assertEquals 'modules/test/module/main', V_1_1.getModulePath(module).toString()
 
         module = new JBossModule('test')
@@ -49,7 +49,7 @@ class Xsd1_1Test {
         module.moduleAlias = true
         module.targetName = 'target.name'
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
-                "<module-alias xmlns='urn:jboss:module:1.1' name='test.module' target-name='target.name' />", xsd.getXmlDescriptor(module)
+                "<module-alias xmlns='urn:jboss:module:1.1' name='test.module' target-name='target.name' />", V_1_1.getXmlDescriptor(module)
         assertEquals 'modules/test/module/main', V_1_1.getModulePath(module).toString()
 
         module = new JBossModule('test')
@@ -60,7 +60,7 @@ class Xsd1_1Test {
         assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<configuration xmlns='urn:jboss:module:1.1' default-loader='test_loader1'>\n" +
                 "  <loader name='test_loader1' />\n" +
-                "</configuration>", xsd.getXmlDescriptor(module)
+                "</configuration>", V_1_1.getXmlDescriptor(module)
         assertEquals 'modules/test/module/main', V_1_1.getModulePath(module).toString()
         assertTrue 'Valid:', V_1_1.isValid(module.moduleDescriptor)
 

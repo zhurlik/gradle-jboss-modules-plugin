@@ -30,7 +30,7 @@ import static java.io.File.separator
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI
 
 /**
- * Supported versions of JBoss Server
+ * Supported versions of JBoss Modules
  *
  * @author zhurlik@gmail.com
  */
@@ -125,88 +125,34 @@ enum Ver {
     V_1_3('1.3', 'xsd/module-1_3.xsd', Xsd1_3){
         @Override
         Path getModulePath(final JBossModule jbModule) {
-            return Paths.get('modules', 'system', 'layers', 'base',
-                    jbModule.moduleName.split('\\.').join(separator),
-                    ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot))
+            return V_1_2.getModulePath(jbModule)
         }
 
         @Override
         String getXmlDescriptor(JBossModule jmodule) {
-            Objects.requireNonNull(jmodule, 'JBossModule is null')
-            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
-
-            def writer = new StringWriter()
-            def xml = new MarkupBuilder(writer)
-
-            XmlDeclarationTag.write().accept(xml)
-
-            if (jmodule.isModuleAlias()) {
-                ModuleAliasTag.write(jmodule).accept(xml)
-            } else if (jmodule.isModuleAbsent()) {
-                ModuleAbsentTag.write(jmodule).accept(xml)
-            } else {
-                ModuleTag.write(jmodule).accept(xml)
-            }
-
-            return writer.toString()
+            return V_1_2.getXmlDescriptor(jmodule)
         }
     },
     V_1_5('1.5', 'xsd/module-1_5.xsd', Xsd1_5){
         @Override
         Path getModulePath(final JBossModule jbModule) {
-            return Paths.get('modules', 'system', 'layers', 'base',
-                    jbModule.moduleName.split('\\.').join(separator),
-                    ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot))
+            return V_1_2.getModulePath(jbModule)
         }
 
         @Override
         String getXmlDescriptor(JBossModule jmodule) {
-            Objects.requireNonNull(jmodule, 'JBossModule is null')
-            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
-
-            def writer = new StringWriter()
-            def xml = new MarkupBuilder(writer)
-
-            XmlDeclarationTag.write().accept(xml)
-
-            if (jmodule.isModuleAlias()) {
-                ModuleAliasTag.write(jmodule).accept(xml)
-            } else if (jmodule.isModuleAbsent()) {
-                ModuleAbsentTag.write(jmodule).accept(xml)
-            } else {
-                ModuleTag.write(jmodule).accept(xml)
-            }
-
-            return writer.toString()
+            return V_1_2.getXmlDescriptor(jmodule)
         }
     },
     V_1_6('1.6', 'xsd/module-1_6.xsd', Xsd1_6){
         @Override
         Path getModulePath(final JBossModule jbModule) {
-            return Paths.get('modules', 'system', 'layers', 'base',
-                    jbModule.moduleName.split('\\.').join(separator),
-                    ((jbModule.slot in [null, '']) ? 'main' : jbModule.slot))
+            return V_1_2.getModulePath(jbModule)
         }
 
         @Override
         String getXmlDescriptor(JBossModule jmodule) {
-            Objects.requireNonNull(jmodule, 'JBossModule is null')
-            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
-
-            def writer = new StringWriter()
-            def xml = new MarkupBuilder(writer)
-
-            XmlDeclarationTag.write().accept(xml)
-
-            if (jmodule.isModuleAlias()) {
-                ModuleAliasTag.write(jmodule).accept(xml)
-            } else if (jmodule.isModuleAbsent()) {
-                ModuleAbsentTag.write(jmodule).accept(xml)
-            } else {
-                ModuleTag.write(jmodule).accept(xml)
-            }
-
-            return writer.toString()
+            return V_1_2.getXmlDescriptor(jmodule)
         }
     },
     V_1_7('1.7', 'xsd/module-1_7.xsd', Xsd1_7){
@@ -219,82 +165,29 @@ enum Ver {
 
         @Override
         String getXmlDescriptor(JBossModule jmodule) {
-            Objects.requireNonNull(jmodule, 'JBossModule is null')
-            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
-
-            def writer = new StringWriter()
-            def xml = new MarkupBuilder(writer)
-
-            XmlDeclarationTag.write().accept(xml)
-
-            if (jmodule.isModuleAlias()) {
-                ModuleAliasTag.write(jmodule).accept(xml)
-            } else if (jmodule.isModuleAbsent()) {
-                ModuleAbsentTag.write(jmodule).accept(xml)
-            } else {
-                ModuleTag.write(jmodule).accept(xml)
-            }
-
-            return writer.toString()
+            return V_1_2.getXmlDescriptor(jmodule)
         }
     },
     V_1_8('1.8', 'xsd/module-1_8.xsd', Xsd1_8){
         @Override
         Path getModulePath(final JBossModule jbModule) {
-            return Paths.get('modules', 'system', 'layers', 'base',
-                    jbModule.moduleName.split('\\.').join(separator),
-                    ((jbModule.version in [null, '']) ? 'main' : jbModule.version))
+            return V_1_7.getModulePath(jbModule)
         }
 
         @Override
         String getXmlDescriptor(JBossModule jmodule) {
-            Objects.requireNonNull(jmodule, 'JBossModule is null')
-            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
-
-            def writer = new StringWriter()
-            def xml = new MarkupBuilder(writer)
-
-            XmlDeclarationTag.write().accept(xml)
-
-            if (jmodule.isModuleAlias()) {
-                ModuleAliasTag.write(jmodule).accept(xml)
-            } else if (jmodule.isModuleAbsent()) {
-                ModuleAbsentTag.write(jmodule).accept(xml)
-            } else {
-                ModuleTag.write(jmodule).accept(xml)
-            }
-
-            return writer.toString()
+            return V_1_2.getXmlDescriptor(jmodule)
         }
     },
     V_1_9('1.9', 'xsd/module-1_9.xsd', Xsd1_9){
         @Override
         Path getModulePath(final JBossModule jbModule) {
-            return Paths.get('modules', 'system', 'layers', 'base',
-                    jbModule.moduleName.split('\\.').join(separator),
-                    ((jbModule.version in [null, '']) ? 'main' : jbModule.version))
+            return V_1_7.getModulePath(jbModule)
         }
 
         @Override
         String getXmlDescriptor(JBossModule jmodule) {
-            Objects.requireNonNull(jmodule, 'JBossModule is null')
-            Objects.requireNonNull(jmodule.moduleName, 'Module name is null')
-
-            def writer = new StringWriter()
-            def xml = new MarkupBuilder(writer)
-
-            XmlDeclarationTag.write().accept(xml)
-
-            if (jmodule.isModuleAlias()) {
-                ModuleAliasTag.write(jmodule).accept(xml)
-            } else if (jmodule.isModuleAbsent()) {
-                ModuleAbsentTag.write(jmodule).accept(xml)
-            } else {
-
-                ModuleTag.write(jmodule).accept(xml)
-            }
-
-            return writer.toString()
+            return V_1_2.getXmlDescriptor(jmodule)
         }
     };
 

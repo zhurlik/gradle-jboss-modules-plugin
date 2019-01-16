@@ -1,1 +1,24 @@
+pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.version == null) {
+                // coveralls
+                if (requested.id.id == 'com.github.kt3k.coveralls') {
+                    useVersion '2.8.2'
+                }
+
+                // spotbugs
+                if (requested.id.id == 'com.github.spotbugs') {
+                    useVersion '1.6.9'
+                }
+
+                // plugin-publish
+                if (requested.id.id == 'com.gradle.plugin-publish') {
+                    useVersion '0.10.0'
+                }
+            }
+        }
+    }
+}
+
 rootProject.name = 'gradle-jboss-modules'

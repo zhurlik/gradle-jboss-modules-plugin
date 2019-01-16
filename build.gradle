@@ -16,6 +16,7 @@ repositories {
 }
 
 codenarc {
+    toolVersion = '1.2.1'
     // TODO: fix all issues
     ignoreFailures = true
     configFile = file("${project.projectDir}/config/codenarc/codenarc.groovy")

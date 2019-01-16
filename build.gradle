@@ -1,23 +1,14 @@
 import static org.gradle.api.JavaVersion.VERSION_1_7
 
-apply plugin: 'com.gradle.plugin-publish'
-apply plugin: 'idea'
-apply plugin: 'groovy'
-apply plugin: 'jacoco'
-apply plugin: 'com.github.kt3k.coveralls'
-
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
-    }
-
-    dependencies {
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.+'
-        classpath 'com.gradle.publish:plugin-publish-plugin:0.9.+'
-    }
+plugins {
+    id 'com.gradle.plugin-publish'
+    id 'idea'
+    id 'groovy'
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls'
+    id 'checkstyle'
+    id 'com.github.spotbugs'
+    id 'maven'
 }
 
 repositories {
@@ -25,9 +16,26 @@ repositories {
     jcenter()
 }
 
+checkstyle {
+    toolVersion = '8.15'
+}
+
+spotbugs {
+    toolVersion = '3.1.10'
+    excludeFilter = file("$rootProject.projectDir/config/spotbugs/exclude.xml")
+}
+
 jacocoTestReport {
     reports {
         xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
+}
+
+// To generate an HTML report instead of XML
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports {
+        xml.enabled = false
         html.enabled = true
     }
 }
@@ -42,9 +50,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'
 }
-
-// for local testing
-apply plugin: 'maven'
 
 uploadArchives {
     repositories {

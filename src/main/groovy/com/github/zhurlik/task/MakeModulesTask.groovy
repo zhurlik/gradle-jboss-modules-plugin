@@ -19,6 +19,8 @@ import org.gradle.api.tasks.TaskAction
  */
 @Slf4j('logger')
 class MakeModulesTask extends DefaultTask {
+    static final String NAME = 'makeModules'
+
     @OutputDirectory
     File installDir = project.file("$project.buildDir/install")
 

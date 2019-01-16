@@ -1,4 +1,5 @@
 package com.github.zhurlik
+
 import com.github.zhurlik.extension.JBossModule
 import com.github.zhurlik.extension.JBossServer
 import com.github.zhurlik.task.CheckModulesTask
@@ -7,6 +8,7 @@ import com.github.zhurlik.task.MakeModulesTask
 import groovy.util.logging.Slf4j
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.tasks.bundling.Compression
 import org.gradle.api.tasks.bundling.Tar
 
@@ -17,33 +19,31 @@ import java.nio.file.Paths
  *
  * @author zhurlik@gmail.com
  */
-@Slf4j('logger')
+@Slf4j
 class JBossModulesPlugin implements Plugin<Project> {
 
     private static final String MODULES = 'modules'
 
     @Override
     void apply(final Project project) {
-        logger.info '>> Plugin: JBoss Modules'
+        log.info('>> Plugin: JBoss Modules')
 
         // distribution plugin to make tar/zip
-        project.getPlugins().apply('distribution')
+        project.plugins.apply('distribution')
 
         // to be able to use maven repository
         project.configurations.create('jbossmodules')
 
         // to have a section in the gradle script to specify JBoss Modules
-        def modules = project.container(JBossModule)
-        project.extensions.modules = modules
+        project.extensions.modules = project.container(JBossModule)
 
         // JBoss Servers
-        def servers = project.container(JBossServer)
-        project.extensions.jbossrepos = servers
+        project.extensions.jbossrepos = project.container(JBossServer)
 
         // to have a list of JBoss Servers
         project.afterEvaluate {
             // make for each Server a Distribution object
-            project.jbossrepos.each { JBossServer server ->
+            project.jbossrepos.each { final JBossServer server ->
                 project.distributions.create(server.name)
                 project.distributions[server.name].baseName = server.name
                 project.distributions[server.name].contents.from(
@@ -54,8 +54,8 @@ class JBossModulesPlugin implements Plugin<Project> {
 
                 // {server.name}DistTar/Zip tasks depend on checkModules to be able to create modules
                 project.tasks.findAll { it.name.startsWith(server.name + 'Dist') }.each { t ->
-                    logger.info '>> Task:' + t.name + ' will depend on chechModules'
-                    t.dependsOn 'checkModules'
+                    log.info '>> Task:' + t.name + ' will depend on chechModules'
+                    t.dependsOn CheckModulesTask.NAME
                 }
             }
 
@@ -66,14 +66,14 @@ class JBossModulesPlugin implements Plugin<Project> {
         }
 
         // special tasks
-        def makeModulesTask = project.task('makeModules', type: MakeModulesTask)
-        project.task('checkModules', type: CheckModulesTask) {
+        Task makeModulesTask = project.task(MakeModulesTask.NAME, type: MakeModulesTask)
+        project.task(CheckModulesTask.NAME, type: CheckModulesTask) {
             outputs.upToDateWhen {
                 !makeModulesTask.didWork
             }
         }
-        project.task('deployModules', type: DeployModulesTask)
-        project.tasks.checkModules.dependsOn('makeModules')
-        project.tasks.deployModules.dependsOn('checkModules')
+        project.task(DeployModulesTask.NAME, type: DeployModulesTask)
+        project.tasks.checkModules.dependsOn(MakeModulesTask.NAME)
+        project.tasks.deployModules.dependsOn(CheckModulesTask.NAME)
     }
 }

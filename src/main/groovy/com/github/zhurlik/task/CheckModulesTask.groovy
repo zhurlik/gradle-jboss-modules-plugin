@@ -14,6 +14,7 @@ import static java.io.File.separator
  */
 @Slf4j('logger')
 class CheckModulesTask extends DefaultTask {
+    static final String NAME = 'checkModules'
     @TaskAction
     def checkModules() {
         logger.info ">> Validation process for JBoss Modules"

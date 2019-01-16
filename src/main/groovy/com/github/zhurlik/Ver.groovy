@@ -231,7 +231,8 @@ enum Ver {
      */
     boolean isValid(final String xml) {
         try {
-            final Schema schema = FACTORY.newSchema(new StreamSource(getClass().classLoader.getResourceAsStream(xsdPath)))
+            final Schema schema = FACTORY.newSchema(new StreamSource(
+                    getClass().classLoader.getResourceAsStream(xsdPath)))
             final Validator validator = schema.newValidator()
             validator.validate(new StreamSource(new StringReader(xml)))
             return true

@@ -6,9 +6,8 @@ plugins {
     id 'groovy'
     id 'jacoco'
     id 'com.github.kt3k.coveralls'
-    id 'checkstyle'
-    id 'com.github.spotbugs'
     id 'maven'
+    id 'codenarc'
 }
 
 repositories {
@@ -16,26 +15,15 @@ repositories {
     jcenter()
 }
 
-checkstyle {
-    toolVersion = '8.15'
-}
-
-spotbugs {
-    toolVersion = '3.1.10'
-    excludeFilter = file("$rootProject.projectDir/config/spotbugs/exclude.xml")
+codenarc {
+    // TODO: fix all issues
+    ignoreFailures = true
+    configFile = file("${project.projectDir}/config/codenarc/codenarc.groovy")
 }
 
 jacocoTestReport {
     reports {
         xml.enabled = true // coveralls plugin depends on xml format report
-        html.enabled = true
-    }
-}
-
-// To generate an HTML report instead of XML
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
-    reports {
-        xml.enabled = false
         html.enabled = true
     }
 }

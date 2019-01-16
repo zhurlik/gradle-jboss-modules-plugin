@@ -8,6 +8,7 @@ import groovy.xml.MarkupBuilder
 
 import java.util.function.Consumer
 import java.util.function.Supplier
+import java.util.stream.Stream
 
 import static com.github.zhurlik.Ver.V_1_7
 import static com.github.zhurlik.Ver.V_1_8
@@ -40,29 +41,18 @@ class ModuleTag {
 
         if (version.isValid(txt)) {
             return Optional.of({
-                final JBossModule jbModule = new JBossModule(xml.@'name'.text())
+                final JBossModule jbModule = initJBossModule(xml)
                 jbModule.ver = version
-
-                xml.attributes().each() {
-                    switch (it.key) {
-                        case 'slot': jbModule.slot = it.value
-                            break
-                        case 'name': jbModule.moduleName = it.value
-                            jbModule.name = it.value
-                            break
-                        case 'version': jbModule.version = it.value
-                            break
-                    }
-                }
-
-                jbModule.mainClass = xml.'main-class'.@name
-
-                PropertiesTag.parse(xml).accept(jbModule)
-                ResourcesTag.parse(xml).accept(jbModule)
-                ExportsTag.parse(xml).accept(jbModule)
-                PermissionsTag.parse(xml).accept(jbModule)
-                DependenciesTag.parse(xml).accept(jbModule)
-                ProvidesTag.parse(xml).accept(jbModule)
+                Stream.of(
+                        PropertiesTag.parse(xml),
+                        ResourcesTag.parse(xml),
+                        ExportsTag.parse(xml),
+                        PermissionsTag.parse(xml),
+                        DependenciesTag.parse(xml),
+                        ProvidesTag.parse(xml)
+                ).forEach({ final Consumer<JBossModule> action ->
+                    action.accept(jbModule)
+                })
 
                 log.debug '>> Module: \'{}\' has been created', jbModule.name
 
@@ -73,8 +63,27 @@ class ModuleTag {
         }
     }
 
+    private static JBossModule initJBossModule(final GPathResult xml) {
+        final JBossModule jbModule = new JBossModule(xml.@'name'.text())
+        xml.attributes().each() {
+            switch (it.key) {
+                case 'slot': jbModule.slot = it.value
+                    break
+                case 'name': jbModule.moduleName = it.value
+                    jbModule.name = it.value
+                    break
+                case 'version': jbModule.version = it.value
+                    break
+            }
+        }
+
+        jbModule.mainClass = xml.'main-class'.@name
+
+        return jbModule
+    }
+
     /**
-     *  Specifies the main class of this module; used to run the module from the command-line (optional).
+     * Specifies the main class of this module; used to run the module from the command-line (optional).
      *  <br/>
      *  See <xsd:element name="main-class" type="classNameType" minOccurs="0">
      *

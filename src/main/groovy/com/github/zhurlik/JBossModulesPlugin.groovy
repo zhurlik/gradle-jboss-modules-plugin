@@ -10,7 +10,8 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Compression
 import org.gradle.api.tasks.bundling.Tar
 
-import static java.io.File.separator
+import java.nio.file.Paths
+
 /**
  * Gradle plugin to make JBoss Modules.
  *
@@ -18,6 +19,9 @@ import static java.io.File.separator
  */
 @Slf4j('logger')
 class JBossModulesPlugin implements Plugin<Project> {
+
+    private static final String MODULES = 'modules'
+
     @Override
     void apply(final Project project) {
         logger.info '>> Plugin: JBoss Modules'
@@ -42,8 +46,10 @@ class JBossModulesPlugin implements Plugin<Project> {
             project.jbossrepos.each { JBossServer server ->
                 project.distributions.create(server.name)
                 project.distributions[server.name].baseName = server.name
-                project.distributions[server.name].contents.from([project.buildDir.path, 'install', server.name, 'modules'].join(separator)) {
-                    into 'modules'
+                project.distributions[server.name].contents.from(
+                        Paths.get(project.buildDir.path, 'install', server.name, MODULES).toFile()
+                ) {
+                    into MODULES
                 }
 
                 // {server.name}DistTar/Zip tasks depend on checkModules to be able to create modules

@@ -3,9 +3,11 @@ package com.github.zhurlik.extension
 import com.github.zhurlik.Ver
 import com.github.zhurlik.repository.Server
 import groovy.util.logging.Slf4j
+import groovy.util.slurpersupport.GPathResult
+
+import java.nio.file.Paths
 
 import static com.github.zhurlik.Ver.V_1_1
-import static java.io.File.separator
 
 /**
  * This class allows an access all modules under JBoss Server
@@ -14,12 +16,12 @@ import static java.io.File.separator
  */
 @Slf4j
 class JBossServer implements Server {
-    def String name, home
-    private Map<String, File> modules = [:]
+    String name, home
+    private final Map<String, File> modules = [:]
     private File modulesDir
 
     // default value
-    def Ver version = V_1_1
+    Ver version = V_1_1
 
     /**
      * The special constructor to be able to use in the gradle script
@@ -47,18 +49,18 @@ class JBossServer implements Server {
     void setHome(final String home) {
         assert home != null
         this.home = home
-        this.modulesDir = new File(home + separator + 'modules')
+        this.modulesDir = Paths.get(home,'modules').toFile()
     }
 
-    public void initTree() {
+    void initTree() {
         modules.clear()
 
         // under jboss
         if (this.modulesDir != null && this.modulesDir.exists()) {
             this.modulesDir.eachDirRecurse() {
                 it.eachFileMatch(~/module.xml/) { file ->
-                    def m = new XmlSlurper().parse(file)
-                    modules.put(m.@name.toString(), file)
+                    GPathResult xml = new XmlSlurper().parse(file)
+                    modules.put(xml.@name.toString(), file)
                 }
             }
         }
@@ -73,21 +75,21 @@ class JBossServer implements Server {
             jbModule = version.makeModule(modules[name].getText('UTF-8'))
 
             log.debug '>> Module: \'{}\' has been loaded', name
-            return jbModule
+            jbModule
         }
 
         log.warn '>> Module:\'{}\' is not available', name
-        return jbModule
+        jbModule
     }
 
     @Override
     List<String> getNames() {
-        return modules.keySet().toList()
+        modules.keySet().toList()
     }
 
     @Override
     File getModulesDir() {
-        return this.modulesDir
+        this.modulesDir
     }
 
     @Override
@@ -106,15 +108,15 @@ class JBossServer implements Server {
             log.debug '>> Undeploying module: {} from Server:{}', jbModule.moduleName, this.name
 
             String toDel = this.home + jbModule.path
-            def delDir = {
-                new AntBuilder().delete(dir: it)
+            Closure delDir = {
+                new AntBuilder().delete(dir:it)
                 log.debug '>> Directory:{} has been erased', it
             }
 
             delDir(toDel)
 
             // deleting empty folders
-            File f = new File(toDel).parentFile
+            File f = Paths.get(toDel).toFile().parentFile
             while (f.path != modulesDir.path && f.isDirectory() && (f.list() as List).empty) {
                 delDir(f)
                 f = f.parentFile
@@ -124,6 +126,6 @@ class JBossServer implements Server {
 
     @Override
     String getMainXml(String name) {
-        return modules[name].text
+        modules[name].text
     }
 }

@@ -1,8 +1,11 @@
 package com.github.zhurlik.extension
+
 import com.github.zhurlik.Ver
 import groovy.util.logging.Slf4j
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+
+import java.util.regex.Pattern
 
 import static com.github.zhurlik.Ver.V_1_0
 import static java.io.File.separator
@@ -15,25 +18,29 @@ import static java.io.File.separator
  */
 @Slf4j
 class JBossModule {
+    private static final String NAME_REGEX_STR =
+            '[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?(\\.[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?)*'
+    private static final Pattern NAME_REGEX = Pattern.compile(NAME_REGEX_STR)
+
     @Deprecated
-    def slot
-    def String name, moduleName, mainClass, targetName, version
-    def properties = [:]
+    private String slot
+    private String name, moduleName, mainClass, targetName, version
+    Map<String, String> properties = [:]
     def resources = []
     def dependencies = []
     def exports = []
-    def Ver ver = V_1_0
-    def boolean moduleAlias = false
-    def boolean moduleAbsent = false
-    def String defaultLoader
-    def boolean moduleConfiguration = false
+    private Ver ver = V_1_0
+    private boolean moduleAlias = false
+    private boolean moduleAbsent = false
+    private String defaultLoader
+    private boolean moduleConfiguration = false
     // A defined loader. More than one loader may be defined.
     def loaders = []
     def permissions = []
     def provides = []
 
     // a list of server names for which this module will be available, empty - for all
-    def servers = []
+    List<String> servers = []
     def configuration
 
     /**
@@ -62,6 +69,10 @@ class JBossModule {
         this.defaultLoader = name
     }
 
+    String getDefaultLoader() {
+        defaultLoader
+    }
+
     /**
      * A module name, which consists of one or more dot (.)-separated segments. Each segment must begin and end
      * with an alphanumeric or underscore (_), and may otherwise contain alphanumerics, underscores, and hyphens (-).
@@ -69,9 +80,12 @@ class JBossModule {
      * @param name
      */
     void setModuleName(final String name) {
-        assert name ==~ /[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?(\.[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?)*/,
-                'Module Name must be: [a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?(\\.[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?)*'
+        assert name ==~ NAME_REGEX, "Module Name must be: $NAME_REGEX_STR"
         this.moduleName = name
+    }
+
+    String getModuleName() {
+        moduleName
     }
 
     /**
@@ -81,9 +95,12 @@ class JBossModule {
      * @param name
      */
     void setTargetName(final String name) {
-        assert name ==~ /[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?(\.[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?)*/,
-                'Target Name must be: [a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?(\\.[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?)*'
+        assert name ==~ NAME_REGEX, "Target Name must be: $NAME_REGEX_STR"
         this.targetName = name
+    }
+
+    String getTargetName() {
+        targetName
     }
 
     /**
@@ -96,6 +113,10 @@ class JBossModule {
         assert slot ==~ /[-a-zA-Z0-9_+*.]+/,
                 'Slot must be: [-a-zA-Z0-9_+*.]+'
         this.slot = slot
+    }
+
+    String getSlot() {
+        slot
     }
 
     /**
@@ -117,11 +138,51 @@ class JBossModule {
      * @return a xml as string
      */
     String getModuleDescriptor() {
-        return this.ver.getXmlDescriptor(this)
+        this.ver.getXmlDescriptor(this)
     }
 
     boolean isValid() {
-        return this.ver.isValid(getModuleDescriptor())
+        this.ver.isValid(getModuleDescriptor())
+    }
+
+    String getMainClass() {
+        mainClass
+    }
+
+    void setMainClass(String mainClass) {
+        this.mainClass = mainClass
+    }
+
+    Ver getVer() {
+        ver
+    }
+
+    void setVer(Ver ver) {
+        this.ver = ver
+    }
+
+    boolean isModuleAlias() {
+        moduleAlias
+    }
+
+    void setModuleAlias(boolean moduleAlias) {
+        this.moduleAlias = moduleAlias
+    }
+
+    boolean isModuleAbsent() {
+        moduleAbsent
+    }
+
+    void setModuleAbsent(boolean moduleAbsent) {
+        this.moduleAbsent = moduleAbsent
+    }
+
+    boolean isModuleConfiguration() {
+        moduleConfiguration
+    }
+
+    void setModuleConfiguration(boolean moduleConfiguration) {
+        this.moduleConfiguration = moduleConfiguration
     }
 
     /**
@@ -152,7 +213,7 @@ class JBossModule {
         log.debug '>> Module:' + this.name
         def configuration = this.configuration ?: project.configurations.jbossmodules
 
-        project.jbossrepos.each {JBossServer server ->
+        project.jbossrepos.each { JBossServer server ->
 
             // for servers that were specified, by default for all
             if (!servers.isEmpty() && !(server.name in servers)) {
@@ -160,10 +221,10 @@ class JBossModule {
             }
 
             // to have full path for ${project}/${build}/install/{serverName}/modules/module/name/dir/{main|slot}
-            def String moduleDirName = [project.buildDir.path, 'install', server.name, getPath()].join(separator)
+            String moduleDirName = [project.buildDir.path, 'install', server.name, getPath()].join(separator)
 
             // save a xml
-            def File moduleDir = new File(moduleDirName)
+            File moduleDir = new File(moduleDirName)
             if (!moduleDir.exists()) {
                 assert moduleDir.mkdirs(), 'Can\'t create a folder'
             }

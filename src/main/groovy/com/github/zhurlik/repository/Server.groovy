@@ -7,7 +7,7 @@ import com.github.zhurlik.extension.JBossModule
  *
  * @author zhurlik@gmail.com
  */
-public interface Server {
+interface Server {
 
     /**
      * Loading all available modules from JBoss Server to a map.

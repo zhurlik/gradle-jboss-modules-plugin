@@ -210,11 +210,10 @@ class JBossModule {
      * To save main.xml and all resources to Project's folder.
      */
     void makeLocally(final Project project) {
-        log.debug '>> Module:' + this.name
+        log.debug(">> Module: ${this.name}")
         def configuration = this.configuration ?: project.configurations.jbossmodules
 
         project.jbossrepos.each { JBossServer server ->
-
             // for servers that were specified, by default for all
             if (!servers.isEmpty() && !(server.name in servers)) {
                 return //continue
@@ -241,19 +240,19 @@ class JBossModule {
             this.ver = originalVer
 
             // copy jars
-            def jarNames = this.resources.findAll() {
+            def jarNames = this.resources.findAll {
                 it instanceof String || it instanceof GString
-            } + this.resources.findAll() {
+            } + this.resources.findAll {
                 !(it instanceof String || it instanceof GString)
-            }.collect() { it.path }
+            }.collect { it.path }
 
-            jarNames.each() { jar ->
+            jarNames.each { jar ->
                 if (jar == '.') {
                     return // the case if you would like to have <resource-root path='.' />
                 }
 
                 // jar names can contain the regex 'spring-web.*'
-                def jarFiles = configuration.files.findAll() { it.name ==~ jar.toString() }
+                def jarFiles = configuration.files.findAll { it.name ==~ jar.toString() }
 
                 // throw an error if the regex doesn't match any files
                 if (jarFiles.size() == 0) {

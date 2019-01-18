@@ -1,4 +1,5 @@
 package com.github.zhurlik.task
+
 import com.github.zhurlik.extension.JBossModule
 import groovy.util.logging.Slf4j
 import org.gradle.api.DefaultTask
@@ -17,7 +18,7 @@ import org.gradle.api.tasks.TaskAction
  *                                              main.xml
  * @author zhurlik@gmail.com
  */
-@Slf4j('logger')
+@Slf4j
 class MakeModulesTask extends DefaultTask {
     static final String NAME = 'makeModules'
 
@@ -26,7 +27,7 @@ class MakeModulesTask extends DefaultTask {
 
     @TaskAction
     def makeModules() {
-        logger.info ">> Creating JBoss Modules locally..."
+        log.info '>> Creating JBoss Modules locally...'
 
         project.delete installDir
 
@@ -34,7 +35,7 @@ class MakeModulesTask extends DefaultTask {
             throw new GradleException('You need at least one JBoss Server');
         }
 
-        project.modules.each() { JBossModule m ->
+        project.modules.each { JBossModule m ->
             m.makeLocally(project)
         }
     }

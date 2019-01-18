@@ -13,7 +13,7 @@ import org.gradle.api.tasks.TaskAction
  *
  * @author zhurlik@gmail.com
  */
-@Slf4j('logger')
+@Slf4j
 class DeployModulesTask extends DefaultTask {
     static final String NAME = 'deployModules'
 
@@ -22,11 +22,11 @@ class DeployModulesTask extends DefaultTask {
 
     @TaskAction
     def deployModules() {
-        logger.info ">> Deploying Modules to JBoss Servers..."
+        log.info ">> Deploying Modules to JBoss Servers..."
 
         project.delete deployDirectories
 
-        project.modules.each() { JBossModule m ->
+        project.modules.each { JBossModule m ->
             project.jbossrepos.each { JBossServer s ->
                 m.deployToJBoss(s, project)
             }

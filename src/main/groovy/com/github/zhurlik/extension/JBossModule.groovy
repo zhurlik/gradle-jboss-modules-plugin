@@ -198,8 +198,8 @@ class JBossModule {
         log.debug '>> Deploying the module:{} to JBoss Server:{}', this.moduleName, server.name
 
         // to have full path for ${project}/${build}/install/{server}/modules/module/name/dir/{main|slot}
-        def String source = [project.buildDir.path, 'install', server.name, getPath()].join(separator)
-        def String target = [server.home, getPath()].join(separator)
+        String source = [project.buildDir.path, 'install', server.name, getPath()].join(separator)
+        String target = [server.home, getPath()].join(separator)
 
         new AntBuilder().copy(toDir: target, overwrite: true) {
             fileset(dir: source)
@@ -252,7 +252,7 @@ class JBossModule {
                 }
 
                 // jar names can contain the regex 'spring-web.*'
-                def jarFiles = configuration.files.findAll { it.name ==~ jar.toString() }
+                Set<File> jarFiles = configuration.files.findAll { it.name ==~ jar.toString() }
 
                 // throw an error if the regex doesn't match any files
                 if (jarFiles.size() == 0) {
@@ -260,9 +260,9 @@ class JBossModule {
                 }
 
                 jarFiles.each {
-                    final String source = it.path
-                    final String target = [moduleDirName, it.name].join(separator)
-                    final AntBuilder ant = new AntBuilder()
+                    String source = it.path
+                    String target = [moduleDirName, it.name].join(separator)
+                    AntBuilder ant = new AntBuilder()
                     ant.copy(file: source, toFile: target, overwrite: true)
                     log.debug '>> Resource:' + target
 

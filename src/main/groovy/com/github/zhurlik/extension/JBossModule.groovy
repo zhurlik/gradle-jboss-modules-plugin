@@ -64,8 +64,8 @@ class JBossModule {
      * @param name
      */
     void setDefaultLoader(final String name) {
-        assert name ==~ /[-0-9a-zA-Z_]+/,
-                'Default-Loader must be: [-0-9a-zA-Z_]+'
+        Objects.requireNonNull(name.find(/[-0-9a-zA-Z_]+/), 'Default-Loader must be: [-0-9a-zA-Z_]+')
+
         this.defaultLoader = name
     }
 
@@ -80,7 +80,8 @@ class JBossModule {
      * @param name
      */
     void setModuleName(final String name) {
-        assert name ==~ NAME_REGEX, "Module Name must be: $NAME_REGEX_STR"
+        Objects.requireNonNull(name.find(NAME_REGEX), "Module Name must be: $NAME_REGEX_STR")
+
         this.moduleName = name
     }
 
@@ -95,7 +96,8 @@ class JBossModule {
      * @param name
      */
     void setTargetName(final String name) {
-        assert name ==~ NAME_REGEX, "Target Name must be: $NAME_REGEX_STR"
+        Objects.requireNonNull(name.find(NAME_REGEX), "Target Name must be: $NAME_REGEX_STR")
+
         this.targetName = name
     }
 
@@ -110,8 +112,8 @@ class JBossModule {
      * @param slot
      */
     void setSlot(final String slot) {
-        assert slot ==~ /[-a-zA-Z0-9_+*.]+/,
-                'Slot must be: [-a-zA-Z0-9_+*.]+'
+        Objects.requireNonNull(slot.find( /[-a-zA-Z0-9_+*.]+/), 'Slot must be: [-a-zA-Z0-9_+*.]+')
+
         this.slot = slot
     }
 
@@ -126,8 +128,8 @@ class JBossModule {
      * @param version
      */
     void setVersion(final String version) {
-        assert version ==~ /([a-zA-Z0-9]+)([-_+.][a-zA-Z0-9]+)*/,
-                'Version must be: ([a-zA-Z0-9]+)([-_+.][a-zA-Z0-9]+)*'
+        Objects.requireNonNull(version.find( /([a-zA-Z0-9]+)([-_+.][a-zA-Z0-9]+)*/), 'Version must be: ([a-zA-Z0-9]+)([-_+.][a-zA-Z0-9]+)*')
+
         this.version = version
     }
 

@@ -1,4 +1,5 @@
 package com.github.zhurlik.extension
+
 import com.github.zhurlik.Ver
 import groovy.util.logging.Slf4j
 import org.gradle.api.Project
@@ -12,6 +13,7 @@ import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertNull
 import static org.junit.Assert.assertTrue
+
 /**
  * A common stuff for testing.
  *
@@ -43,32 +45,36 @@ abstract class BasicJBossModuleTest {
             module  = new JBossModule("wrong")
             module.slot = '~#?!'
             assertFalse true
-        } catch (AssertionError error) {
-            assertTrue true
+        } catch (NullPointerException ex) {
+            assertEquals('Slot must be: [-a-zA-Z0-9_+*.]+', ex.getMessage())
         }
 
         try {
             module  = new JBossModule("wrong")
             module.moduleName = '~#?!'
             assertFalse true
-        } catch (AssertionError error) {
-            assertTrue true
+        } catch (NullPointerException ex) {
+            assertEquals('Module Name must be: ' +
+                    '[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?(\\.[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?)*',
+                    ex.getMessage())
         }
 
         try {
             module  = new JBossModule("wrong")
             module.defaultLoader = '~#?!'
             assertFalse true
-        } catch (AssertionError error) {
-            assertTrue true
+        } catch (NullPointerException ex) {
+            assertEquals('Default-Loader must be: [-0-9a-zA-Z_]+', ex.getMessage())
         }
 
         try {
             module  = new JBossModule("wrong")
             module.targetName = '~#?!'
             assertFalse true
-        } catch (AssertionError error) {
-            assertTrue true
+        } catch (NullPointerException ex) {
+            assertEquals('Target Name must be: ' +
+                    '[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?(\\.[a-zA-Z0-9_]([-a-zA-Z0-9_]*[a-zA-Z0-9_])?)*',
+                    ex.getMessage())
         }
     }
 

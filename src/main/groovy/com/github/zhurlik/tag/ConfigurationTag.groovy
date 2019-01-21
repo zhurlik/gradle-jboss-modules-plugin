@@ -33,15 +33,15 @@ class ConfigurationTag {
      * @return a function Supplier<JBossModule>
      */
     static Optional<Supplier<JBossModule>> parse(final String txt) {
-        final GPathResult xml = new XmlSlurper().parseText(txt)
+        GPathResult xml = new XmlSlurper().parseText(txt)
         // xmlns='urn:jboss:module:x.y' -> x.y
-        final String xsdVersion = xml.namespaceURI().split(':').last()
-        final Ver version = Ver.values().find { it.number.equals(xsdVersion) }
+        String xsdVersion = xml.namespaceURI().split(':').last()
+        Ver version = Ver.values().find { it.number.equals(xsdVersion) }
 
         if (version.isValid(txt) && 'configuration'.equals(xml.name())) {
             return Optional.of({
                 //result
-                final JBossModule jbModule = new JBossModule('empty')
+                JBossModule jbModule = new JBossModule('empty')
                 jbModule.ver = version
                 jbModule.moduleConfiguration = true
                 jbModule.defaultLoader = xml.@'default-loader'.text()
@@ -82,10 +82,10 @@ class ConfigurationTag {
      * @param xml MarkupBuilder to have a reference to xml
      */
     static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
-        final Ver version = jmodule.getVer()
+        Ver version = jmodule.getVer()
         return { final MarkupBuilder xml ->
             if (jmodule.isModuleConfiguration()) {
-                assert jmodule.defaultLoader != null, 'Default-Loader is null'
+                Objects.requireNonNull(jmodule.defaultLoader, 'Default-Loader is null')
 
                 xml.configuration([xmlns: 'urn:jboss:module:' + version.number, 'default-loader': jmodule.defaultLoader]) {
                     if (jmodule.loaders.empty) {

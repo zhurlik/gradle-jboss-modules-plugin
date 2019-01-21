@@ -43,7 +43,7 @@ class ModuleAbsentTag {
         return { final MarkupBuilder xml ->
             Objects.requireNonNull(jmodule.moduleName != null, 'Module Name is null')
 
-            final Ver version = jmodule.getVer()
+            Ver version = jmodule.getVer()
             def attrs = [xmlns: 'urn:jboss:module:' + version.number, name: jmodule.moduleName]
             attrs += (jmodule.slot in [null, '']) ? [:] : [slot: jmodule.slot]
 

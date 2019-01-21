@@ -29,7 +29,7 @@ class DependenciesTag {
      */
     static Consumer<JBossModule> parse(final GPathResult xml) {
         // xmlns='urn:jboss:module:x.y' -> x.y
-        final String version = xml.namespaceURI().split(':').last()
+        String version = xml.namespaceURI().split(':').last()
 
         return { jbModule ->
             xml.dependencies.each() {
@@ -73,7 +73,7 @@ class DependenciesTag {
      */
     static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
         return { final MarkupBuilder xml ->
-            final Ver version = jmodule.getVer()
+            Ver version = jmodule.getVer()
             if (!jmodule.dependencies.isEmpty()) {
                 xml.dependencies {
                     // modules

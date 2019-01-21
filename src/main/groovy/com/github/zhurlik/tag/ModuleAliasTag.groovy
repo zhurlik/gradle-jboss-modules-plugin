@@ -37,11 +37,11 @@ class ModuleAliasTag {
      * @return a function Supplier<JBossModule>
      */
     static Optional<Supplier<JBossModule>> parse(final String txt) {
-        final GPathResult xml = new XmlSlurper().parseText(txt)
+        GPathResult xml = new XmlSlurper().parseText(txt)
         // xmlns='urn:jboss:module:x.y' -> x.y
-        final String xsdVersion = xml.namespaceURI().split(':').last()
-        final Ver version = Ver.values().find { it.number.equals(xsdVersion) }
-        final boolean isSlotSupported = version in [Ver.V_1_1, Ver.V_1_2, Ver.V_1_3, Ver.V_1_5, Ver.V_1_6]
+        String xsdVersion = xml.namespaceURI().split(':').last()
+        Ver version = Ver.values().find { it.number.equals(xsdVersion) }
+        boolean isSlotSupported = version in [Ver.V_1_1, Ver.V_1_2, Ver.V_1_3, Ver.V_1_5, Ver.V_1_6]
 
         if (version.isValid(txt) && 'module-alias'.equals(xml.name())) {
             return Optional.of(new Supplier<JBossModule>(){
@@ -49,7 +49,7 @@ class ModuleAliasTag {
                 @Override
                 JBossModule get() {
                     //result
-                    final JBossModule jbModule = new JBossModule('empty')
+                    JBossModule jbModule = new JBossModule('empty')
                     jbModule.ver = version
                     jbModule.moduleAlias = true
                     xml.attributes().each() {
@@ -87,9 +87,9 @@ class ModuleAliasTag {
     static Consumer<MarkupBuilder> write(final JBossModule jmodule) {
         return { final MarkupBuilder xml ->
             // <module-alias xmlns="urn:jboss:module:1.{1|3}" name="javax.json.api" target-name="org.glassfish.javax.json"/>
-            assert jmodule.targetName != null, 'Target Name is null'
+            Objects.requireNonNull(jmodule.targetName, 'Target Name is null')
 
-            final Ver version = jmodule.getVer()
+            Ver version = jmodule.getVer()
             def attrs = [xmlns: 'urn:jboss:module:' + version.number, name: jmodule.moduleName]
             attrs += (jmodule.slot in [null, ''] || version in [V_1_7, V_1_8, V_1_9]) ? [:] : [slot: jmodule.slot]
             attrs.put('target-name', jmodule.targetName)

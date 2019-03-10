@@ -128,7 +128,8 @@ class JBossModule {
      * @param version
      */
     void setVersion(final String version) {
-        Objects.requireNonNull(version.find( /([a-zA-Z0-9]+)([-_+.][a-zA-Z0-9]+)*/), 'Version must be: ([a-zA-Z0-9]+)([-_+.][a-zA-Z0-9]+)*')
+        Objects.requireNonNull(version.find(/([a-zA-Z0-9]+)([-_+.][a-zA-Z0-9]+)*/),
+                'Version must be: ([a-zA-Z0-9]+)([-_+.][a-zA-Z0-9]+)*')
 
         this.version = version
     }
@@ -258,7 +259,8 @@ class JBossModule {
 
                 // throw an error if the regex doesn't match any files
                 if (jarFiles.size() == 0) {
-                    throw new GradleException("Could not resolve files from $configuration for pattern '$jar' on module '${this.name}'")
+                    throw new GradleException(
+                            "Could not resolve files from $configuration for pattern '$jar' on module '${this.name}'")
                 }
 
                 jarFiles.each {

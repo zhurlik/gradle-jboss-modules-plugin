@@ -2,6 +2,11 @@ language: java
 
 jdk:
   - openjdk12
+  - openjdk-ea
+
+matrix:
+  allow_failures:
+    - jdk: openjdk-ea
 
 after_success:
 - ./gradlew jacocoTestReport coveralls

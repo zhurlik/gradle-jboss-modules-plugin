@@ -1,3 +1,4 @@
+import static org.gradle.api.JavaVersion.VERSION_12
 import static org.gradle.api.JavaVersion.VERSION_1_7
 
 plugins {
@@ -31,6 +32,7 @@ jacocoTestReport {
 
 group = 'com.github.zhurlik'
 
+sourceCompatibility = VERSION_12
 targetCompatibility = VERSION_1_7
 
 dependencies {

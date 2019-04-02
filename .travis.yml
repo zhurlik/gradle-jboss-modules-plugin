@@ -1,4 +1,7 @@
 language: java
 
+jdk:
+  - openjdk12
+
 after_success:
 - ./gradlew jacocoTestReport coveralls

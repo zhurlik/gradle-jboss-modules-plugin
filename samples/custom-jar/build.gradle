@@ -6,11 +6,11 @@ configurations {
 }
 
 task test1Jar(type:Jar){
-    archiveName = "test1.jar"
+    archiveFileName = "test1.jar"
 }
 
 task test2Jar(type:Jar){
-    archiveName = "test2.jar"
+    archiveFileName = "test2.jar"
 }
 
 artifacts {

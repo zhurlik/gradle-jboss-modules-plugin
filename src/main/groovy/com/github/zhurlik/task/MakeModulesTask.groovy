@@ -41,12 +41,12 @@ class MakeModulesTask extends DefaultTask {
     }
 
     @Input
-    private Collection<String> getModuleDescriptions() {
+    Collection<String> getModuleDescriptions() {
         project.modules.collect { it.moduleDescriptor }
     }
 
     @InputFiles
-    private FileCollection getModuleResources() {
+    FileCollection getModuleResources() {
         def resources = project.configurations.jbossmodules
         project.modules.each { JBossModule module ->
             if (module.configuration != null) {

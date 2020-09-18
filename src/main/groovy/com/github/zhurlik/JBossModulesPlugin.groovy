@@ -45,7 +45,7 @@ class JBossModulesPlugin implements Plugin<Project> {
             // make for each Server a Distribution object
             project.jbossrepos.each { final JBossServer server ->
                 project.distributions.create(server.name)
-                project.distributions[server.name].baseName = server.name
+                project.distributions[server.name].distributionBaseName = server.name
                 project.distributions[server.name].contents.from(
                         Paths.get(project.buildDir.path, 'install', server.name, MODULES).toFile()
                 ) {

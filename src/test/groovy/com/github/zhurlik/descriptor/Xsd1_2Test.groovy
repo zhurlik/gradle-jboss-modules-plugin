@@ -32,7 +32,7 @@ class Xsd1_2Test {
         module = new JBossModule('test')
         module.ver = V_1_2
         module.moduleName = 'test.module'
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.2' name='test.module' />", V_1_2.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_2.getModulePath(module).toString()
 
@@ -41,7 +41,7 @@ class Xsd1_2Test {
         module.moduleName = 'test.module'
         module.moduleAlias = true
         module.targetName = 'target.name'
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-alias xmlns='urn:jboss:module:1.2' name='test.module' target-name='target.name' />", V_1_2.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_2.getModulePath(module).toString()
 
@@ -49,7 +49,7 @@ class Xsd1_2Test {
         module.ver = V_1_2
         module.moduleName = 'test.module'
         module.moduleAbsent = true
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-absent xmlns='urn:jboss:module:1.2' name='test.module' />", V_1_2.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_2.getModulePath(module).toString()
 

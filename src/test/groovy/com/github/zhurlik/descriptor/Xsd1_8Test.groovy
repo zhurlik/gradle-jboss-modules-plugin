@@ -35,7 +35,7 @@ class Xsd1_8Test {
         module.slot = 'deprecated'
         module.moduleName = 'test.module'
         module.version =  '123-456.789'
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.8' name='test.module' version='123-456.789' />", V_1_8.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/123-456.789', V_1_8.getModulePath(module).toString()
 
@@ -44,7 +44,7 @@ class Xsd1_8Test {
         module.moduleName = 'test.module'
         module.moduleAlias = true
         module.targetName = 'target.name'
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-alias xmlns='urn:jboss:module:1.8' name='test.module' target-name='target.name' />", V_1_8.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_8.getModulePath(module).toString()
 
@@ -52,7 +52,7 @@ class Xsd1_8Test {
         module.ver = V_1_8
         module.moduleName = 'test.module'
         module.moduleAbsent = true
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-absent xmlns='urn:jboss:module:1.8' name='test.module' />", V_1_8.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_8.getModulePath(module).toString()
 
@@ -60,7 +60,7 @@ class Xsd1_8Test {
         module.ver = V_1_8
         module.moduleName = 'test.module'
         module.moduleAbsent = true
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-absent xmlns='urn:jboss:module:1.8' name='test.module' />", V_1_8.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_8.getModulePath(module).toString()
     }

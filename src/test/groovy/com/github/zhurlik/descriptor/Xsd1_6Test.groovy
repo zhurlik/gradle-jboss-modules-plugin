@@ -33,7 +33,7 @@ class Xsd1_6Test {
         module.ver = V_1_6
         module.moduleName = 'test.module'
         module.version =  '123-456.789'
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.6' name='test.module' version='123-456.789' />", V_1_6.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_6.getModulePath(module).toString()
 
@@ -42,7 +42,7 @@ class Xsd1_6Test {
         module.moduleName = 'test.module'
         module.moduleAlias = true
         module.targetName = 'target.name'
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-alias xmlns='urn:jboss:module:1.6' name='test.module' target-name='target.name' />", V_1_6.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_6.getModulePath(module).toString()
 
@@ -50,7 +50,7 @@ class Xsd1_6Test {
         module.ver = V_1_6
         module.moduleName = 'test.module'
         module.moduleAbsent = true
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-absent xmlns='urn:jboss:module:1.6' name='test.module' />", V_1_6.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_6.getModulePath(module).toString()
 
@@ -58,7 +58,7 @@ class Xsd1_6Test {
         module.ver = V_1_6
         module.moduleName = 'test.module'
         module.moduleAbsent = true
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module-absent xmlns='urn:jboss:module:1.6' name='test.module' />", V_1_6.getXmlDescriptor(module)
         assertEquals 'modules/system/layers/base/test/module/main', V_1_6.getModulePath(module).toString()
     }

@@ -1,5 +1,6 @@
 package com.github.zhurlik.task
 
+import TestUtils.XMLUtil
 import com.github.zhurlik.extension.JBossModule
 import com.github.zhurlik.extension.JBossServer
 import groovy.util.logging.Slf4j
@@ -104,7 +105,7 @@ class TasksTest {
         assertEquals 'org.slf4j', testM.name
         assertEquals 'org.slf4j', testM.moduleName
         assertEquals 'org.slf4j.impl', testM.dependencies[0].name
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + V_1_3.number + "' name='org.slf4j'>\n" +
                 "  <dependencies>\n" +
                 "    <module name='org.slf4j.impl' />\n" +

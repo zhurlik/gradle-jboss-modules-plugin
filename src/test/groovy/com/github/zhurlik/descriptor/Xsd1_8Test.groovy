@@ -1,5 +1,6 @@
 package com.github.zhurlik.descriptor
 
+import TestUtils.XMLUtil
 import com.github.zhurlik.extension.JBossModule
 import org.junit.Test
 

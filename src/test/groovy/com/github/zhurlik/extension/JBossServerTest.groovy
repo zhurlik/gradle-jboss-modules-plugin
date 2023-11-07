@@ -1,5 +1,6 @@
 package com.github.zhurlik.extension
 
+import TestUtils.XMLUtil
 import groovy.util.logging.Slf4j
 import org.junit.Test
 
@@ -55,7 +56,7 @@ class JBossServerTest {
         JBossModule jbModule = server.getModule('org.apache.xml-resolver')
         assertNotNull jbModule
         assertEquals 'org.apache.xml-resolver', jbModule.getModuleName()
-        assertEquals "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:1.1' name='org.apache.xml-resolver'>\n" +
                 "  <properties>\n" +
                 "    <property name='jboss.api' value='private' />\n" +

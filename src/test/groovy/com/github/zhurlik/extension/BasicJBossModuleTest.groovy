@@ -1,5 +1,6 @@
 package com.github.zhurlik.extension
 
+import TestUtils.XMLUtil
 import com.github.zhurlik.Ver
 import groovy.util.logging.Slf4j
 import org.gradle.api.Project
@@ -100,9 +101,9 @@ abstract class BasicJBossModuleTest {
                 "    </resource-root>\n" +
                 "  </resources>\n" +
                 "</module>"
-        assertEquals 'Case1:', xml, module.moduleDescriptor
+        XMLUtil.assertXMLStrings 'Case1:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
+        XMLUtil.assertXMLStrings 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
 
         // 2
         module = new JBossModule('testModule')
@@ -130,9 +131,9 @@ abstract class BasicJBossModuleTest {
                 "    </resource-root>\n" +
                 "  </resources>\n" +
                 "</module>"
-        assertEquals 'Case2:', xml, module.moduleDescriptor
+        XMLUtil.assertXMLStrings 'Case2:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
+        XMLUtil.assertXMLStrings 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
 
     }
 
@@ -158,9 +159,9 @@ abstract class BasicJBossModuleTest {
                 "    </exclude-set>\n" +
                 "  </exports>\n" +
                 "</module>"
-        assertEquals 'Case1:', xml, module.moduleDescriptor
+        XMLUtil.assertXMLStrings 'Case1:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
+        XMLUtil.assertXMLStrings 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
 
         // 2
         module = new JBossModule('testModule1')
@@ -183,9 +184,9 @@ abstract class BasicJBossModuleTest {
                 "    <exclude path='not this' />\n" +
                 "  </exports>\n" +
                 "</module>"
-        assertEquals 'Case2:', xml, module.moduleDescriptor
+        XMLUtil.assertXMLStrings 'Case2:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
+        XMLUtil.assertXMLStrings 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
     }
 
     @Test
@@ -209,9 +210,9 @@ abstract class BasicJBossModuleTest {
                 "    <grant actions='test-actions' name='test-name' permission='permission2' />\n" +
                 "  </permissions>\n" +
                 "</module>"
-        assertEquals 'Case1:', xml, module.moduleDescriptor
+        XMLUtil.assertXMLStrings 'Case1:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
+        XMLUtil.assertXMLStrings 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
     }
 
 
@@ -334,7 +335,7 @@ abstract class BasicJBossModuleTest {
 
         assertTrue new File(getClass().getClassLoader().getResource('projectTest/build/install/testServer/modules/' + prefix + 'org/apache/log4j/main/log4j-1.2.17.jar').toURI().path).exists()
         assertTrue new File(getClass().getClassLoader().getResource('projectTest/build/install/testServer/modules/' + prefix + 'org/apache/log4j/main/module.xml').toURI().path).exists()
-        assertEquals 'Module Descriptor:', "<?xml version='1.0' encoding='utf-8'?>\n" +
+        XMLUtil.assertXMLStrings 'Module Descriptor:', "<?xml version='1.0' encoding='utf-8'?>\n" +
                 "<module xmlns='urn:jboss:module:" + getVersion().number + "' name='org.apache.log4j'>\n" +
                 "  <resources>\n" +
                 "    <resource-root path='.' />\n" +
@@ -372,7 +373,7 @@ abstract class BasicJBossModuleTest {
                 "    <system />\n" +
                 "  </dependencies>\n" +
                 "</module>"
-        assertEquals 'Case1:', xml, module.moduleDescriptor
+        XMLUtil.assertXMLStrings 'Case1:', xml, module.moduleDescriptor
         assertTrue !module.valid
 
         // 2
@@ -464,9 +465,9 @@ abstract class BasicJBossModuleTest {
                 "    </system>\n" +
                 "  </dependencies>\n" +
                 "</module>"
-        assertEquals 'Case2:', xml, module.moduleDescriptor
+        XMLUtil.assertXMLStrings 'Case2:', xml, module.moduleDescriptor
         assertTrue module.valid
-        assertEquals 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
+        XMLUtil.assertXMLStrings 'Reverse:', xml, Ver.makeModule(xml).moduleDescriptor
     }
 
     abstract protected Ver getVersion()
